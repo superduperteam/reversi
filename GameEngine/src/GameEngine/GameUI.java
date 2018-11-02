@@ -8,10 +8,11 @@ import java.util.LinkedHashMap;
 
 public class GameUI
 {
-    private static int colIntialNumber = 1;
+    // ## remember to switch back
+    private static int colIntialNumber = 0;
     private static int boardCellSize = 5;
-    private static int rowIntialNumber = 1;
-    private static char r_Space = ' ';
+    private static int rowIntialNumber = 0;
+    private static char space = ' ';
     private static int height = 10;
     private static int width = 10;
     private static char rowSeparator = '=';
@@ -23,11 +24,11 @@ public class GameUI
 
         // Test
         // Will be deleted after XML addition
-        List<Player> playersList = new ArrayList<Player>(2);
-        playersList.add(new Player("Ido", true, eDiscType.BLACK));
-        playersList.add(new Player("Saar", true, eDiscType.WHITE));
+        List<Player> playersList = new ArrayList<>(2);
+        playersList.add(new Player("Ido", true, eDiscType.BLACK, 0));
+        playersList.add(new Player("Saar", true, eDiscType.WHITE, 1));
 
-        GameManagaer gameManager = new GameManagaer(GameManagaer.eGameMode.Regular, playersList);
+        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList);
         LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers = new  LinkedHashMap<Player, ArrayList<Point>>();
         ArrayList<Point> IdoPoints = new ArrayList<>();
         IdoPoints.add(new Point(4,4));
@@ -43,8 +44,25 @@ public class GameUI
         //
 
 
+        board.nullifyBoardCells();
+        board.board[7][5] = new Disc(eDiscType.BLACK);
+        board.board[7][5] = new Disc(eDiscType.BLACK);
+        board.board[7][1] = new Disc(eDiscType.BLACK);
 
+        board.board[4][4] = new Disc(eDiscType.WHITE);
+        board.board[4][5] = new Disc(eDiscType.WHITE);
+        board.board[5][3] = new Disc(eDiscType.WHITE);
+        board.board[5][5] = new Disc(eDiscType.WHITE);
+        board.board[6][2] = new Disc(eDiscType.WHITE);
+        board.board[6][5] = new Disc(eDiscType.WHITE);
 
+        board.board[2][4] = new Disc(eDiscType.WHITE);
+
+        printGameState(board);
+
+        Player activePlayer = gameManager.GetActivePlayer();
+
+        activePlayer.MakeMove(new Point(5, 3), board, GameManager.eGameMode.Regular);
         printGameState(board);
     }
 
@@ -72,7 +90,7 @@ public class GameUI
             printSpaces(boardCellSize - 1);
             if(colLetter <= 9) // 1-9 numbers need one digit.
             {
-                System.out.print(r_Space);
+                System.out.print(space);
             }
 
             colLetter++;
@@ -83,8 +101,8 @@ public class GameUI
 
     private void printRowsSeparators(Board board)
     {
-        System.out.print(r_Space);
-        System.out.print(r_Space);
+        System.out.print(space);
+        System.out.print(space);
         System.out.print(rowSeparator);
         for (int i = 0; i < width; i++)
         {
@@ -104,7 +122,7 @@ public class GameUI
         {
             if(rowLetter <= 9) // 1-9 numbers need one digit.
             {
-                System.out.print(r_Space);
+                System.out.print(space);
             }
             System.out.print(rowLetter);
             System.out.print(colSeparator);
@@ -119,11 +137,11 @@ public class GameUI
                 }
                 else
                 {
-                    System.out.print(r_Space);
-                    System.out.print(r_Space);
+                    System.out.print(space);
+                    System.out.print(space);
                     printDiscTypeToScreen(discInCell.GetType());
-                    System.out.print(r_Space);
-                    System.out.print(r_Space);
+                    System.out.print(space);
+                    System.out.print(space);
                 }
 
                 System.out.print(colSeparator);
@@ -139,7 +157,7 @@ public class GameUI
     {
         for (int i = 0; i < numOfSpaces; i++)
         {
-            System.out.print(r_Space);
+            System.out.print(space);
         }
     }
 

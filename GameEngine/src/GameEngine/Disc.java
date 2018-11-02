@@ -13,4 +13,9 @@ public class Disc
     {
         return type;
     }
+
+    public void SetType(eDiscType newDiscTypeToSet)
+    {
+        this.type = newDiscTypeToSet;
+    }
 }

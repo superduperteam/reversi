@@ -8,6 +8,7 @@ public class Player {
     private String name;
     private boolean isHuman;
     private eDiscType discType;
+    private  int id;
 
     public void SetDiscType(eDiscType discType)
     {
@@ -19,11 +20,12 @@ public class Player {
         return discType;
     }
 
-    public Player(String name, boolean isHuman, eDiscType discType)
+    public Player(String name, boolean isHuman, eDiscType discType, int id)
     {
         this.name = name;
         this.isHuman = isHuman;
         this.discType = discType;
+        this.id = id;
     }
 
     private class Statistics {
@@ -34,7 +36,19 @@ public class Player {
 
     private List<Point> getListOfAllPossibleMoves() {return null;}
 
-    public void MakeMove(Point targetInsertionPoint, Board board) {}
+    public boolean MakeMove(Point targetInsertionPoint, Board board, GameManager.eGameMode gameMode)
+    {
+       boolean isAbleToDoTheMove;
+
+       isAbleToDoTheMove = board.IsMoveLegal(targetInsertionPoint, discType, gameMode);
+
+       if(isAbleToDoTheMove)
+       {
+           board.UpdateBoard(targetInsertionPoint, discType);
+       }
+
+       return isAbleToDoTheMove;
+    }
 
     public Point GetRandomMove(List<Point> allPossibleMoves) {return null;}
 }
