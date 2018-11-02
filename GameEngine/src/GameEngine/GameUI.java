@@ -40,7 +40,7 @@ public class GameUI
 
         intialDiscsPointsOfPlayers.put(playersList.get(0), IdoPoints);
         intialDiscsPointsOfPlayers.put(playersList.get(1), SaarPoints);
-        Board board = new Board(height, width, intialDiscsPointsOfPlayers);
+        Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
         //
 
 
@@ -62,7 +62,7 @@ public class GameUI
 
         Player activePlayer = gameManager.GetActivePlayer();
 
-        activePlayer.MakeMove(new Point(5, 3), board, GameManager.eGameMode.Regular);
+        activePlayer.MakeMove(new Point(5, 3), board);
         printGameState(board);
     }
 

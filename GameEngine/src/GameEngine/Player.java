@@ -36,11 +36,11 @@ public class Player {
 
     private List<Point> getListOfAllPossibleMoves() {return null;}
 
-    public boolean MakeMove(Point targetInsertionPoint, Board board, GameManager.eGameMode gameMode)
+    public boolean MakeMove(Point targetInsertionPoint, Board board)
     {
        boolean isAbleToDoTheMove;
 
-       isAbleToDoTheMove = board.IsMoveLegal(targetInsertionPoint, discType, gameMode);
+       isAbleToDoTheMove = board.IsMoveLegal(targetInsertionPoint, discType);
 
        if(isAbleToDoTheMove)
        {

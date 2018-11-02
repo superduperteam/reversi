@@ -9,15 +9,17 @@ public class Board
 {
     private int height;
     private int width;
+    private GameManager.eGameMode gameMode;
     // ## remember to switch back
     public Disc board[][];
 
-    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers)
+    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
     {
         board = new Disc[height][width];
         InitializeBoard(intialDiscsPointsOfPlayers);
         this.height = height;
         this.width = width;
+        this.gameMode = gameMode;
     }
 
     // Returns the number of flipped discs that were flipped because of the given move.
@@ -27,7 +29,7 @@ public class Board
         return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
     }
 
-    public boolean IsMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted, GameManager.eGameMode gameMode)
+    public boolean IsMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
         if(isCellPointInRange(targetInsertionPoint))
         {
