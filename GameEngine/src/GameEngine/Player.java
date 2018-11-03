@@ -1,6 +1,7 @@
 package GameEngine;
 
 import java.util.List;
+import java.util.Random;
 
 public class Player {
     private Statistics statistics;
@@ -39,7 +40,21 @@ public class Player {
         return isHuman;
     }
 
-    private List<Point> getListOfAllPossibleMoves() {return null;}
+    public Point GetRandomMove(Board board)
+    {
+        List<Point> allPossibleMoves = board.GetListOfAllPossibleMoves(this);
+
+        return pickRandomMoveFromList(allPossibleMoves);
+    }
+
+    private Point pickRandomMoveFromList(List<Point> allPossibleMoves)
+    {
+        Random random = new Random();
+        int moveIndex = random.nextInt(allPossibleMoves.size());
+
+        return allPossibleMoves.get(moveIndex);
+    }
+
 
     public boolean MakeMove(Point targetInsertionPoint, Board board)
     {
@@ -54,6 +69,4 @@ public class Player {
 
        return isAbleToDoTheMove;
     }
-
-    public Point GetRandomMove(List<Point> allPossibleMoves) {return null;}
 }

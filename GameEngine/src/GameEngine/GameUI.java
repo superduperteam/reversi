@@ -4,12 +4,14 @@ package GameEngine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.Scanner;
+import java.lang.String;
 
 public class GameUI
 {
-    private static int colIntialNumber = 1;
+    private static int colIntialNumber = 0;
+    private static int rowIntialNumber = 0;
     private static int boardCellSize = 5;
-    private static int rowIntialNumber = 1;
     private static char space = ' ';
     private static int height = 10;
     private static int width = 10;
@@ -18,8 +20,6 @@ public class GameUI
 
     public void Start()
     {
-
-
         // Test
         // Will be deleted after XML addition
         List<Player> playersList = new ArrayList<>(2);
@@ -64,25 +64,117 @@ public class GameUI
 
         activePlayer.MakeMove(new Point(3, 5), board);
         printGameState(board);
-          gameLoop(gameManager);
+//          gameLoop(gameManager);
     }
-// TODO IsGameover(), UpdateGameScore(), getMoveFromHuman(), GetRandomMove() ,List<Point> GetAllPossibleMoves(),
+// TODO IsGameover(), UpdateGameScore(), getMoveFromHuman(), GetRandomMove() ,List<Point> GetAllPossibleMoves()
     private void gameLoop(GameManager gameManager)
     {
         Player activePlayer;
         Point targetInsertionPoint;
+        Board board = gameManager.GetBoard();
 
         while(true) // call gameManager.IsGameover
         {
             activePlayer = gameManager.GetActivePlayer();
-            if(activePlayer.IsHuman())
-            {
-                //targetInsertionPoint = call getMoveFromHuman()
-                //activePlayer.MakeMove()
-            }
+            targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
+            activePlayer.MakeMove(targetInsertionPoint, board);
         }
     }
 
+    private Point getMoveFromPlayer(Player activePlayer, Board board)
+    {
+        Point targetInsertionPoint;
+
+        if(activePlayer.IsHuman())
+        {
+            targetInsertionPoint = getMoveFromHuman(board);
+        }
+        else
+        {
+            targetInsertionPoint = activePlayer.GetRandomMove(board);
+        }
+
+        return targetInsertionPoint;
+    }
+
+    private Point getMoveFromHuman(Board gameBoard)
+    {
+        Point nextMoveOfUser = null;
+        int row, col;
+        StringBuilder strBuilder = new StringBuilder();
+        boolean isMoveSyntactic = false; // isMoveLegal means it's in board range and it's syntactic
+        Scanner reader = new Scanner(System.in);  // Reading from System.in
+
+        while(!isMoveSyntactic) {
+            System.out.println("Please enter your next move: row,column");
+            strBuilder.append("For example: ");
+            strBuilder.append("\"4,5\"");
+            strBuilder.append(" (without the quotation marks)");
+            System.out.println(strBuilder.toString());
+            String userInputStr = reader.nextLine();
+
+            if (isStringOnlyDigitsAndSeperator(userInputStr)) {
+                if (userInputStr.contains(",")) {
+                    String[] coordinates = userInputStr.split(",");
+
+                    if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
+                        if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
+                            row = Integer.parseInt(coordinates[0]);
+                            col = Integer.parseInt(coordinates[1]);
+                            nextMoveOfUser = new Point(row - 1, col - 1);
+
+                            if (gameBoard.IsCellPointInRange(nextMoveOfUser)) {
+                                isMoveSyntactic = true;
+                            } else {
+                                System.out.println("Please enter a point that is in the range of the game board. Try again");
+                                System.out.println();
+                            }
+                        } else {
+                            System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
+                            System.out.println();
+                        }
+                    } else {
+                        System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
+                        System.out.println();
+                    }
+                } else {
+                    System.out.println("Your input doesn't contain ','. Please Try again.");
+                    System.out.println();
+                }
+            } else {
+                System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
+                System.out.println();
+            }
+        }
+
+        return nextMoveOfUser;
+    }
+
+    private boolean isStringOnlyDigits(String str)
+    {
+        for(int i = 0; i< str.length(); i++)
+        {
+            if(str.charAt(i) < '0' || str.charAt(i) > '9')
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isStringOnlyDigitsAndSeperator(String str)
+    {
+        for(int i = 0; i< str.length(); i++)
+        {
+            if((str.charAt(i) < '0' || str.charAt(i) > '9') && (str.charAt(i) != ','))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     private void printDiscTypeToScreen(eDiscType discType)
     {
