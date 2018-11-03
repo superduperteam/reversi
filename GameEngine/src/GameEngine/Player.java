@@ -34,6 +34,11 @@ public class Player {
         private int score;
     }
 
+    public boolean IsHuman()
+    {
+        return isHuman;
+    }
+
     private List<Point> getListOfAllPossibleMoves() {return null;}
 
     public boolean MakeMove(Point targetInsertionPoint, Board board)

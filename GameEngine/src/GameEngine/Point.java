@@ -2,22 +2,22 @@ package GameEngine;
 
 public class Point
 {
-    private int x;
-    private int y;
+    private int col;
+    private int row;
 
-    public int GetX()
+    public int GetCol()
     {
-       return x;
+       return col;
     }
 
-    public int GetY()
+    public int GetRow()
     {
-        return y;
+        return row;
     }
 
-    public Point(int x, int y)
+    public Point(int row, int col)
     {
-        this.x = x;
-        this.y = y;
+        this.row = row;
+        this.col = col;
     }
 }

@@ -3,15 +3,13 @@ package GameEngine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class GameUI
 {
-    // ## remember to switch back
-    private static int colIntialNumber = 0;
+    private static int colIntialNumber = 1;
     private static int boardCellSize = 5;
-    private static int rowIntialNumber = 0;
+    private static int rowIntialNumber = 1;
     private static char space = ' ';
     private static int height = 10;
     private static int width = 10;
@@ -28,20 +26,22 @@ public class GameUI
         playersList.add(new Player("Ido", true, eDiscType.BLACK, 0));
         playersList.add(new Player("Saar", true, eDiscType.WHITE, 1));
 
-        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList);
         LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers = new  LinkedHashMap<Player, ArrayList<Point>>();
         ArrayList<Point> IdoPoints = new ArrayList<>();
-        IdoPoints.add(new Point(4,4));
-        IdoPoints.add(new Point(5,5));
+        IdoPoints.add(new Point(4, 4));
+        IdoPoints.add(new Point(5, 5));
 
         ArrayList<Point> SaarPoints = new ArrayList<>();
-        SaarPoints.add(new Point(4,5));
-        SaarPoints.add(new Point(5,4));
+        SaarPoints.add(new Point(5, 4));
+        SaarPoints.add(new Point(4, 5));
 
         intialDiscsPointsOfPlayers.put(playersList.get(0), IdoPoints);
         intialDiscsPointsOfPlayers.put(playersList.get(1), SaarPoints);
         Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
-        //
+
+        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
+
+
 
 
         board.nullifyBoardCells();
@@ -62,9 +62,27 @@ public class GameUI
 
         Player activePlayer = gameManager.GetActivePlayer();
 
-        activePlayer.MakeMove(new Point(5, 3), board);
+        activePlayer.MakeMove(new Point(3, 5), board);
         printGameState(board);
+          gameLoop(gameManager);
     }
+// TODO IsGameover(), UpdateGameScore(), getMoveFromHuman(), GetRandomMove() ,List<Point> GetAllPossibleMoves(),
+    private void gameLoop(GameManager gameManager)
+    {
+        Player activePlayer;
+        Point targetInsertionPoint;
+
+        while(true) // call gameManager.IsGameover
+        {
+            activePlayer = gameManager.GetActivePlayer();
+            if(activePlayer.IsHuman())
+            {
+                //targetInsertionPoint = call getMoveFromHuman()
+                //activePlayer.MakeMove()
+            }
+        }
+    }
+
 
     private void printDiscTypeToScreen(eDiscType discType)
     {

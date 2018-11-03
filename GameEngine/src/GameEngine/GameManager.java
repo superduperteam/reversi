@@ -10,14 +10,26 @@ public class GameManager
     private List<Player> playersList;
     private ListIterator<Player> playersIterator;
     private Player activePlayer;
+    private Board board;
 
-    public GameManager(eGameMode gameMode, List<Player> playersList)
+    public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
         this.playersList = new ArrayList<>(playersList);
         playersIterator = playersList.listIterator(0);
         mapDiscTypesToPlayers();
         this.gameMode = gameMode;
         activePlayer = playersList.get(0);
+        this.board = board;
+    }
+
+    public boolean IsGameOVer()
+    {
+        return true;
+    }
+
+    public Board GetBoard()
+    {
+        return board;
     }
 
     public void ChangeTurn()

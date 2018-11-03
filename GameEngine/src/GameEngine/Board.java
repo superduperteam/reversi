@@ -10,7 +10,6 @@ public class Board
     private int height;
     private int width;
     private GameManager.eGameMode gameMode;
-    // ## remember to switch back
     public Disc board[][];
 
     public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
@@ -25,7 +24,7 @@ public class Board
     // Returns the number of flipped discs that were flipped because of the given move.
     public int UpdateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
-        board[targetInsertionPoint.GetY()][targetInsertionPoint.GetX()] = new Disc(discTypeToBeInserted);
+        board[targetInsertionPoint.GetRow()][targetInsertionPoint.GetCol()] = new Disc(discTypeToBeInserted);
         return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
     }
 
@@ -52,7 +51,7 @@ public class Board
 
     private boolean isCellEmpty(Point point)
     {
-        if(board[point.GetY()][point.GetX()] == null)
+        if(board[point.GetRow()][point.GetCol()] == null)
         {
             return true;
         }
@@ -64,19 +63,19 @@ public class Board
 
     private boolean isThereFoeDiscAdjacent(Point point, eDiscType discTypeToBeInserted)
     {
-        int row = point.GetY(), col = point.GetX();
+        int row = point.GetRow(), col = point.GetCol();
         Disc adjacentDisc;
         List<Point> allPossibleAdjacentCellPoints = new ArrayList<Point>(8);
         List<Point> allPossibleAdjacentCellPointsInBoardRange = new ArrayList<>();
 
-        allPossibleAdjacentCellPoints.add(new Point(col +0, row -1));
-        allPossibleAdjacentCellPoints.add(new Point(col +1, row -1));
-        allPossibleAdjacentCellPoints.add(new Point(col +1, row +0));
-        allPossibleAdjacentCellPoints.add(new Point(col +1, row +1));
-        allPossibleAdjacentCellPoints.add(new Point(col +0, row +1));
-        allPossibleAdjacentCellPoints.add(new Point(col -1, row +1));
-        allPossibleAdjacentCellPoints.add(new Point(col -1, row +0));
-        allPossibleAdjacentCellPoints.add(new Point(col -1, row -1));
+        allPossibleAdjacentCellPoints.add(new Point(row -1, col +0));
+        allPossibleAdjacentCellPoints.add(new Point(row -1, col +1));
+        allPossibleAdjacentCellPoints.add(new Point(row +0, col +1));
+        allPossibleAdjacentCellPoints.add(new Point(row +1, col +1));
+        allPossibleAdjacentCellPoints.add(new Point(row +1, col +0));
+        allPossibleAdjacentCellPoints.add(new Point(row +1, col -1));
+        allPossibleAdjacentCellPoints.add(new Point(row +0, col -1));
+        allPossibleAdjacentCellPoints.add(new Point(row -1, col -1));
 
         // We want to remove any point that is not in range of the board.
         for(Point cellPoint : allPossibleAdjacentCellPoints)
@@ -89,7 +88,7 @@ public class Board
 
         for(Point adjacentCellPoint : allPossibleAdjacentCellPointsInBoardRange)
         {
-            adjacentDisc = board[adjacentCellPoint.GetY()][adjacentCellPoint.GetX()];
+            adjacentDisc = board[adjacentCellPoint.GetRow()][adjacentCellPoint.GetCol()];
 
             if(adjacentDisc != null)
             {
@@ -107,8 +106,8 @@ public class Board
     {
         int row, col;
 
-        row = cellPoint.GetY();
-        col = cellPoint.GetX();
+        row = cellPoint.GetRow();
+        col = cellPoint.GetCol();
 
         return isCellPointInRange(row, col);
     }
@@ -142,12 +141,11 @@ public class Board
     }
 
     // regular
-    // ## REMEMBER TO SWITCH BACK TO PRIVATE
-    public boolean canFlipEnemyDiscsInDirection(Point targetInsertionPoint, int deltaX, int deltaY, eDiscType discTypeToBeInserted)
+    private boolean canFlipEnemyDiscsInDirection(Point targetInsertionPoint, int deltaX, int deltaY, eDiscType discTypeToBeInserted)
     {
         int countOfSequenceFlippableDiscs = 0;
         boolean keepChecking = true;
-        int row = targetInsertionPoint.GetY() + deltaY, col = targetInsertionPoint.GetX() + deltaX;
+        int row = targetInsertionPoint.GetRow() + deltaY, col = targetInsertionPoint.GetCol() + deltaX;
         Disc currentDisc;
 
         while(keepChecking)
@@ -197,7 +195,7 @@ public class Board
 
     private int flipEnemyDiscsInDirection(Point targetInsertionPoint, int deltaX, int deltaY, eDiscType discTypeToBeInserted)
     {
-        int row = targetInsertionPoint.GetY(), col = targetInsertionPoint.GetX(), countOfFlippedDiscs = 0;
+        int row = targetInsertionPoint.GetRow(), col = targetInsertionPoint.GetCol(), countOfFlippedDiscs = 0;
         Disc currentDisc = board[row + deltaY][col + deltaX];
 
         if(canFlipEnemyDiscsInDirection(targetInsertionPoint, deltaX, deltaY, discTypeToBeInserted))
@@ -228,7 +226,7 @@ public class Board
 //
 //            for(Point point : currentPlayerIntialDiscs)
 //            {
-//                board[point.GetY()][point.GetX()] = new Disc(player.GetDiscType());
+//                board[point.GetRow()][point.GetCol()] = new Disc(player.GetDiscType());
 //            }
 //        }
 //    }
@@ -251,12 +249,11 @@ public class Board
 
             for(Point point : currentPlayerIntialDiscs)
             {
-                board[point.GetY()][point.GetX()] = new Disc(player.GetDiscType());
+                board[point.GetRow()][point.GetCol()] = new Disc(player.GetDiscType());
             }
         }
     }
 
-    // ## REMEMBER TO SWITCH BACK TO PRIVATE
     public void nullifyBoardCells()
     {
         for (int row = 0; row < height; row++)
