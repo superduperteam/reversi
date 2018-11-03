@@ -1,5 +1,8 @@
 package GameEngine;
 
+
+import com.sun.org.glassfish.external.statistics.Statistic;
+
 import java.util.*;
 
 public class GameManager
@@ -31,7 +34,7 @@ public class GameManager
     {
         return board;
     }
-
+    
     public void ChangeTurn()
     {
         if(playersIterator.hasNext())
@@ -69,6 +72,23 @@ public class GameManager
 
     public void UpdateGameScore()
     {
+        int length = board.getGameBoardLength();
+        Disc currDisc;
+
+        for(Player player: playersList) {
+            Player.Statistics  statistics = player.getStatistics();
+
+            statistics.resetScore();
+        }
+
+        for(int i = 0; i < length; ++i) {
+            for(int j = 0; j < length; ++j){
+                currDisc = board.Get(i,j);
+                Player player = discTypeToPlayer.get(currDisc.GetType());
+
+                player.getStatistics().incScore();
+            }
+        }
     }
 
     private class TurnHistory

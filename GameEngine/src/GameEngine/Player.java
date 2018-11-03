@@ -29,10 +29,22 @@ public class Player {
         this.id = id;
     }
 
-    private class Statistics {
+    public class Statistics {
         private int countOfPlayedTurns;
         private double averageOfFlips;
         private int score;
+
+        public void resetScore() {
+            score = 0;
+        }
+
+        public void incScore() {
+            ++score;
+        }
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
     }
 
     public boolean IsHuman()

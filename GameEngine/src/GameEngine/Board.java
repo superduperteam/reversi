@@ -280,6 +280,10 @@ public class Board
         return board[row][col];
     }
 
+    public int getGameBoardLength() {
+        return board.length;
+    }
+
     private void initializeBoard(LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers)
     {
         nullifyBoardCells();
@@ -322,5 +326,21 @@ public class Board
         listOfAllDirections.add(new Point( -1,  -1));
 
         return listOfAllDirections;
+    }
+
+    public boolean isGameOver(List<Player> playersList){
+        boolean isGameOver = true;
+        List<Point> singlePlayerPossibleMoves;
+
+        for(Player player: playersList){
+            singlePlayerPossibleMoves  = GetListOfAllPossibleMoves(player);
+
+            if(singlePlayerPossibleMoves.size() > 0) {
+                isGameOver = false;
+                break;
+            }
+        }
+
+        return isGameOver;
     }
 }
