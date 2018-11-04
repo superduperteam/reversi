@@ -11,10 +11,11 @@ public class Player {
     private eDiscType discType;
     private  int id;
 
-    public void SetDiscType(eDiscType discType)
-    {
-        this.discType = discType;
-    }
+    // probably not needed
+//    public void SetDiscType(eDiscType discType)
+//    {
+//        this.discType = discType;
+//    }
 
     public eDiscType GetDiscType()
     {
@@ -27,12 +28,13 @@ public class Player {
         this.isHuman = isHuman;
         this.discType = discType;
         this.id = id;
+        statistics = new Statistics();
     }
 
     public class Statistics {
-        private int countOfPlayedTurns;
-        private double averageOfFlips;
-        private int score;
+        private int countOfPlayedTurns = 0;
+        private double averageOfFlips = 0;
+        private int score = 0;
 
         public void resetScore() {
             score = 0;
@@ -57,6 +59,11 @@ public class Player {
         List<Point> allPossibleMoves = board.GetListOfAllPossibleMoves(this);
 
         return pickRandomMoveFromList(allPossibleMoves);
+    }
+
+    public String GetName()
+    {
+        return name;
     }
 
     private Point pickRandomMoveFromList(List<Point> allPossibleMoves)

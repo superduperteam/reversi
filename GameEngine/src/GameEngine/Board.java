@@ -280,9 +280,14 @@ public class Board
         return board[row][col];
     }
 
-    public int getGameBoardLength() {
-        return board.length;
+    public int GetHeight() {
+        return height;
     }
+
+    public int GetWidth() {
+        return width;
+    }
+
 
     private void initializeBoard(LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers)
     {

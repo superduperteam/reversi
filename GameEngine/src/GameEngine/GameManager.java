@@ -11,21 +11,23 @@ public class GameManager
     private HashMap<eDiscType, Player> discTypeToPlayer;
     private TurnHistory turnHistory;
     private List<Player> playersList;
-    private ListIterator<Player> playersIterator;
+//    private ListIterator<Player> playersIterator; // not working :(
+    private  int activePlayerIndex;
     private Player activePlayer;
     private Board board;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
         this.playersList = new ArrayList<>(playersList);
-        playersIterator = playersList.listIterator(0);
+//        playersIterator = playersList.listIterator(); // not working :(
+        activePlayerIndex = 0;
         mapDiscTypesToPlayers();
         this.gameMode = gameMode;
         activePlayer = playersList.get(0);
         this.board = board;
     }
 
-    public boolean IsGameOVer()
+    public boolean IsGameOver()
     {
         return true;
     }
@@ -34,19 +36,30 @@ public class GameManager
     {
         return board;
     }
-    
+
+    // Not working :(
+//    public void ChangeTurn()
+//    {
+//        if(playersIterator.hasNext())
+//        {
+//            activePlayer = playersIterator.next();
+//        }
+//        else // Iterator is pointing to the tail of the list.
+//        {
+//            playersIterator = playersList.listIterator();
+//            activePlayer = playersIterator.;
+//        }
+//
+//        UpdateGameScore();
+//    }
+
     public void ChangeTurn()
     {
-        if(playersIterator.hasNext())
-        {
-            playersIterator.next();
-        }
-        else // Iterator is pointing to the tail of the list.
-        {
-            playersIterator = playersList.listIterator(0);
-        }
+        int nextTurnIndex;
 
-        // call updategamescore here
+        activePlayerIndex++;
+        nextTurnIndex = activePlayerIndex%(playersList.size());
+        activePlayer = playersList.get(nextTurnIndex);
     }
 
     public Player GetActivePlayer()
@@ -72,8 +85,9 @@ public class GameManager
 
     public void UpdateGameScore()
     {
-        int length = board.getGameBoardLength();
+        int height = board.GetHeight(), width = board.GetWidth();
         Disc currDisc;
+        Player playerToAddScoreTo;
 
         for(Player player: playersList) {
             Player.Statistics  statistics = player.getStatistics();
@@ -81,12 +95,15 @@ public class GameManager
             statistics.resetScore();
         }
 
-        for(int i = 0; i < length; ++i) {
-            for(int j = 0; j < length; ++j){
+        for(int i = 0; i < height; ++i) {
+            for(int j = 0; j < width; ++j){
                 currDisc = board.Get(i,j);
-                Player player = discTypeToPlayer.get(currDisc.GetType());
 
-                player.getStatistics().incScore();
+                if(currDisc != null)
+                {
+                    playerToAddScoreTo = discTypeToPlayer.get(currDisc.GetType());
+                    playerToAddScoreTo.getStatistics().incScore();
+                }
             }
         }
     }

@@ -9,8 +9,8 @@ import java.lang.String;
 
 public class GameUI
 {
-    private static int colIntialNumber = 0;
-    private static int rowIntialNumber = 0;
+    private static int colIntialNumber = 1;
+    private static int rowIntialNumber = 1;
     private static int boardCellSize = 5;
     private static char space = ' ';
     private static int height = 10;
@@ -42,43 +42,74 @@ public class GameUI
         GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
 
 
-
-
-        board.nullifyBoardCells();
-        board.board[7][5] = new Disc(eDiscType.BLACK);
-        board.board[7][5] = new Disc(eDiscType.BLACK);
-        board.board[7][1] = new Disc(eDiscType.BLACK);
-
-        board.board[4][4] = new Disc(eDiscType.WHITE);
-        board.board[4][5] = new Disc(eDiscType.WHITE);
-        board.board[5][3] = new Disc(eDiscType.WHITE);
-        board.board[5][5] = new Disc(eDiscType.WHITE);
-        board.board[6][2] = new Disc(eDiscType.WHITE);
-        board.board[6][5] = new Disc(eDiscType.WHITE);
-
-        board.board[2][4] = new Disc(eDiscType.WHITE);
-
-        printGameState(board);
-
-        Player activePlayer = gameManager.GetActivePlayer();
-
-        activePlayer.MakeMove(new Point(3, 5), board);
-        printGameState(board);
-//          gameLoop(gameManager);
+//
+//
+//
+//
+//        board.nullifyBoardCells();
+//        board.board[7][5] = new Disc(eDiscType.BLACK);
+//        board.board[7][5] = new Disc(eDiscType.BLACK);
+//        board.board[7][1] = new Disc(eDiscType.BLACK);
+//
+//        board.board[4][4] = new Disc(eDiscType.WHITE);
+//        board.board[4][5] = new Disc(eDiscType.WHITE);
+//        board.board[5][3] = new Disc(eDiscType.WHITE);
+//        board.board[5][5] = new Disc(eDiscType.WHITE);
+//        board.board[6][2] = new Disc(eDiscType.WHITE);
+//        board.board[6][5] = new Disc(eDiscType.WHITE);
+//
+//        board.board[2][4] = new Disc(eDiscType.WHITE);
+//
+//        printGameState(board);
+//
+//        Player activePlayer = gameManager.GetActivePlayer();
+//
+//        activePlayer.MakeMove(new Point(3, 5), board);
+//        printGameState(board);
+          gameLoop(gameManager);
     }
 // TODO IsGameover(), UpdateGameScore(), getMoveFromHuman(), GetRandomMove() ,List<Point> GetAllPossibleMoves()
     private void gameLoop(GameManager gameManager)
     {
+        boolean isMoveLegalInserted;
         Player activePlayer;
         Point targetInsertionPoint;
         Board board = gameManager.GetBoard();
 
         while(true) // call gameManager.IsGameover
         {
+            printGameState(board);
             activePlayer = gameManager.GetActivePlayer();
-            targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
-            activePlayer.MakeMove(targetInsertionPoint, board);
+
+            do {
+                targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
+                isMoveLegalInserted = activePlayer.MakeMove(targetInsertionPoint, board);
+
+                if(!isMoveLegalInserted)
+                {
+                    printIllegalMoveInserted();
+                }
+            }
+            while(!isMoveLegalInserted);
+
+            gameManager.ChangeTurn();
         }
+    }
+
+    private void printIllegalMoveInserted()
+    {
+        System.out.println("Illegal move was inserted. Please try again.");
+    }
+
+    private void printWhoseTurn(Player activePlayer)
+    {
+        StringBuilder strBuilder = new StringBuilder();
+
+        strBuilder.append(activePlayer.GetName());
+        strBuilder.append("'s turn ('");
+        strBuilder.append(activePlayer.GetDiscType().toString());
+        strBuilder.append("')!");
+        System.out.println(strBuilder.toString());
     }
 
     private Point getMoveFromPlayer(Player activePlayer, Board board)
@@ -87,6 +118,7 @@ public class GameUI
 
         if(activePlayer.IsHuman())
         {
+            printWhoseTurn(activePlayer);
             targetInsertionPoint = getMoveFromHuman(board);
         }
         else
@@ -121,7 +153,7 @@ public class GameUI
                         if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
                             row = Integer.parseInt(coordinates[0]);
                             col = Integer.parseInt(coordinates[1]);
-                            nextMoveOfUser = new Point(row - 1, col - 1);
+                            nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
 
                             if (gameBoard.IsCellPointInRange(nextMoveOfUser)) {
                                 isMoveSyntactic = true;
