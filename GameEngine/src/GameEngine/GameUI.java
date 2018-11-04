@@ -225,7 +225,7 @@ public class GameUI
         int colLetter = colIntialNumber;
 
         printSpaces(boardCellSize);
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < board.GetWidth(); i++)
         {
             System.out.print(colLetter);
 
@@ -246,7 +246,7 @@ public class GameUI
         System.out.print(space);
         System.out.print(space);
         System.out.print(rowSeparator);
-        for (int i = 0; i < width; i++)
+        for (int i = 0; i < board.GetWidth(); i++)
         {
             printRowSeparators(boardCellSize);
             System.out.print(rowSeparator);
@@ -260,7 +260,7 @@ public class GameUI
         int rowLetter = rowIntialNumber;
         Disc discInCell;
 
-        for (int i = 0; i < height; i++)
+        for (int i = 0; i < board.GetHeight(); i++)
         {
             if(rowLetter <= 9) // 1-9 numbers need one digit.
             {
@@ -269,7 +269,7 @@ public class GameUI
             System.out.print(rowLetter);
             System.out.print(colSeparator);
 
-            for (int j = 0; j < width; j++)
+            for (int j = 0; j < board.GetWidth(); j++)
             {
                 discInCell = board.Get(i,j);
 

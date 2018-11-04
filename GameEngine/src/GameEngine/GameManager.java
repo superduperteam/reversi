@@ -60,6 +60,8 @@ public class GameManager
         activePlayerIndex++;
         nextTurnIndex = activePlayerIndex%(playersList.size());
         activePlayer = playersList.get(nextTurnIndex);
+
+        UpdateGameScore();
     }
 
     public Player GetActivePlayer()
