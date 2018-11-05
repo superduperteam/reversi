@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import jaxb.schema.generated.GameDescriptor;
 
 public class Board
 {
@@ -12,13 +13,18 @@ public class Board
     private GameManager.eGameMode gameMode;
     public Disc board[][];
 
-    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
+//    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
+//    {
+//        board = new Disc[height][width];
+//        initializeBoard(intialDiscsPointsOfPlayers);
+//        this.height = height;
+//        this.width = width;
+//        this.gameMode = gameMode;
+//    }
+
+    public Board(jaxb.schema.generated.Board board)
     {
-        board = new Disc[height][width];
-        initializeBoard(intialDiscsPointsOfPlayers);
-        this.height = height;
-        this.width = width;
-        this.gameMode = gameMode;
+
     }
 
     // Returns the number of flipped discs that were flipped because of the given move.

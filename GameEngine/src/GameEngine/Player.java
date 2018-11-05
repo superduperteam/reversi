@@ -77,15 +77,15 @@ public class Player {
 
     public boolean MakeMove(Point targetInsertionPoint, Board board)
     {
-       boolean isAbleToDoTheMove;
+        boolean isAbleToDoTheMove;
 
-       isAbleToDoTheMove = board.IsMoveLegal(targetInsertionPoint, discType);
+        isAbleToDoTheMove = board.IsMoveLegal(targetInsertionPoint, discType);
 
-       if(isAbleToDoTheMove)
-       {
-           board.UpdateBoard(targetInsertionPoint, discType);
-       }
+        if(isAbleToDoTheMove)
+        {
+            board.UpdateBoard(targetInsertionPoint, discType);
+        }
 
-       return isAbleToDoTheMove;
+        return isAbleToDoTheMove;
     }
 }
