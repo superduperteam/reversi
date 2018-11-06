@@ -1,5 +1,6 @@
 package GameEngine;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Random;
 
@@ -9,7 +10,7 @@ public class Player {
     private String name;
     private boolean isHuman;
     private eDiscType discType;
-    private  int id;
+    private BigInteger id;
 
     // probably not needed
 //    public void SetDiscType(eDiscType discType)
@@ -22,7 +23,7 @@ public class Player {
         return discType;
     }
 
-    public Player(String name, boolean isHuman, eDiscType discType, int id)
+    public Player(String name, boolean isHuman, eDiscType discType, BigInteger id)
     {
         this.name = name;
         this.isHuman = isHuman;
@@ -30,6 +31,14 @@ public class Player {
         this.id = id;
         statistics = new Statistics();
     }
+
+//    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
+//        this.name = player.getName();
+//        this.isHuman = player.getType().equals("Human");
+//        this.discType = discType;
+//        this.id = player.getId();
+//        statistics = new Statistics();
+//    }
 
     public class Statistics {
         private int countOfPlayedTurns = 0;

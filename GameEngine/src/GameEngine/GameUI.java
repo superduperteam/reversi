@@ -1,6 +1,7 @@
 package GameEngine;
 //import GameEngine;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedHashMap;
@@ -20,32 +21,33 @@ public class GameUI
 
     public void Start()
     {
+        GameManager gameManager;
         // Test
         // Will be deleted after XML addition
-        List<Player> playersList = new ArrayList<>(2);
-        playersList.add(new Player("Ido", true, eDiscType.BLACK, 0));
-        playersList.add(new Player("Saar", true, eDiscType.WHITE, 1));
-
-        LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers = new  LinkedHashMap<Player, ArrayList<Point>>();
-        ArrayList<Point> IdoPoints = new ArrayList<>();
-        IdoPoints.add(new Point(4, 4));
-        IdoPoints.add(new Point(5, 5));
-
-        ArrayList<Point> SaarPoints = new ArrayList<>();
-        SaarPoints.add(new Point(5, 4));
-        SaarPoints.add(new Point(4, 5));
-
-        intialDiscsPointsOfPlayers.put(playersList.get(0), IdoPoints);
-        intialDiscsPointsOfPlayers.put(playersList.get(1), SaarPoints);
-        Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
-
-        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
-
-
+//        List<Player> playersList = new ArrayList<>(2);
+//        playersList.add(new Player("Ido", true, eDiscType.BLACK, new BigInteger("0")));
+//        playersList.add(new Player("Saar", true, eDiscType.WHITE, new BigInteger("1")));
 //
+//        LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers = new  LinkedHashMap<Player, ArrayList<Point>>();
+//        ArrayList<Point> IdoPoints = new ArrayList<>();
+//        IdoPoints.add(new Point(4, 4));
+//        IdoPoints.add(new Point(5, 5));
 //
+//        ArrayList<Point> SaarPoints = new ArrayList<>();
+//        SaarPoints.add(new Point(5, 4));
+//        SaarPoints.add(new Point(4, 5));
 //
+//        intialDiscsPointsOfPlayers.put(playersList.get(0), IdoPoints);
+//        intialDiscsPointsOfPlayers.put(playersList.get(1), SaarPoints);
+//        Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
 //
+//        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
+
+        GameSettingsReader gameSettingsReader = new GameSettingsReader();
+        System.out.println("Please enter a XML path:");
+        List<Player> playersList = getPlayersDetailsFromUser();
+        gameManager = gameSettingsReader.readGameSettings(playersList);
+
 //        board.nullifyBoardCells();
 //        board.board[7][5] = new Disc(eDiscType.BLACK);
 //        board.board[7][5] = new Disc(eDiscType.BLACK);
@@ -68,6 +70,100 @@ public class GameUI
 //        printGameState(board);
           gameLoop(gameManager);
     }
+
+    private List<Player> getPlayersDetailsFromUser()
+    {
+        boolean isFirstPlayerHuman, isSecondPlayerHuman;
+        boolean areBothAIs = true;
+        String player1Name = null, player2Name = null;
+        List<Player> playersList;
+
+        do {
+            isFirstPlayerHuman = isPlayerHumanUserAnswer("first");
+            if (isFirstPlayerHuman)
+            {
+                player1Name = getPlayerNameFromUser("first");
+            }
+            else
+            {
+                player1Name = "CPU";
+            }
+
+            isSecondPlayerHuman = isPlayerHumanUserAnswer("second");
+            if(!isFirstPlayerHuman && !isSecondPlayerHuman)
+            {
+                System.out.println("Both players can't be AIs. Please try again.");
+                areBothAIs = true;
+            }
+            else if(isSecondPlayerHuman)
+            {
+                player2Name = getPlayerNameFromUser("second");
+            }
+            else if(!isSecondPlayerHuman)
+            {
+                player2Name = "CPU";
+            }
+            areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
+        }while(areBothAIs);
+
+        // Now we have all the data we need
+        playersList = new ArrayList<>();
+        playersList.add(new Player(player1Name, isFirstPlayerHuman, eDiscType.BLACK, new BigInteger("1")));
+        playersList.add(new Player(player2Name, isSecondPlayerHuman, eDiscType.WHITE, new BigInteger("2")));
+
+        return playersList;
+    }
+
+    private boolean isPlayerHumanUserAnswer(String playerNumber)
+    {
+        boolean isPlayerHuman = true;
+        boolean hasUserAnswered = false;
+        Scanner reader = new Scanner(System.in);
+        String isPlayerHumanUserStr;
+        StringBuilder stringBuilder = new StringBuilder();
+        String yesStr = new String("y");
+        String noStr = new String("n");
+
+        stringBuilder.append("Is ");
+        stringBuilder.append(playerNumber);
+        stringBuilder.append(" player human? y/n");
+
+        do {
+            System.out.println(stringBuilder.toString());
+            isPlayerHumanUserStr = reader.nextLine();
+
+            if (isPlayerHumanUserStr.toLowerCase().equals(yesStr)) {
+                isPlayerHuman = true;
+                hasUserAnswered = true;
+            } else if (isPlayerHumanUserStr.toLowerCase().equals(noStr)) {
+                isPlayerHuman = false;
+                hasUserAnswered = true;
+            }
+            if(hasUserAnswered == false)
+            {
+                System.out.println("Please answer accordingly. Please try again.");
+            }
+        } while (!hasUserAnswered);
+
+        return isPlayerHuman; // not really needed
+    }
+
+    private String getPlayerNameFromUser(String playerNumber)
+    {
+        Scanner reader = new Scanner(System.in);
+        String playerNameUserAnswer;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Please enter ");
+        stringBuilder.append(playerNumber);
+        stringBuilder.append(" name:");
+
+        System.out.println(stringBuilder.toString());
+        playerNameUserAnswer = reader.nextLine();
+
+        return playerNameUserAnswer;
+    }
+
 // TODO IsGameover(), UpdateGameScore(), getMoveFromHuman(), GetRandomMove() ,List<Point> GetAllPossibleMoves()
     private void gameLoop(GameManager gameManager)
     {
@@ -135,7 +231,7 @@ public class GameUI
         int row, col;
         StringBuilder strBuilder = new StringBuilder();
         boolean isMoveSyntactic = false; // isMoveLegal means it's in board range and it's syntactic
-        Scanner reader = new Scanner(System.in);  // Reading from System.in
+        Scanner reader = new Scanner(System.in);
 
         while(!isMoveSyntactic) {
             System.out.println("Please enter your next move: row,column");

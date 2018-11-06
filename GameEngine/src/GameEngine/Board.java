@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import jaxb.schema.generated.GameDescriptor;
+import jaxb.schema.generated.*;
 
 public class Board
 {
     private int height;
     private int width;
     private GameManager.eGameMode gameMode;
-    public Disc board[][];
+    private Disc board[][];
 
 //    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
 //    {
@@ -22,9 +22,13 @@ public class Board
 //        this.gameMode = gameMode;
 //    }
 
-    public Board(jaxb.schema.generated.Board board)
+    public Board(jaxb.schema.generated.Board board, LinkedHashMap<Player, List<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
     {
-
+        this.height = board.getRows();
+        this.width = board.getColumns();
+        this.board = new Disc[height][width];
+        initializeBoard(intialDiscsPointsOfPlayers);
+        this.gameMode = gameMode;
     }
 
     // Returns the number of flipped discs that were flipped because of the given move.
@@ -295,17 +299,17 @@ public class Board
     }
 
 
-    private void initializeBoard(LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers)
+    private void initializeBoard(LinkedHashMap<Player, List<Point>> initialDiscsPointsOfPlayers)
     {
         nullifyBoardCells();
-        ArrayList<Point> currentPlayerIntialDiscs;
-        Set<Player> playersSet = intialDiscsPointsOfPlayers.keySet();
+        List<Point> currentPlayerInitialDiscs;
+        Set<Player> playersSet = initialDiscsPointsOfPlayers.keySet();
 
         for(Player player : playersSet)
         {
-            currentPlayerIntialDiscs = intialDiscsPointsOfPlayers.get(player);
+            currentPlayerInitialDiscs = initialDiscsPointsOfPlayers.get(player);
 
-            for(Point point : currentPlayerIntialDiscs)
+            for(Point point : currentPlayerInitialDiscs)
             {
                 board[point.GetRow()][point.GetCol()] = new Disc(player.GetDiscType());
             }
@@ -354,4 +358,9 @@ public class Board
 
         return isGameOver;
     }
+
+//    private class Direction
+//    {
+//
+//    }
 }
