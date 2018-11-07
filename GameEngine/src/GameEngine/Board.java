@@ -75,7 +75,7 @@ public class Board
     {
         int row = point.GetRow(), col = point.GetCol();
         Disc adjacentDisc;
-        List<Point> allDirections = generateListOfAllDirection();
+        List<Direction> allDirections = generateListOfAllDirection();
         List<Point> allPossibleAdjacentCellPoints = new ArrayList<Point>(8);
         List<Point> allPossibleAdjacentCellPointsInBoardRange = new ArrayList<>(8);
 
@@ -89,9 +89,9 @@ public class Board
 //        allPossibleAdjacentCellPoints.add(new Point(row -1, col -1));
 
         // We want to get a list of all adjacent points.
-        for(Point direction : allDirections)
+        for(Direction direction : allDirections)
         {
-            allPossibleAdjacentCellPoints.add(new Point(row + direction.GetRow(), col + direction.GetCol()));
+            allPossibleAdjacentCellPoints.add(new Point(row + direction.getDirectionY(), col + direction.getDirectionX()));
         }
 
         // We want to remove any point that is not in range of the board.
@@ -165,11 +165,11 @@ public class Board
 
     private boolean canFlipEnemyDiscs(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
-        List<Point> allDirections = generateListOfAllDirection();
+        List<Direction> allDirections = generateListOfAllDirection();
 
-        for(Point direction : allDirections)
+        for(Direction direction : allDirections)
         {
-            if(canFlipEnemyDiscsInDirection(targetInsertionPoint, direction.GetRow(), direction.GetCol(), discTypeToBeInserted))
+            if(canFlipEnemyDiscsInDirection(targetInsertionPoint, direction.getDirectionY(), direction.getDirectionX(), discTypeToBeInserted))
             {
                 return true;
             }
@@ -227,7 +227,7 @@ public class Board
     {
         // Assuming you can flip whosoever discs but yours.
         int countOfFlippedDiscs = 0;
-        List<Point> allDirections = generateListOfAllDirection();
+        List<Direction> allDirections = generateListOfAllDirection();
 
 //        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +1, +0, discTypeToBeInserted); // UP
 //        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +1, +1, discTypeToBeInserted); // UP-RIGHT
@@ -238,9 +238,9 @@ public class Board
 //        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +0, -1, discTypeToBeInserted); // LEFT
 //        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +1, -1, discTypeToBeInserted); // UP-LEFT
 
-        for(Point direction : allDirections)
+        for(Direction direction : allDirections)
         {
-            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction.GetRow(), direction.GetCol(), discTypeToBeInserted);
+            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction.getDirectionY(), direction.getDirectionX(), discTypeToBeInserted);
         }
 
         return countOfFlippedDiscs;
@@ -328,18 +328,18 @@ public class Board
         }
     }
 
-    private List<Point> generateListOfAllDirection()
+    private List<Direction> generateListOfAllDirection()
     {
-        List<Point> listOfAllDirections = new ArrayList<>(8);
+        List<Direction> listOfAllDirections = new ArrayList<>(8);
 
-        listOfAllDirections.add(new Point(-1,  +0));
-        listOfAllDirections.add(new Point(-1,  +1));
-        listOfAllDirections.add(new Point(+0,  +1));
-        listOfAllDirections.add(new Point( +1,  +1));
-        listOfAllDirections.add(new Point( +1,  +0));
-        listOfAllDirections.add(new Point( +1,  -1));
-        listOfAllDirections.add(new Point( +0,  -1));
-        listOfAllDirections.add(new Point( -1,  -1));
+        listOfAllDirections.add(new Direction(-1,  +0));
+        listOfAllDirections.add(new Direction(-1,  +1));
+        listOfAllDirections.add(new Direction(+0,  +1));
+        listOfAllDirections.add(new Direction( +1,  +1));
+        listOfAllDirections.add(new Direction( +1,  +0));
+        listOfAllDirections.add(new Direction( +1,  -1));
+        listOfAllDirections.add(new Direction( +0,  -1));
+        listOfAllDirections.add(new Direction( -1,  -1));
 
         return listOfAllDirections;
     }
@@ -360,8 +360,23 @@ public class Board
         return areThereAnyMovesForPlayers;
     }
 
-//    private class Direction
-//    {
-//
-//    }
+    private class Direction
+    {
+        Point directionPoint;
+
+        public Direction(int directionY, int directionX)
+        {
+            directionPoint = new Point(directionY, directionX);
+        }
+
+        private int getDirectionY()
+        {
+            return directionPoint.GetRow();
+        }
+
+        private int getDirectionX()
+        {
+            return directionPoint.GetCol();
+        }
+    }
 }
