@@ -169,7 +169,7 @@ public class Board
 
         for(Direction direction : allDirections)
         {
-            if(canFlipEnemyDiscsInDirection(targetInsertionPoint, direction.getDirectionY(), direction.getDirectionX(), discTypeToBeInserted))
+            if(canFlipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted))
             {
                 return true;
             }
@@ -188,8 +188,9 @@ public class Board
     }
 
     // regular
-    private boolean canFlipEnemyDiscsInDirection(Point targetInsertionPoint, int rowDelta, int colDelta, eDiscType discTypeToBeInserted)
+    private boolean canFlipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction, eDiscType discTypeToBeInserted)
     {
+        int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int countOfSequenceFlippableDiscs = 0;
         boolean keepChecking = true;
         int row = targetInsertionPoint.GetRow() + rowDelta, col = targetInsertionPoint.GetCol() + colDelta;
@@ -240,19 +241,20 @@ public class Board
 
         for(Direction direction : allDirections)
         {
-            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction.getDirectionY(), direction.getDirectionX(), discTypeToBeInserted);
+            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted);
         }
 
         return countOfFlippedDiscs;
     }
 
-    private int flipEnemyDiscsInDirection(Point targetInsertionPoint, int rowDelta, int colDelta, eDiscType discTypeToBeInserted)
+    private int flipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction, eDiscType discTypeToBeInserted)
     {
+        int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int row = targetInsertionPoint.GetRow() + rowDelta, col = targetInsertionPoint.GetCol() + colDelta;
         int countOfFlippedDiscs = 0;
         Disc currentDisc = board[row][col];
 
-        if(canFlipEnemyDiscsInDirection(targetInsertionPoint, rowDelta, colDelta, discTypeToBeInserted))
+        if(canFlipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted))
         {
             while(currentDisc.GetType() != discTypeToBeInserted)
             {
