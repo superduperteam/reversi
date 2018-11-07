@@ -28,7 +28,7 @@ public class GameManager
     }
 
     public boolean isGameOver(){
-        return board.areThereAnyMovesForPlayers(playersList);
+        return !board.areThereAnyMovesForPlayers(playersList);
     }
 
     public Board GetBoard()

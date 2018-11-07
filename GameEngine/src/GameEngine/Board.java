@@ -345,19 +345,19 @@ public class Board
     }
 
     public boolean areThereAnyMovesForPlayers(List<Player> playersList){
-        boolean AreThereAnyMovesForPlayers = true;
+        boolean areThereAnyMovesForPlayers = false;
         List<Point> singlePlayerPossibleMoves;
 
         for(Player player: playersList){
             singlePlayerPossibleMoves  = GetListOfAllPossibleMoves(player);
 
             if(singlePlayerPossibleMoves.size() > 0) {
-                AreThereAnyMovesForPlayers = false;
+                areThereAnyMovesForPlayers = true;
                 break;
             }
         }
 
-        return AreThereAnyMovesForPlayers;
+        return areThereAnyMovesForPlayers;
     }
 
 //    private class Direction
