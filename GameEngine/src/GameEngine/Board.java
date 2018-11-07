@@ -46,9 +46,10 @@ public class Board
             {
                 if(gameMode == GameManager.eGameMode.Regular)
                 {
-                    if(isThereFoeDiscAdjacent(targetInsertionPoint, discTypeToBeInserted))
+                    if(isThereDiscAdjacent(targetInsertionPoint))
                     {
-                        return canFlipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
+                        //return canFlipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
+                        return true;
                     }
                     else return false;
                 }
@@ -71,7 +72,7 @@ public class Board
         }
     }
 
-    private boolean isThereFoeDiscAdjacent(Point point, eDiscType discTypeToBeInserted)
+    private boolean isThereDiscAdjacent(Point point)
     {
         int row = point.GetRow(), col = point.GetCol();
         Disc adjacentDisc;
@@ -109,10 +110,7 @@ public class Board
 
             if(adjacentDisc != null)
             {
-                if(adjacentDisc.GetType() != discTypeToBeInserted)
-                {
-                    return true;
-                }
+                return true;
             }
         }
 
@@ -192,11 +190,11 @@ public class Board
     {
         int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int countOfSequenceFlippableDiscs = 0;
-        boolean keepChecking = true;
+        boolean isFriendlyDiscFoundYet = false;
         int row = targetInsertionPoint.GetRow() + rowDelta, col = targetInsertionPoint.GetCol() + colDelta;
         Disc currentDisc;
 
-        while(keepChecking)
+        while(!isFriendlyDiscFoundYet)
         {
             if(isCellPointInRange(row,col))
             {
@@ -208,7 +206,7 @@ public class Board
                         return false;
                     } else // currentDisc.GetType() == discTypeToBeInserted && countOfSequenceFlippableDiscs != 0
                     { // it means there was a sequence but this disc is friendly
-                        keepChecking = false;
+                        isFriendlyDiscFoundYet = true;
                     }
                 } else // currentDisc is null, which means there is no sequence of foes that ends with friendly disc.
                 {
@@ -252,21 +250,25 @@ public class Board
         int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int row = targetInsertionPoint.GetRow() + rowDelta, col = targetInsertionPoint.GetCol() + colDelta;
         int countOfFlippedDiscs = 0;
-        Disc currentDisc = board[row][col];
+        Disc currentDisc;
 
-        if(canFlipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted))
+        if(isCellPointInRange(row, col))
         {
-            while(currentDisc.GetType() != discTypeToBeInserted)
-            {
-                currentDisc.SetType(discTypeToBeInserted);
-                countOfFlippedDiscs++;
+            currentDisc = board[row][col];
 
-                row += rowDelta;
-                col += colDelta;
-                currentDisc = board[row][col];
+            if (canFlipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted))
+            {
+                while (currentDisc.GetType() != discTypeToBeInserted)
+                {
+                    currentDisc.SetType(discTypeToBeInserted);
+                    countOfFlippedDiscs++;
+
+                    row += rowDelta;
+                    col += colDelta;
+                    currentDisc = board[row][col];
+                }
             }
         }
-
         return countOfFlippedDiscs;
     }
 
