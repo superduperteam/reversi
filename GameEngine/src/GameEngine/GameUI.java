@@ -71,6 +71,34 @@ public class GameUI
           gameLoop(gameManager);
     }
 
+    private void gameLoop(GameManager gameManager)
+    {
+        boolean isMoveLegalInserted;
+        Player activePlayer;
+        Point targetInsertionPoint;
+        Board board = gameManager.GetBoard();
+        printGameState(board);
+
+        while(!gameManager.isGameOver())
+        {
+            printGameState(board);
+            activePlayer = gameManager.GetActivePlayer();
+
+            do {
+                targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
+                isMoveLegalInserted = activePlayer.MakeMove(targetInsertionPoint, board);
+
+                if(!isMoveLegalInserted)
+                {
+                    printIllegalMoveInserted();
+                }
+            }
+            while(!isMoveLegalInserted);
+
+            gameManager.ChangeTurn();
+        }
+    }
+
     private List<Player> getPlayersDetailsFromUser()
     {
         boolean isFirstPlayerHuman, isSecondPlayerHuman;
@@ -163,33 +191,6 @@ public class GameUI
         playerNameUserAnswer = reader.nextLine();
 
         return playerNameUserAnswer;
-    }
-
-    private void gameLoop(GameManager gameManager)
-    {
-        boolean isMoveLegalInserted;
-        Player activePlayer;
-        Point targetInsertionPoint;
-        Board board = gameManager.GetBoard();
-
-        while(gameManager.isGameOver())
-        {
-            printGameState(board);
-            activePlayer = gameManager.GetActivePlayer();
-
-            do {
-                targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
-                isMoveLegalInserted = activePlayer.MakeMove(targetInsertionPoint, board);
-
-                if(!isMoveLegalInserted)
-                {
-                    printIllegalMoveInserted();
-                }
-            }
-            while(!isMoveLegalInserted);
-
-            gameManager.ChangeTurn();
-        }
     }
 
     private void printIllegalMoveInserted()

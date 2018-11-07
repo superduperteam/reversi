@@ -217,6 +217,7 @@ public class Board
                 row += rowDelta;
                 col += colDelta;
             }
+            else return false;
         }
 
         return true;
