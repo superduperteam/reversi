@@ -31,6 +31,19 @@ public class Board
         this.gameMode = gameMode;
     }
 
+    public Board(Board toCopy){
+        height = toCopy.height;
+        width = toCopy.width;
+        this.board = new Disc[height][width];
+        gameMode = toCopy.gameMode; //note(ido): i assume game mode won't change during the game.
+                                    // if it can change , I need to change the logic here.
+        for(int i = 0; i < height; ++i){
+            for(int j = 0; j < width; ++j){
+                this.board[i][j] = new Disc(toCopy.board[i][j]);
+            }
+        }
+    }
+
     // Returns the number of flipped discs that were flipped because of the given move.
     public int UpdateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
@@ -291,6 +304,10 @@ public class Board
     {
         // if not in range?
         return board[row][col];
+    }
+
+    public GameManager.eGameMode getGameMode() {
+        return gameMode;
     }
 
     public int GetHeight() {

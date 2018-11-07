@@ -18,6 +18,7 @@ public class GameManager
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
+        turnHistory = new TurnHistory();
         this.playersList = new ArrayList<>(playersList);
 //        playersIterator = playersList.listIterator(); // not working :(
         activePlayerIndex = 0;
@@ -109,16 +110,74 @@ public class GameManager
         }
     }
 
-    private class TurnHistory
+    private static class TurnHistory
     {
-        Stack<Turn> turnHistoryStack;
+        private Stack<Turn> turnHistoryStack;
 
-        private class Turn
+        private static class Turn
         {
-            List<Player> playersList;
-            Player activePlayer;
-            Board board;
+            private List<Player> playersList;
+            private Player activePlayer;
+            private Board board;
+            private HashMap<eDiscType, Player> discTypeToPlayer;
+
+            //the method clones the last turn using copy constructors.
+            public Turn(Board board, Player activePlayer, List<Player> players) {
+                playersList = new LinkedList<>();
+                this.board = new Board(board);
+                this.discTypeToPlayer = new HashMap<>();
+
+                for(Player player: players) {
+                    Player copiedPlayer = new Player(player);
+
+                    if(activePlayer.equals(player)){
+                        activePlayer = copiedPlayer;
+                    }
+
+                    playersList.add(copiedPlayer);
+                    this.discTypeToPlayer.put(copiedPlayer.getDiscType(), copiedPlayer);
+                }
+            }
         }
+
+        public void addHistoryEntry(Turn turn) {
+            turnHistoryStack.push(turn);
+        }
+
+        //is there are no turns in the stack: returns null
+        public Turn getLastTurn() {
+            if(turnHistoryStack.isEmpty()) {
+                return null;
+            }
+
+            return turnHistoryStack.pop();
+        }
+    }
+
+    public void addTurnToHistory(){
+        TurnHistory.Turn turnToAdd = new TurnHistory.Turn(board, activePlayer, playersList);
+
+        turnHistory.addHistoryEntry(turnToAdd);
+    }
+
+    //if undo failed (there are no turns to undo): returns false
+    public boolean undo(){
+        boolean didUndoFailed = false;
+        TurnHistory.Turn lastTurn = turnHistory.getLastTurn();
+
+        if(lastTurn == null) {
+            didUndoFailed = true;
+        }
+        else {
+            gameMode = lastTurn.board.getGameMode();
+            discTypeToPlayer = lastTurn.discTypeToPlayer;
+            playersList = lastTurn.playersList;
+            activePlayer = lastTurn.activePlayer;
+            activePlayerIndex = playersList.indexOf(activePlayer);
+            board = lastTurn.board;
+        }
+
+        return didUndoFailed;
     }
 
     public enum eGameMode

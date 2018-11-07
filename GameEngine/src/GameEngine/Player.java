@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Random;
 
-public class Player {
+public class Player implements  Cloneable{
     private Statistics statistics;
     private int countOfRemainingDiscs;
     private String name;
@@ -32,6 +32,16 @@ public class Player {
         statistics = new Statistics();
     }
 
+    public Player(Player toCopy) {
+        this.statistics = new Statistics(toCopy.getStatistics());
+        this.countOfRemainingDiscs = toCopy.getCountOfRemainingDiscs();
+        this.name = new String(toCopy.getName());
+        this.isHuman = toCopy.getIsHuman();
+        this.discType = toCopy.discType; //note (from ido): im assuming that playaer doesn't change his disk type.
+                                        // if he does, a different logic should be implemented
+        this.id = new BigInteger(toCopy.getId().toString());
+    }
+
 //    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
 //        this.name = player.getName();
 //        this.isHuman = player.getType().equals("Human");
@@ -41,9 +51,21 @@ public class Player {
 //    }
 
     public class Statistics {
-        private int countOfPlayedTurns = 0;
-        private double averageOfFlips = 0;
-        private int score = 0;
+        private int countOfPlayedTurns;
+        private double averageOfFlips;
+        private int score;
+
+        public Statistics() {
+            countOfPlayedTurns = 0;
+            averageOfFlips = 0;
+            score = 0;
+        }
+
+        public Statistics(Statistics toCopy) {
+            this.countOfPlayedTurns = toCopy.countOfPlayedTurns;
+            this.averageOfFlips = toCopy.averageOfFlips;
+            this.score = toCopy.score;
+        }
 
         public void resetScore() {
             score = 0;
@@ -52,6 +74,26 @@ public class Player {
         public void incScore() {
             ++score;
         }
+    }
+
+    public BigInteger getId(){
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public eDiscType getDiscType() {
+        return discType;
+    }
+
+    public int getCountOfRemainingDiscs() {
+        return countOfRemainingDiscs;
+    }
+
+    public boolean getIsHuman(){
+        return isHuman;
     }
 
     public Statistics getStatistics() {
