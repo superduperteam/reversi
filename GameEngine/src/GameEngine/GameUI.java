@@ -103,6 +103,7 @@ public class GameUI
             {
                 player2Name = "CPU";
             }
+
             areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
         }while(areBothAIs);
 
@@ -164,7 +165,6 @@ public class GameUI
         return playerNameUserAnswer;
     }
 
-// TODO IsGameover(), UpdateGameScore(), getMoveFromHuman(), GetRandomMove() ,List<Point> GetAllPossibleMoves()
     private void gameLoop(GameManager gameManager)
     {
         boolean isMoveLegalInserted;
@@ -172,7 +172,7 @@ public class GameUI
         Point targetInsertionPoint;
         Board board = gameManager.GetBoard();
 
-        while(true) // call gameManager.IsGameover
+        while(gameManager.isGameOver())
         {
             printGameState(board);
             activePlayer = gameManager.GetActivePlayer();

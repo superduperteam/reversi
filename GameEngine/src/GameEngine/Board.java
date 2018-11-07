@@ -343,20 +343,20 @@ public class Board
         return listOfAllDirections;
     }
 
-    public boolean isGameOver(List<Player> playersList){
-        boolean isGameOver = true;
+    public boolean areThereAnyMovesForPlayers(List<Player> playersList){
+        boolean AreThereAnyMovesForPlayers = true;
         List<Point> singlePlayerPossibleMoves;
 
         for(Player player: playersList){
             singlePlayerPossibleMoves  = GetListOfAllPossibleMoves(player);
 
             if(singlePlayerPossibleMoves.size() > 0) {
-                isGameOver = false;
+                AreThereAnyMovesForPlayers = false;
                 break;
             }
         }
 
-        return isGameOver;
+        return AreThereAnyMovesForPlayers;
     }
 
 //    private class Direction
