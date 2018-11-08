@@ -29,7 +29,7 @@ public class GameManager
         return !board.areThereAnyMovesForPlayers(playersList);
     }
 
-    public Board GetBoard()
+    public Board getBoard()
     {
         return board;
     }
@@ -50,7 +50,7 @@ public class GameManager
 //        UpdateGameScore();
 //    }
 
-    public void ChangeTurn()
+    public void changeTurn()
     {
         int nextTurnIndex;
 
@@ -58,10 +58,10 @@ public class GameManager
         nextTurnIndex = activePlayerIndex%(playersList.size());
         activePlayer = playersList.get(nextTurnIndex);
 
-        UpdateGameScore();
+        updateGameScore();
     }
 
-    public Player GetActivePlayer()
+    public Player getActivePlayer()
     {
         return activePlayer;
     }
@@ -82,9 +82,9 @@ public class GameManager
         }
     }
 
-    public void UpdateGameScore()
+    public void updateGameScore()
     {
-        int height = board.GetHeight(), width = board.GetWidth();
+        int height = board.getHeight(), width = board.getWidth();
         Disc currDisc;
         Player playerToAddScoreTo;
 
@@ -96,11 +96,11 @@ public class GameManager
 
         for(int i = 0; i < height; ++i) {
             for(int j = 0; j < width; ++j){
-                currDisc = board.Get(i,j);
+                currDisc = board.get(i,j);
 
                 if(currDisc != null)
                 {
-                    playerToAddScoreTo = discTypeToPlayer.get(currDisc.GetType());
+                    playerToAddScoreTo = discTypeToPlayer.get(currDisc.getType());
                     playerToAddScoreTo.getStatistics().incScore();
                 }
             }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import jaxb.schema.generated.*;
 
 public class Board
 {
@@ -47,15 +46,15 @@ public class Board
     }
 
     // Returns the number of flipped discs that were flipped because of the given move.
-    public int UpdateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
+    public int updateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
-        board[targetInsertionPoint.GetRow()][targetInsertionPoint.GetCol()] = new Disc(discTypeToBeInserted);
+        board[targetInsertionPoint.getRow()][targetInsertionPoint.getCol()] = new Disc(discTypeToBeInserted);
         return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
     }
 
-    public boolean IsMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
+    public boolean isMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
-        if(IsCellPointInRange(targetInsertionPoint))
+        if(isCellPointInRange(targetInsertionPoint))
         {
             if(isCellEmpty(targetInsertionPoint))
             {
@@ -77,7 +76,7 @@ public class Board
 
     private boolean isCellEmpty(Point point)
     {
-        if(board[point.GetRow()][point.GetCol()] == null)
+        if(board[point.getRow()][point.getCol()] == null)
         {
             return true;
         }
@@ -89,7 +88,7 @@ public class Board
 
     private boolean isThereDiscAdjacent(Point point)
     {
-        int row = point.GetRow(), col = point.GetCol();
+        int row = point.getRow(), col = point.getCol();
         Disc adjacentDisc;
         List<Direction> allDirections = generateListOfAllDirection();
         List<Point> allPossibleAdjacentCellPoints = new ArrayList<Point>(8);
@@ -113,7 +112,7 @@ public class Board
         // We want to remove any point that is not in range of the board.
         for(Point cellPoint : allPossibleAdjacentCellPoints)
         {
-            if(IsCellPointInRange(cellPoint))
+            if(isCellPointInRange(cellPoint))
             {
                 allPossibleAdjacentCellPointsInBoardRange.add(cellPoint);
             }
@@ -121,7 +120,7 @@ public class Board
 
         for(Point adjacentCellPoint : allPossibleAdjacentCellPointsInBoardRange)
         {
-            adjacentDisc = board[adjacentCellPoint.GetRow()][adjacentCellPoint.GetCol()];
+            adjacentDisc = board[adjacentCellPoint.getRow()][adjacentCellPoint.getCol()];
 
             if(adjacentDisc != null)
             {
@@ -132,12 +131,12 @@ public class Board
         return false;
     }
 
-    public boolean IsCellPointInRange(Point cellPoint)
+    public boolean isCellPointInRange(Point cellPoint)
     {
         int row, col;
 
-        row = cellPoint.GetRow();
-        col = cellPoint.GetCol();
+        row = cellPoint.getRow();
+        col = cellPoint.getCol();
 
         return isCellPointInRange(row, col);
     }
@@ -154,7 +153,7 @@ public class Board
         }
     }
 
-    public List<Point> GetListOfAllPossibleMoves(Player playerToSearchFor)
+    public List<Point> getListOfAllPossibleMoves(Player playerToSearchFor)
     {
         int row, col;
         List<Point> listOfAllPossibleMoves = new ArrayList<>();
@@ -166,7 +165,7 @@ public class Board
             {
                 insertionCellPoint = new Point(row, col);
 
-                if (IsMoveLegal(insertionCellPoint, playerToSearchFor.GetDiscType()))
+                if (isMoveLegal(insertionCellPoint, playerToSearchFor.GetDiscType()))
                 {
                     listOfAllPossibleMoves.add(insertionCellPoint);
                 }
@@ -206,7 +205,7 @@ public class Board
         int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int countOfSequenceFlippableDiscs = 0;
         boolean isFriendlyDiscFoundYet = false;
-        int row = targetInsertionPoint.GetRow() + rowDelta, col = targetInsertionPoint.GetCol() + colDelta;
+        int row = targetInsertionPoint.getRow() + rowDelta, col = targetInsertionPoint.getCol() + colDelta;
         Disc currentDisc;
 
         while(!isFriendlyDiscFoundYet)
@@ -215,7 +214,7 @@ public class Board
             {
                 currentDisc = board[row][col];
                 if (currentDisc != null) {
-                    if (currentDisc.GetType() != discTypeToBeInserted) {
+                    if (currentDisc.getType() != discTypeToBeInserted) {
                         countOfSequenceFlippableDiscs++;
                     } else if (countOfSequenceFlippableDiscs == 0) {
                         return false;
@@ -263,7 +262,7 @@ public class Board
     private int flipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction, eDiscType discTypeToBeInserted)
     {
         int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
-        int row = targetInsertionPoint.GetRow() + rowDelta, col = targetInsertionPoint.GetCol() + colDelta;
+        int row = targetInsertionPoint.getRow() + rowDelta, col = targetInsertionPoint.getCol() + colDelta;
         int countOfFlippedDiscs = 0;
         Disc currentDisc;
 
@@ -273,9 +272,9 @@ public class Board
 
             if (canFlipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted))
             {
-                while (currentDisc.GetType() != discTypeToBeInserted)
+                while (currentDisc.getType() != discTypeToBeInserted)
                 {
-                    currentDisc.SetType(discTypeToBeInserted);
+                    currentDisc.setType(discTypeToBeInserted);
                     countOfFlippedDiscs++;
 
                     row += rowDelta;
@@ -304,7 +303,7 @@ public class Board
 //        }
 //    }
 
-    public Disc Get(int row, int col)
+    public Disc get(int row, int col)
     {
         // if not in range?
         return board[row][col];
@@ -314,11 +313,11 @@ public class Board
         return gameMode;
     }
 
-    public int GetHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public int GetWidth() {
+    public int getWidth() {
         return width;
     }
 
@@ -335,7 +334,7 @@ public class Board
 
             for(Point point : currentPlayerInitialDiscs)
             {
-                board[point.GetRow()][point.GetCol()] = new Disc(player.GetDiscType());
+                board[point.getRow()][point.getCol()] = new Disc(player.GetDiscType());
             }
         }
     }
@@ -372,7 +371,7 @@ public class Board
         List<Point> singlePlayerPossibleMoves;
 
         for(Player player: playersList){
-            singlePlayerPossibleMoves  = GetListOfAllPossibleMoves(player);
+            singlePlayerPossibleMoves  = getListOfAllPossibleMoves(player);
 
             if(singlePlayerPossibleMoves.size() > 0) {
                 areThereAnyMovesForPlayers = true;
@@ -394,12 +393,12 @@ public class Board
 
         private int getDirectionY()
         {
-            return directionPoint.GetRow();
+            return directionPoint.getRow();
         }
 
         private int getDirectionX()
         {
-            return directionPoint.GetCol();
+            return directionPoint.getCol();
         }
     }
 }

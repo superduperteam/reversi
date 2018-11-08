@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Random;
 
-public class Player implements  Cloneable{
+public class Player {
     private Statistics statistics;
     private int countOfRemainingDiscs;
     private String name;
@@ -100,14 +100,14 @@ public class Player implements  Cloneable{
         return statistics;
     }
 
-    public boolean IsHuman()
+    public boolean isHuman()
     {
         return isHuman;
     }
 
-    public Point GetRandomMove(Board board)
+    public Point getRandomMove(Board board)
     {
-        List<Point> allPossibleMoves = board.GetListOfAllPossibleMoves(this);
+        List<Point> allPossibleMoves = board.getListOfAllPossibleMoves(this);
 
         return pickRandomMoveFromList(allPossibleMoves);
     }
@@ -126,15 +126,15 @@ public class Player implements  Cloneable{
     }
 
 
-    public boolean MakeMove(Point targetInsertionPoint, Board board)
+    public boolean makeMove(Point targetInsertionPoint, Board board)
     {
         boolean isAbleToDoTheMove;
 
-        isAbleToDoTheMove = board.IsMoveLegal(targetInsertionPoint, discType);
+        isAbleToDoTheMove = board.isMoveLegal(targetInsertionPoint, discType);
 
         if(isAbleToDoTheMove)
         {
-            board.UpdateBoard(targetInsertionPoint, discType);
+            board.updateBoard(targetInsertionPoint, discType);
         }
 
         return isAbleToDoTheMove;

@@ -14,12 +14,12 @@ public class Disc
                             // if it can change , I need to change the logic here.
     }
 
-    public eDiscType GetType()
+    public eDiscType getType()
     {
         return type;
     }
 
-    public void SetType(eDiscType newDiscTypeToSet)
+    public void setType(eDiscType newDiscTypeToSet)
     {
         this.type = newDiscTypeToSet;
     }

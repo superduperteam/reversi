@@ -5,12 +5,12 @@ public class Point
     private int col;
     private int row;
 
-    public int GetCol()
+    public int getCol()
     {
        return col;
     }
 
-    public int GetRow()
+    public int getRow()
     {
         return row;
     }

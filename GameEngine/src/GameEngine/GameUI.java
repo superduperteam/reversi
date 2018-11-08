@@ -4,7 +4,6 @@ package GameEngine;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.LinkedHashMap;
 import java.util.Scanner;
 import java.lang.String;
 
@@ -20,7 +19,7 @@ public class GameUI
     private static char colSeparator = '|';
     private GameManager gameManager;
 
-    public void Start()
+    public void start()
     {
         //GameManager gameManager;
         // Test
@@ -77,7 +76,7 @@ public class GameUI
         boolean isMoveLegalInserted;
         Player activePlayer;
         Point targetInsertionPoint;
-        Board board = gameManager.GetBoard();
+        Board board = gameManager.getBoard();
         printGameState(board);
 
         while(!gameManager.isGameOver())
@@ -85,13 +84,13 @@ public class GameUI
             GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
 
             printGameState(board);
-            activePlayer = gameManager.GetActivePlayer();
+            activePlayer = gameManager.getActivePlayer();
 
             do {
                 targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
-                activePlayer = gameManager.GetActivePlayer();
-                board = gameManager.GetBoard();
-                isMoveLegalInserted = activePlayer.MakeMove(targetInsertionPoint, board);
+                activePlayer = gameManager.getActivePlayer();
+                board = gameManager.getBoard();
+                isMoveLegalInserted = activePlayer.makeMove(targetInsertionPoint, board);
 
                 if(!isMoveLegalInserted)
                 {
@@ -101,7 +100,7 @@ public class GameUI
             while(!isMoveLegalInserted);
 
             gameManager.addTurnToHistory(currTurn);
-            gameManager.ChangeTurn();
+            gameManager.changeTurn();
         }
     }
 
@@ -219,14 +218,14 @@ public class GameUI
     {
         Point targetInsertionPoint;
 
-        if(activePlayer.IsHuman())
+        if(activePlayer.isHuman())
         {
             printWhoseTurn(activePlayer);
             targetInsertionPoint = getMoveFromHuman(board);
         }
         else
         {
-            targetInsertionPoint = activePlayer.GetRandomMove(board);
+            targetInsertionPoint = activePlayer.getRandomMove(board);
         }
 
         return targetInsertionPoint;
@@ -252,8 +251,8 @@ public class GameUI
             if (userInputStr.equals("undo")) {
                 gameManager.undo();
                 System.out.println("After undo the game state is:");
-                printGameState(gameManager.GetBoard());
-                printWhoseTurn(gameManager.GetActivePlayer());
+                printGameState(gameManager.getBoard());
+                printWhoseTurn(gameManager.getActivePlayer());
                 strBuilder = new StringBuilder();
             } else {
                 if (isStringOnlyDigitsAndSeperator(userInputStr)) {
@@ -265,7 +264,7 @@ public class GameUI
                                 col = Integer.parseInt(coordinates[1]);
                                 nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
 
-                                if (gameBoard.IsCellPointInRange(nextMoveOfUser)) {
+                                if (gameBoard.isCellPointInRange(nextMoveOfUser)) {
                                     isMoveSyntactic = true;
                                 } else {
                                     System.out.println("Please enter a point that is in the range of the game board. Try again");
@@ -335,7 +334,7 @@ public class GameUI
         int colLetter = colIntialNumber;
 
         printSpaces(boardCellSize);
-        for (int i = 0; i < board.GetWidth(); i++)
+        for (int i = 0; i < board.getWidth(); i++)
         {
             System.out.print(colLetter);
 
@@ -356,7 +355,7 @@ public class GameUI
         System.out.print(space);
         System.out.print(space);
         System.out.print(rowSeparator);
-        for (int i = 0; i < board.GetWidth(); i++)
+        for (int i = 0; i < board.getWidth(); i++)
         {
             printRowSeparators(boardCellSize);
             System.out.print(rowSeparator);
@@ -370,7 +369,7 @@ public class GameUI
         int rowLetter = rowIntialNumber;
         Disc discInCell;
 
-        for (int i = 0; i < board.GetHeight(); i++)
+        for (int i = 0; i < board.getHeight(); i++)
         {
             if(rowLetter <= 9) // 1-9 numbers need one digit.
             {
@@ -379,9 +378,9 @@ public class GameUI
             System.out.print(rowLetter);
             System.out.print(colSeparator);
 
-            for (int j = 0; j < board.GetWidth(); j++)
+            for (int j = 0; j < board.getWidth(); j++)
             {
-                discInCell = board.Get(i,j);
+                discInCell = board.get(i,j);
 
                 if (discInCell == null)
                 {
@@ -391,7 +390,7 @@ public class GameUI
                 {
                     System.out.print(space);
                     System.out.print(space);
-                    printDiscTypeToScreen(discInCell.GetType());
+                    printDiscTypeToScreen(discInCell.getType());
                     System.out.print(space);
                     System.out.print(space);
                 }
