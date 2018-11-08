@@ -37,9 +37,11 @@ public class Board
         this.board = new Disc[height][width];
         gameMode = toCopy.gameMode; //note(ido): i assume game mode won't change during the game.
                                     // if it can change , I need to change the logic here.
-        for(int i = 0; i < height; ++i){
-            for(int j = 0; j < width; ++j){
-                this.board[i][j] = new Disc(toCopy.board[i][j]);
+        for(int row = 0; row < height; ++row){
+            for(int col = 0; col < width; ++col){
+                if(toCopy.board[row][col] != null) {
+                    this.board[row][col] = new Disc(toCopy.board[row][col]);
+                }
             }
         }
     }

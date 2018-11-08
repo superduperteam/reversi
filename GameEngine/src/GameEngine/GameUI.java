@@ -18,10 +18,11 @@ public class GameUI
     private static int width = 10;
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
+    private GameManager gameManager;
 
     public void Start()
     {
-        GameManager gameManager;
+        //GameManager gameManager;
         // Test
         // Will be deleted after XML addition
 //        List<Player> playersList = new ArrayList<>(2);
@@ -81,11 +82,15 @@ public class GameUI
 
         while(!gameManager.isGameOver())
         {
+            GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
+
             printGameState(board);
             activePlayer = gameManager.GetActivePlayer();
 
             do {
                 targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
+                activePlayer = gameManager.GetActivePlayer();
+                board = gameManager.GetBoard();
                 isMoveLegalInserted = activePlayer.MakeMove(targetInsertionPoint, board);
 
                 if(!isMoveLegalInserted)
@@ -95,6 +100,7 @@ public class GameUI
             }
             while(!isMoveLegalInserted);
 
+            gameManager.addTurnToHistory(currTurn);
             gameManager.ChangeTurn();
         }
     }
@@ -238,44 +244,51 @@ public class GameUI
             System.out.println("Please enter your next move: row,column");
             strBuilder.append("For example: ");
             strBuilder.append("\"4,5\"");
-            strBuilder.append(" (without the quotation marks)");
+            strBuilder.append(" (without the quotation marks)\n");
+            strBuilder.append("Enter \"undo\" to undo the last move\n");
             System.out.println(strBuilder.toString());
             String userInputStr = reader.nextLine();
 
-            if (isStringOnlyDigitsAndSeperator(userInputStr)) {
-                if (userInputStr.contains(",")) {
-                    String[] coordinates = userInputStr.split(",");
+            if (userInputStr.equals("undo")) {
+                gameManager.undo();
+                System.out.println("After undo the game state is:");
+                printGameState(gameManager.GetBoard());
+                printWhoseTurn(gameManager.GetActivePlayer());
+                strBuilder = new StringBuilder();
+            } else {
+                if (isStringOnlyDigitsAndSeperator(userInputStr)) {
+                    if (userInputStr.contains(",")) {
+                        String[] coordinates = userInputStr.split(",");
+                        if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
+                            if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
+                                row = Integer.parseInt(coordinates[0]);
+                                col = Integer.parseInt(coordinates[1]);
+                                nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
 
-                    if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
-                        if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
-                            row = Integer.parseInt(coordinates[0]);
-                            col = Integer.parseInt(coordinates[1]);
-                            nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
-
-                            if (gameBoard.IsCellPointInRange(nextMoveOfUser)) {
-                                isMoveSyntactic = true;
+                                if (gameBoard.IsCellPointInRange(nextMoveOfUser)) {
+                                    isMoveSyntactic = true;
+                                } else {
+                                    System.out.println("Please enter a point that is in the range of the game board. Try again");
+                                    System.out.println();
+                                }
                             } else {
-                                System.out.println("Please enter a point that is in the range of the game board. Try again");
+                                System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
                                 System.out.println();
                             }
                         } else {
-                            System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
+                            System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
                             System.out.println();
                         }
                     } else {
-                        System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
+                        System.out.println("Your input doesn't contain ','. Please Try again.");
                         System.out.println();
                     }
                 } else {
-                    System.out.println("Your input doesn't contain ','. Please Try again.");
+                    System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
                     System.out.println();
                 }
-            } else {
-                System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
-                System.out.println();
             }
         }
-
         return nextMoveOfUser;
     }
 

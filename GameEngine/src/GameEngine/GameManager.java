@@ -107,11 +107,15 @@ public class GameManager
         }
     }
 
-    private static class TurnHistory
+    public static class TurnHistory
     {
         private Stack<Turn> turnHistoryStack;
 
-        private static class Turn
+        public TurnHistory(){
+            turnHistoryStack = new Stack<>();
+        }
+
+        public static class Turn
         {
             private List<Player> playersList;
             private Player activePlayer;
@@ -128,7 +132,7 @@ public class GameManager
                     Player copiedPlayer = new Player(player);
 
                     if(activePlayer.equals(player)){
-                        activePlayer = copiedPlayer;
+                        this.activePlayer = copiedPlayer;
                     }
 
                     playersList.add(copiedPlayer);
@@ -151,8 +155,13 @@ public class GameManager
         }
     }
 
-    public void addTurnToHistory(){
-        TurnHistory.Turn turnToAdd = new TurnHistory.Turn(board, activePlayer, playersList);
+    public TurnHistory.Turn getCurrentTurn() {
+        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
+
+        return turn;
+    }
+
+    public void addTurnToHistory(TurnHistory.Turn turnToAdd){
 
         turnHistory.addHistoryEntry(turnToAdd);
     }
