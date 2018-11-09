@@ -167,7 +167,7 @@ public class GameSettingsReader {
     {
         GameManager.eGameMode gameMode = GameManager.eGameMode.Regular;
 
-        if(gameDescriptor.getGame().getVariant() == GameManager.eGameMode.Islands.toString())
+        if(gameDescriptor.getGame().getVariant().equals(GameManager.eGameMode.Islands.toString()))
         {
             gameMode = GameManager.eGameMode.Islands;
         }
