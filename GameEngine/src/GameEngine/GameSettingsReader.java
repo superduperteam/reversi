@@ -6,10 +6,10 @@ import jaxb.schema.generated.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -21,12 +21,12 @@ public class GameSettingsReader {
 
     // TODO: Check path, check XML
     
-    public GameManager readGameSettings(List<Player> playersList) {
-        Scanner reader = new Scanner(System.in);
-        String filePathString;
-        
-        filePathString = reader.nextLine();
-        Path filePath = Paths.get(filePathString);
+    public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) {
+//        Scanner reader = new Scanner(System.in);
+//        String filePathString;
+//
+//        filePathString = reader.nextLine();
+//        Path filePath = Paths.get(filePathString);
         // check path
 
         // ## REMEMBER TO CHANGE .XML !!

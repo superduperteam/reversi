@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.lang.String;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GameUI
 {
@@ -44,9 +47,10 @@ public class GameUI
 //        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
 
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
-        System.out.println("Please enter a XML path:");
         List<Player> playersList = getPlayersDetailsFromUser();
-        gameManager = gameSettingsReader.readGameSettings(playersList);
+        System.out.println("Please enter a XML path:");
+        Path filePath = getXMLPathFromUser();
+        gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
 
 //        board.nullifyBoardCells();
 //        board.board[7][5] = new Disc(eDiscType.BLACK);
@@ -71,17 +75,27 @@ public class GameUI
           gameLoop(gameManager);
     }
 
+    private Path getXMLPathFromUser()
+    {
+        Scanner reader = new Scanner(System.in);
+        String filePathString;
+
+        filePathString = reader.nextLine();
+        Path filePath = Paths.get(filePathString);
+
+        return filePath;
+    }
+
     private void gameLoop(GameManager gameManager)
     {
         boolean isMoveLegalInserted;
         Player activePlayer;
         Point targetInsertionPoint;
         Board board = gameManager.getBoard();
-        printGameState(board);
 
         while(!gameManager.isGameOver())
         {
-            GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
+           // GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
 
             printGameState(board);
             activePlayer = gameManager.getActivePlayer();
@@ -99,7 +113,7 @@ public class GameUI
             }
             while(!isMoveLegalInserted);
 
-            gameManager.addTurnToHistory(currTurn);
+           // gameManager.addTurnToHistory(currTurn);
             gameManager.changeTurn();
         }
     }

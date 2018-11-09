@@ -12,6 +12,7 @@ public class GameManager
     private  int activePlayerIndex;
     private Player activePlayer;
     private Board board;
+    private TurnHistory.Turn currTurn;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -23,6 +24,8 @@ public class GameManager
         this.gameMode = gameMode;
         activePlayer = playersList.get(0);
         this.board = board;
+
+        currTurn = getCurrentTurn(); // ##
     }
 
     public boolean isGameOver(){
@@ -52,13 +55,14 @@ public class GameManager
 
     public void changeTurn()
     {
-        int nextTurnIndex;
+        addTurnToHistory(currTurn);
 
-        activePlayerIndex++;
-        nextTurnIndex = activePlayerIndex%(playersList.size());
-        activePlayer = playersList.get(nextTurnIndex);
+        activePlayerIndex = (activePlayerIndex + 1)%(playersList.size());
+        activePlayer = playersList.get(activePlayerIndex);
 
         updateGameScore();
+
+        currTurn = getCurrentTurn(); // ##
     }
 
     public Player getActivePlayer()
@@ -181,6 +185,8 @@ public class GameManager
             activePlayer = lastTurn.activePlayer;
             activePlayerIndex = playersList.indexOf(activePlayer);
             board = lastTurn.board;
+
+            currTurn = getCurrentTurn();
         }
 
         return didUndoFailed;
