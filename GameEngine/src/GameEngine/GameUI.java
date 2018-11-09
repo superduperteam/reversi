@@ -105,7 +105,7 @@ public class GameUI
         Player activePlayer;
         Point targetInsertionPoint;
         Board board = gameManager.getBoard();
-        int i = 1;
+        // int i = 1; // Option 5 (History) check
 
         while(!gameManager.isGameOver())
         {
