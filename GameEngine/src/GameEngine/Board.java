@@ -1,5 +1,7 @@
 package GameEngine;
 
+import jaxb.schema.generated.Game;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,7 +54,7 @@ public class Board
         return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
     }
 
-    public boolean isMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
+    public GameManager.eMoveStatus isMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
         if(isCellPointInRange(targetInsertionPoint))
         {
@@ -63,15 +65,15 @@ public class Board
                     if(isThereDiscAdjacent(targetInsertionPoint))
                     {
                         //return canFlipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
-                        return true;
+                        return GameManager.eMoveStatus.OK;
                     }
-                    else return false;
+                    else return GameManager.eMoveStatus.ILLEGAL_ISLAND;
                 }
-                else return true; // Assuming you can insert to any empty point in the board in islands mode.
+                else return GameManager.eMoveStatus.OK; // Assuming you can insert to any empty point in the board in islands mode.
             }
-            else return false; // There's a disc in this point.
+            else return GameManager.eMoveStatus.CELL_IS_ALREADY_TAKEN; // There's a disc in this point.
         }
-        else return false;    // Point is not in board.
+        else return GameManager.eMoveStatus.POINT_IS_NOT_IN_RANGE_OF_BOARD;    // Point is not in board.
     }
 
     private boolean isCellEmpty(Point point)
@@ -165,7 +167,7 @@ public class Board
             {
                 insertionCellPoint = new Point(row, col);
 
-                if (isMoveLegal(insertionCellPoint, playerToSearchFor.GetDiscType()))
+                if (isMoveLegal(insertionCellPoint, playerToSearchFor.GetDiscType()) == GameManager.eMoveStatus.OK)
                 {
                     listOfAllPossibleMoves.add(insertionCellPoint);
                 }

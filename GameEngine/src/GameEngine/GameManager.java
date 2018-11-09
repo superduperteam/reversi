@@ -212,4 +212,21 @@ public class GameManager
     {
         Regular, Islands
     }
+
+    public enum eMoveStatus
+    {
+        OK,
+        CELL_IS_ALREADY_TAKEN {            @Override
+        public String toString() {
+            return new String("Cell is already taken!");
+        }},
+        ILLEGAL_ISLAND {
+            public String toString() {
+            return new String("The new disc should be adjacent to other discs on board!");
+        }},
+        POINT_IS_NOT_IN_RANGE_OF_BOARD{
+            public String toString() {
+            return new String("The coordinates are not in the board's range!");
+        }}
+    }
 }

@@ -126,13 +126,13 @@ public class Player {
     }
 
 
-    public boolean makeMove(Point targetInsertionPoint, Board board)
+    public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board)
     {
-        boolean isAbleToDoTheMove;
+        GameManager.eMoveStatus isAbleToDoTheMove;
 
         isAbleToDoTheMove = board.isMoveLegal(targetInsertionPoint, discType);
 
-        if(isAbleToDoTheMove)
+        if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
         {
             board.updateBoard(targetInsertionPoint, discType);
         }

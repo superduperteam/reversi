@@ -101,9 +101,6 @@ public class GameUI
 
     private void gameLoop(GameManager gameManager)
     {
-        boolean isMoveLegalInserted;
-        Player activePlayer;
-        Point targetInsertionPoint;
         Board board = gameManager.getBoard();
         // int i = 1; // Option 5 (History) check
 
@@ -112,21 +109,9 @@ public class GameUI
            // GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
 
             printGameState(board);
-            activePlayer = gameManager.getActivePlayer();
+            printWhoseTurn(gameManager.getActivePlayer());
+            playNextMove(gameManager);
 
-            do {
-                targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
-                activePlayer = gameManager.getActivePlayer();
-                board = gameManager.getBoard();
-                isMoveLegalInserted = activePlayer.makeMove(targetInsertionPoint, board);
-
-                if(!isMoveLegalInserted)
-                {
-                    printIllegalMoveInserted();
-                }
-
-            }
-            while(!isMoveLegalInserted);
 
            // gameManager.addTurnToHistory(currTurn);
             gameManager.changeTurn();
@@ -135,6 +120,181 @@ public class GameUI
 //                printHistoryOfBoardStates(gameManager);
 //            i++;
         }
+    }
+
+    private void playNextMove(GameManager gameManager)
+    {
+        Board board = gameManager.getBoard();
+        Player activePlayer = gameManager.getActivePlayer();
+        Point targetInsertionPoint;
+        GameManager.eMoveStatus moveStatus;
+
+        do {
+            targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
+            moveStatus = activePlayer.makeMove(targetInsertionPoint, board);
+            printToUserIfIllegalMoveWasInserted(moveStatus);
+        }
+        while(moveStatus != GameManager.eMoveStatus.OK);
+    }
+
+    private boolean isPlayerHumanUserAnswer(String playerNumber)
+    {
+        boolean isPlayerHuman = true;
+        boolean hasUserAnswered = false;
+        Scanner reader = new Scanner(System.in);
+        String isPlayerHumanUserStr;
+        StringBuilder stringBuilder = new StringBuilder();
+        String yesStr = "y";
+        String noStr = "n";
+
+        stringBuilder.append("Is ");
+        stringBuilder.append(playerNumber);
+        stringBuilder.append(" player human? y/n");
+
+        do {
+            System.out.println(stringBuilder.toString());
+            isPlayerHumanUserStr = reader.nextLine();
+
+            if (isPlayerHumanUserStr.toLowerCase().equals(yesStr)) {
+                isPlayerHuman = true;
+                hasUserAnswered = true;
+            } else if (isPlayerHumanUserStr.toLowerCase().equals(noStr)) {
+                isPlayerHuman = false;
+                hasUserAnswered = true;
+            }
+            if(!hasUserAnswered)
+            {
+                System.out.println("Please answer accordingly. Please try again.");
+            }
+        } while (!hasUserAnswered);
+
+        return isPlayerHuman; // not really needed
+    }
+
+    private String getPlayerNameFromUser(String playerNumber)
+    {
+        Scanner reader = new Scanner(System.in);
+        String playerNameUserAnswer;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Please enter ");
+        stringBuilder.append(playerNumber);
+        stringBuilder.append(" name:");
+
+        System.out.println(stringBuilder.toString());
+        playerNameUserAnswer = reader.nextLine();
+
+        return playerNameUserAnswer;
+    }
+
+    private void printToUserIfIllegalMoveWasInserted(GameManager.eMoveStatus moveStatus)
+    {
+        StringBuilder illegalMoveMessageToUser = new StringBuilder();
+
+        if(moveStatus != GameManager.eMoveStatus.OK)
+        {
+            illegalMoveMessageToUser.append(moveStatus.toString());
+            illegalMoveMessageToUser.append(" Please try again.");
+            System.out.println(illegalMoveMessageToUser.toString());
+        }
+    }
+
+    private void printWhoseTurn(Player activePlayer)
+    {
+        StringBuilder strBuilder = new StringBuilder();
+
+        if(activePlayer.getIsHuman()) {
+
+            strBuilder.append(activePlayer.GetName());
+            strBuilder.append("'s turn ('");
+            strBuilder.append(activePlayer.GetDiscType().toString());
+            strBuilder.append("')!");
+            System.out.println(strBuilder.toString());
+        }
+    }
+
+    private Point getMoveFromPlayer(Player activePlayer, Board board)
+    {
+        Point targetInsertionPoint;
+
+        if(activePlayer.isHuman())
+        {
+            //printWhoseTurn(activePlayer);
+            targetInsertionPoint = getMoveFromHuman();
+        }
+        else
+        {
+            targetInsertionPoint = activePlayer.getRandomMove(board);
+        }
+
+        return targetInsertionPoint;
+    }
+
+    private Point getMoveFromHuman()
+    {
+        Point nextMoveOfUser = null;
+        int row, col;
+
+        boolean isMoveSyntactic = false; // isMoveLegal means it's in board range and it's syntactic
+        Scanner reader = new Scanner(System.in);
+
+        while(!isMoveSyntactic) {
+            System.out.println("Please enter your next move: row,column");
+            printExampleOfInsertionFormatForUser();
+            String userInputStr = reader.nextLine();
+
+            if (userInputStr.equals("undo")) {
+                gameManager.undo();
+                System.out.println("After undo the game state is:");
+                printGameState(gameManager.getBoard());
+                printWhoseTurn(gameManager.getActivePlayer());
+            } else {
+                if (isStringOnlyDigitsAndSeperator(userInputStr)) {
+                    if (userInputStr.contains(",")) {
+                        String[] coordinates = userInputStr.split(",");
+                        if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
+                            if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
+                                row = Integer.parseInt(coordinates[0]);
+                                col = Integer.parseInt(coordinates[1]);
+                                nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
+
+//                                if (gameBoard.isCellPointInRange(nextMoveOfUser)) {
+                                    isMoveSyntactic = true;
+//                                } else {
+//                                    System.out.println("Please enter a point that is in the range of the game board. Try again");
+//                                    System.out.println();
+//                                }
+                            } else {
+                                System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
+                                System.out.println();
+                            }
+                        } else {
+                            System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
+                            System.out.println();
+                        }
+                    } else {
+                        System.out.println("Your input doesn't contain ','. Please Try again.");
+                        System.out.println();
+                    }
+                } else {
+                    System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
+                    System.out.println();
+                }
+            }
+        }
+
+        return nextMoveOfUser;
+    }
+
+
+    private void printExampleOfInsertionFormatForUser()
+    {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("For example: ");
+        strBuilder.append("\"4,5\"");
+        strBuilder.append(" (without the quotation marks)\n");
+        strBuilder.append("Enter \"undo\" to undo the last move\n");
+        System.out.println(strBuilder.toString());
     }
 
     private List<Player> getPlayersDetailsFromUser()
@@ -170,7 +330,7 @@ public class GameUI
                 player2Name = "CPU";
             }
 
-            areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
+//            areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
         }while(areBothAIs);
 
         // Now we have all the data we need
@@ -179,149 +339,6 @@ public class GameUI
         playersList.add(new Player(player2Name, isSecondPlayerHuman, eDiscType.WHITE, new BigInteger("2")));
 
         return playersList;
-    }
-
-    private boolean isPlayerHumanUserAnswer(String playerNumber)
-    {
-        boolean isPlayerHuman = true;
-        boolean hasUserAnswered = false;
-        Scanner reader = new Scanner(System.in);
-        String isPlayerHumanUserStr;
-        StringBuilder stringBuilder = new StringBuilder();
-        String yesStr = new String("y");
-        String noStr = new String("n");
-
-        stringBuilder.append("Is ");
-        stringBuilder.append(playerNumber);
-        stringBuilder.append(" player human? y/n");
-
-        do {
-            System.out.println(stringBuilder.toString());
-            isPlayerHumanUserStr = reader.nextLine();
-
-            if (isPlayerHumanUserStr.toLowerCase().equals(yesStr)) {
-                isPlayerHuman = true;
-                hasUserAnswered = true;
-            } else if (isPlayerHumanUserStr.toLowerCase().equals(noStr)) {
-                isPlayerHuman = false;
-                hasUserAnswered = true;
-            }
-            if(hasUserAnswered == false)
-            {
-                System.out.println("Please answer accordingly. Please try again.");
-            }
-        } while (!hasUserAnswered);
-
-        return isPlayerHuman; // not really needed
-    }
-
-    private String getPlayerNameFromUser(String playerNumber)
-    {
-        Scanner reader = new Scanner(System.in);
-        String playerNameUserAnswer;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("Please enter ");
-        stringBuilder.append(playerNumber);
-        stringBuilder.append(" name:");
-
-        System.out.println(stringBuilder.toString());
-        playerNameUserAnswer = reader.nextLine();
-
-        return playerNameUserAnswer;
-    }
-
-    private void printIllegalMoveInserted()
-    {
-        System.out.println("Illegal move was inserted. Please try again.");
-    }
-
-    private void printWhoseTurn(Player activePlayer)
-    {
-        StringBuilder strBuilder = new StringBuilder();
-
-        strBuilder.append(activePlayer.GetName());
-        strBuilder.append("'s turn ('");
-        strBuilder.append(activePlayer.GetDiscType().toString());
-        strBuilder.append("')!");
-        System.out.println(strBuilder.toString());
-    }
-
-    private Point getMoveFromPlayer(Player activePlayer, Board board)
-    {
-        Point targetInsertionPoint;
-
-        if(activePlayer.isHuman())
-        {
-            printWhoseTurn(activePlayer);
-            targetInsertionPoint = getMoveFromHuman(board);
-        }
-        else
-        {
-            targetInsertionPoint = activePlayer.getRandomMove(board);
-        }
-
-        return targetInsertionPoint;
-    }
-
-    private Point getMoveFromHuman(Board gameBoard)
-    {
-        Point nextMoveOfUser = null;
-        int row, col;
-        StringBuilder strBuilder = new StringBuilder();
-        boolean isMoveSyntactic = false; // isMoveLegal means it's in board range and it's syntactic
-        Scanner reader = new Scanner(System.in);
-
-        while(!isMoveSyntactic) {
-            System.out.println("Please enter your next move: row,column");
-            strBuilder.append("For example: ");
-            strBuilder.append("\"4,5\"");
-            strBuilder.append(" (without the quotation marks)\n");
-            strBuilder.append("Enter \"undo\" to undo the last move\n");
-            System.out.println(strBuilder.toString());
-            String userInputStr = reader.nextLine();
-
-            if (userInputStr.equals("undo")) {
-                gameManager.undo();
-                System.out.println("After undo the game state is:");
-                printGameState(gameManager.getBoard());
-                printWhoseTurn(gameManager.getActivePlayer());
-                strBuilder = new StringBuilder();
-            } else {
-                if (isStringOnlyDigitsAndSeperator(userInputStr)) {
-                    if (userInputStr.contains(",")) {
-                        String[] coordinates = userInputStr.split(",");
-                        if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
-                            if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
-                                row = Integer.parseInt(coordinates[0]);
-                                col = Integer.parseInt(coordinates[1]);
-                                nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
-
-                                if (gameBoard.isCellPointInRange(nextMoveOfUser)) {
-                                    isMoveSyntactic = true;
-                                } else {
-                                    System.out.println("Please enter a point that is in the range of the game board. Try again");
-                                    System.out.println();
-                                }
-                            } else {
-                                System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
-                                System.out.println();
-                            }
-                        } else {
-                            System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
-                            System.out.println();
-                        }
-                    } else {
-                        System.out.println("Your input doesn't contain ','. Please Try again.");
-                        System.out.println();
-                    }
-                } else {
-                    System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
-                    System.out.println();
-                }
-            }
-        }
-        return nextMoveOfUser;
     }
 
     private boolean isStringOnlyDigits(String str)
