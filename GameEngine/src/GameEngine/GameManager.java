@@ -165,6 +165,22 @@ public class GameManager
         return turn;
     }
 
+
+    public List<Board> getHistoryOfBoardStates()
+    {
+        List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
+        List<Board> boardsList = new ArrayList<>();
+
+        for(TurnHistory.Turn turn : turnsList)
+        {
+            boardsList.add(turn.board);
+        }
+
+        boardsList.add(board);
+
+        return boardsList;
+    }
+
     public void addTurnToHistory(TurnHistory.Turn turnToAdd){
 
         turnHistory.addHistoryEntry(turnToAdd);

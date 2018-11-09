@@ -86,12 +86,26 @@ public class GameUI
         return filePath;
     }
 
+    private void printHistoryOfBoardStates(GameManager gameManager)
+    {
+        List<Board> boardStatesList = gameManager.getHistoryOfBoardStates();
+
+        System.out.println();
+        System.out.println("History of board states: ");
+        for (Board board : boardStatesList)
+        {
+            printGameState(board);
+        }
+        System.out.println();
+    }
+
     private void gameLoop(GameManager gameManager)
     {
         boolean isMoveLegalInserted;
         Player activePlayer;
         Point targetInsertionPoint;
         Board board = gameManager.getBoard();
+        int i = 1;
 
         while(!gameManager.isGameOver())
         {
@@ -110,11 +124,16 @@ public class GameUI
                 {
                     printIllegalMoveInserted();
                 }
+
             }
             while(!isMoveLegalInserted);
 
            // gameManager.addTurnToHistory(currTurn);
             gameManager.changeTurn();
+
+//            if(i == 3) // Option 5 (History) check
+//                printHistoryOfBoardStates(gameManager);
+//            i++;
         }
     }
 
