@@ -330,7 +330,7 @@ public class GameUI
                 player2Name = "CPU";
             }
 
-//            areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
+            areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
         }while(areBothAIs);
 
         // Now we have all the data we need
