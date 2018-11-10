@@ -42,6 +42,14 @@ public class Player {
         this.id = new BigInteger(toCopy.getId().toString());
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIsHuman(boolean isHuman) {
+        this.isHuman = isHuman;
+    }
+
 //    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
 //        this.name = player.getName();
 //        this.isHuman = player.getType().equals("Human");
@@ -138,5 +146,10 @@ public class Player {
         }
 
         return isAbleToDoTheMove;
+    }
+
+    public int getScore()
+    {
+        return statistics.score;
     }
 }

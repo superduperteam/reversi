@@ -1,6 +1,8 @@
 package GameEngine;
 //import GameEngine;
 
+import Exceptions.*;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,9 @@ public class GameUI
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
     private GameManager gameManager;
+    private final int LOAD_XML = 1;
+    private final int START_GAME = 2;
+    private final int LOAD_PREVIOUSLY_SAVED_GAME = 3;
 
     public void start()
     {
@@ -45,12 +50,59 @@ public class GameUI
 //        Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
 //
 //        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
-
+        int menuInput = 0;
+        boolean didLoadXMLfile = false;
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
-        List<Player> playersList = getPlayersDetailsFromUser();
-        System.out.println("Please enter a XML path:");
-        Path filePath = getXMLPathFromUser();
-        gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+        List<Player> playersList = new ArrayList<>(2);
+        List<String> menuOptions= new ArrayList<>();
+
+        playersList.add(new Player("", true,eDiscType.BLACK, new BigInteger("1")));
+        playersList.add(new Player("", true,eDiscType.WHITE, new BigInteger("2")));
+        menuOptions.add("1");
+        menuOptions.add("2");
+        menuOptions.add("3");
+
+        while(menuInput != START_GAME) {
+            printStartMenu();
+            menuInput = getMenuInput(menuOptions);
+            if(menuInput == LOAD_XML) {
+                didLoadXMLfile = true;
+                System.out.println("Please enter a XML path:");
+                Path filePath = getXMLPathFromUser();
+
+                try {
+                    gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+                } catch (NoXMLFile noXMLFile) {
+                    //noXMLFile.printStackTrace();
+                    System.out.print("Error:" + noXMLFile);
+                } catch (PlayersInitPositionsOverrideEachOther playersInitPositionsOverrideEachOther) {
+                    //playersInitPositionsOverrideEachOther.printStackTrace();
+                    System.out.print("Error:" + playersInitPositionsOverrideEachOther);
+                } catch (BoardSizeDoesntMatchNumOfPlayers boardSizeDoesntMatchNumOfPlayers) {
+                    //boardSizeDoesntMatchNumOfPlayers.printStackTrace();
+                    System.out.print("Error:" + boardSizeDoesntMatchNumOfPlayers);
+                } catch (PlayersInitPositionsOutOfRange playersInitPositionsOutOfRange) {
+                    //playersInitPositionsOutOfRange.printStackTrace();
+                    System.out.print("Error:" + playersInitPositionsOutOfRange);
+                } catch (RowsNotInRange rowsNotInRange) {
+                    //rowsNotInRange.printStackTrace();
+                    System.out.print("Error:" + rowsNotInRange);
+                } catch (ColumnsNotInRange columnsNotInRange) {
+                    //columnsNotInRange.printStackTrace();
+                    System.out.print("Error:" + columnsNotInRange);
+                } catch (IslandsOnRegularMode islandsOnRegularMode) {
+                    //islandsOnRegularMode.printStackTrace();
+                    System.out.print("Error:" + islandsOnRegularMode);
+                }
+                //TODO check if xml file is application legal
+            }
+            else if(menuInput == LOAD_PREVIOUSLY_SAVED_GAME) {
+                //TODO implement load method here (ido)
+            }
+        }
+
+        playersList =  getPlayersDetailsFromUser(playersList);
+        gameLoop(gameManager);
 
 //        board.nullifyBoardCells();
 //        board.board[7][5] = new Disc(eDiscType.BLACK);
@@ -72,7 +124,41 @@ public class GameUI
 //
 //        activePlayer.MakeMove(new Point(3, 5), board);
 //        printGameState(board);
-          gameLoop(gameManager);
+    }
+
+    private int getMenuInput(List<String> numbersList) {
+        Scanner scanner = new Scanner(System.in);
+        String input;
+        int result = 0;
+        boolean isInputValid = false;
+
+
+        do{
+            input = scanner.nextLine();
+            if(numbersList.contains(input)) {
+                result = Integer.parseInt(input);
+                isInputValid = true;
+            }
+
+            else{
+                System.out.print("Please enter a valid input (the options are: ");
+                System.out.print(numbersList);
+                System.out.println(")");
+            }
+        }while(!isInputValid);
+
+        return result;
+    }
+
+    private void printStartMenu() {
+        StringBuilder startMenuOptions = new StringBuilder();
+
+        startMenuOptions.append("Please enter one of the options below (enter the desired option number)\n");
+        startMenuOptions.append("1.Load new XML file\n");
+        startMenuOptions.append("2.Start game\n");
+        startMenuOptions.append("3.Load previous saved game\n");
+
+        System.out.println(startMenuOptions.toString());
     }
 
     private Path getXMLPathFromUser()
@@ -99,27 +185,96 @@ public class GameUI
         System.out.println();
     }
 
+    private void printGameMenu() {
+        StringBuilder gameMenuOptions = new StringBuilder();
+
+        gameMenuOptions.append("Please enter one of the options below (enter the desired option number)\n");
+        gameMenuOptions.append("1.Show game state\n");
+        gameMenuOptions.append("2.Make a turn\n");
+        gameMenuOptions.append("3.Show game history\n");
+        gameMenuOptions.append("4.Exit\n");
+        gameMenuOptions.append("5.Undo last move\n");
+        gameMenuOptions.append("6.Save game\n");
+
+        System.out.println(gameMenuOptions.toString());
+    }
+
+
     private void gameLoop(GameManager gameManager)
     {
-        Board board = gameManager.getBoard();
         // int i = 1; // Option 5 (History) check
+        List<String> menuOptions = new ArrayList<>();
+        int menuInput;
+        boolean didUserAskToEndGame = false;
 
-        while(!gameManager.isGameOver())
+        menuOptions.add("1");
+        menuOptions.add("2");
+        menuOptions.add("3");
+        menuOptions.add("4");
+        menuOptions.add("5");
+
+
+        while(!gameManager.isGameOver() && !didUserAskToEndGame)
         {
            // GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
+            printGameMenu();
+            menuInput = getMenuInput(menuOptions);
 
-            printGameState(board);
-            printWhoseTurn(gameManager.getActivePlayer());
-            playNextMove(gameManager);
-
+            didUserAskToEndGame =executeMenuCommand(menuInput);
 
            // gameManager.addTurnToHistory(currTurn);
-            gameManager.changeTurn();
+
 
 //            if(i == 3) // Option 5 (History) check
 //                printHistoryOfBoardStates(gameManager);
 //            i++;
         }
+
+        if(!didUserAskToEndGame) {
+            Player winnerPlayer = gameManager.getWinner();
+
+            System.out.print("The winner is: ");
+            System.out.println(winnerPlayer.getName());
+        }
+    }
+
+    private boolean executeMenuCommand(int commandToExecute) {
+         final int PRINT_GAME_STATE = 1;
+         final int MAKE_MOVE = 2;
+         final int SHOW_HISTORY = 3;
+         final int EXIT = 4;
+         final int UNDO = 5;
+         final int SAVE_GAME = 6;
+         Board board = gameManager.getBoard();
+         boolean didUserAskToEndGame = false;
+
+
+        switch (commandToExecute){
+            case PRINT_GAME_STATE:
+                //TODO implement (command 3 in reversi.doc) (saar)
+                printGameState(board);
+                break;
+            case MAKE_MOVE:
+                playNextMove(gameManager);
+                break;
+            case SHOW_HISTORY:
+                printHistoryOfBoardStates(gameManager);
+                break;
+            case EXIT:
+                didUserAskToEndGame = true;
+                break;
+            case UNDO:
+                gameManager.undo();
+                System.out.println("After undo the game state is:");
+                printGameState(gameManager.getBoard());
+                printWhoseTurn(gameManager.getActivePlayer());
+                break;
+            case SAVE_GAME:
+                //TODO implement serialization (ido)
+                break;
+        }
+
+        return  didUserAskToEndGame;
     }
 
     private void playNextMove(GameManager gameManager)
@@ -129,12 +284,20 @@ public class GameUI
         Point targetInsertionPoint;
         GameManager.eMoveStatus moveStatus;
 
+        if(gameManager.getActivePlayer().isHuman()) {
+            printGameState(board);
+            printWhoseTurn(gameManager.getActivePlayer());
+        }
+
         do {
             targetInsertionPoint = getMoveFromPlayer(activePlayer, board);
             moveStatus = activePlayer.makeMove(targetInsertionPoint, board);
             printToUserIfIllegalMoveWasInserted(moveStatus);
         }
         while(moveStatus != GameManager.eMoveStatus.OK);
+
+        gameManager.changeTurn();
+        printGameState(board);
     }
 
     private boolean isPlayerHumanUserAnswer(String playerNumber)
@@ -230,58 +393,52 @@ public class GameUI
         return targetInsertionPoint;
     }
 
-    private Point getMoveFromHuman()
-    {
+    private Point getMoveFromHuman() {
         Point nextMoveOfUser = null;
         int row, col;
 
         boolean isMoveSyntactic = false; // isMoveLegal means it's in board range and it's syntactic
         Scanner reader = new Scanner(System.in);
 
-        while(!isMoveSyntactic) {
+        while (!isMoveSyntactic) {
             System.out.println("Please enter your next move: row,column");
             printExampleOfInsertionFormatForUser();
             String userInputStr = reader.nextLine();
 
-            if (userInputStr.equals("undo")) {
-                gameManager.undo();
-                System.out.println("After undo the game state is:");
-                printGameState(gameManager.getBoard());
-                printWhoseTurn(gameManager.getActivePlayer());
-            } else {
-                if (isStringOnlyDigitsAndSeperator(userInputStr)) {
-                    if (userInputStr.contains(",")) {
-                        String[] coordinates = userInputStr.split(",");
-                        if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
-                            if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
-                                row = Integer.parseInt(coordinates[0]);
-                                col = Integer.parseInt(coordinates[1]);
-                                nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
+
+            if (isStringOnlyDigitsAndSeperator(userInputStr)) {
+                if (userInputStr.contains(",")) {
+                    String[] coordinates = userInputStr.split(",");
+                    if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
+                        if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
+                            row = Integer.parseInt(coordinates[0]);
+                            col = Integer.parseInt(coordinates[1]);
+                            nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
 
 //                                if (gameBoard.isCellPointInRange(nextMoveOfUser)) {
-                                    isMoveSyntactic = true;
+                            isMoveSyntactic = true;
 //                                } else {
 //                                    System.out.println("Please enter a point that is in the range of the game board. Try again");
 //                                    System.out.println();
 //                                }
-                            } else {
-                                System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
-                                System.out.println();
-                            }
                         } else {
-                            System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
+                            System.out.println("Your row/column doesn't consist of only digits. Please Try again.");
                             System.out.println();
                         }
                     } else {
-                        System.out.println("Your input doesn't contain ','. Please Try again.");
+                        System.out.println("Your row/column doesn't consist of any chars. Please Try again.");
                         System.out.println();
                     }
                 } else {
-                    System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
+                    System.out.println("Your input doesn't contain ','. Please Try again.");
                     System.out.println();
                 }
+            } else {
+                System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
+                System.out.println();
             }
         }
+
 
         return nextMoveOfUser;
     }
@@ -293,16 +450,14 @@ public class GameUI
         strBuilder.append("For example: ");
         strBuilder.append("\"4,5\"");
         strBuilder.append(" (without the quotation marks)\n");
-        strBuilder.append("Enter \"undo\" to undo the last move\n");
         System.out.println(strBuilder.toString());
     }
 
-    private List<Player> getPlayersDetailsFromUser()
+    private List<Player> getPlayersDetailsFromUser(List<Player> playersList)
     {
         boolean isFirstPlayerHuman, isSecondPlayerHuman;
         boolean areBothAIs = true;
         String player1Name = null, player2Name = null;
-        List<Player> playersList;
 
         do {
             isFirstPlayerHuman = isPlayerHumanUserAnswer("first");
@@ -334,9 +489,10 @@ public class GameUI
         }while(areBothAIs);
 
         // Now we have all the data we need
-        playersList = new ArrayList<>();
-        playersList.add(new Player(player1Name, isFirstPlayerHuman, eDiscType.BLACK, new BigInteger("1")));
-        playersList.add(new Player(player2Name, isSecondPlayerHuman, eDiscType.WHITE, new BigInteger("2")));
+        playersList.get(0).setName(player1Name);
+        playersList.get(0).setIsHuman(isFirstPlayerHuman);
+        playersList.get(1).setName(player2Name);
+        playersList.get(0).setIsHuman(isSecondPlayerHuman);
 
         return playersList;
     }

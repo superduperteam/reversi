@@ -88,7 +88,7 @@ public class Board
         }
     }
 
-    private boolean isThereDiscAdjacent(Point point)
+    public boolean isThereDiscAdjacent(Point point)
     {
         int row = point.getRow(), col = point.getCol();
         Disc adjacentDisc;
