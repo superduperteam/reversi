@@ -28,6 +28,24 @@ public class GameManager
         currTurn = getCurrentTurn(); // ##
     }
 
+    // Call this only after game is over.
+    public Player getWinner()
+    {
+        int maxPlayerPoints = playersList.get(0).getScore();
+        Player winner = playersList.get(0);
+
+        for(Player player : playersList)
+        {
+            if(maxPlayerPoints < player.getScore())
+            {
+                maxPlayerPoints = player.getScore();
+                winner = player;
+            }
+        }
+
+        return winner;
+    }
+
     public boolean isGameOver(){
         return !board.areThereAnyMovesForPlayers(playersList);
     }
@@ -52,6 +70,7 @@ public class GameManager
 //
 //        UpdateGameScore();
 //    }
+
 
     public void changeTurn()
     {

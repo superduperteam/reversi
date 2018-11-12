@@ -323,7 +323,6 @@ public class Board
         return width;
     }
 
-
     private void initializeBoard(LinkedHashMap<Player, List<Point>> initialDiscsPointsOfPlayers)
     {
         nullifyBoardCells();

@@ -133,6 +133,10 @@ public class Player {
         return allPossibleMoves.get(moveIndex);
     }
 
+    public int getScore()
+    {
+        return statistics.score;
+    }
 
     public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board)
     {

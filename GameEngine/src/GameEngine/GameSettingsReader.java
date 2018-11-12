@@ -42,7 +42,11 @@ public class GameSettingsReader {
         File file = new File(xmlFilePath.toString());
         GameManager gameManager;
 
-        if(!Files.exists(Paths.get(xmlFilePath.toAbsolutePath().toString())) || !xmlFilePath.toString().toLowerCase().endsWith(".xml") ) {
+        if(!Files.exists(Paths.get(xmlFilePath.toAbsolutePath().toString()))) {
+            throw new Exceptions.NoXMLFile();
+        }
+        else if(!xmlFilePath.toString().toLowerCase().endsWith(".xml") )
+        {
             throw new Exceptions.NoXMLFile();
         }
         else {
