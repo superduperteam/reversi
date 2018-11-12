@@ -2,10 +2,7 @@ package GameEngine;
 
 import jaxb.schema.generated.Game;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Board
 {
@@ -13,6 +10,7 @@ public class Board
     private int width;
     private GameManager.eGameMode gameMode;
     private Disc board[][];
+    private HashMap<Player, List<Point>> initialDiscPointsOfPlayers;
 
 //    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
 //    {
@@ -23,13 +21,29 @@ public class Board
 //        this.gameMode = gameMode;
 //    }
 
-    public Board(jaxb.schema.generated.Board board, LinkedHashMap<Player, List<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
+    public Board(jaxb.schema.generated.Board board, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
         this.height = board.getRows();
         this.width = board.getColumns();
         this.board = new Disc[height][width];
-        initializeBoard(intialDiscsPointsOfPlayers);
+        initializeBoard(initialDiscPointsOfPlayers);
         this.gameMode = gameMode;
+        this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
+    }
+
+    public Board(int height, int width, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
+    {
+        this.height = height;
+        this.width = width;
+        this.board = new Disc[height][width];
+        initializeBoard(initialDiscPointsOfPlayers);
+        this.gameMode = gameMode;
+        this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
+    }
+
+    public HashMap<Player, List<Point>> getInitialDiscPositionOfPlayers()
+    {
+        return initialDiscPointsOfPlayers;
     }
 
     public Board(Board toCopy){
@@ -323,7 +337,7 @@ public class Board
         return width;
     }
 
-    private void initializeBoard(LinkedHashMap<Player, List<Point>> initialDiscsPointsOfPlayers)
+    private void initializeBoard(HashMap<Player, List<Point>> initialDiscsPointsOfPlayers)
     {
         nullifyBoardCells();
         List<Point> currentPlayerInitialDiscs;

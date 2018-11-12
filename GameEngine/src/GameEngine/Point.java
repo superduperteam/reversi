@@ -20,4 +20,9 @@ public class Point
         this.row = row;
         this.col = col;
     }
+
+    @Override
+    public String toString() {
+        return new String(String.valueOf(row + 1) +","+String.valueOf(col + 1));
+    }
 }

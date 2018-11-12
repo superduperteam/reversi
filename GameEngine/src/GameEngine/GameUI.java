@@ -4,10 +4,10 @@ import Exceptions.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.lang.String;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -50,7 +50,8 @@ public class GameUI
 //
 //        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
         int menuInput = 0;
-        boolean didLoadXMLfile = false;
+        //boolean didLoadXMLfile = false;
+        boolean isGameLoaded = false;
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
         List<Player> playersList = new ArrayList<>(2);
         List<String> menuOptions= new ArrayList<>();
@@ -61,11 +62,11 @@ public class GameUI
         menuOptions.add("2");
         menuOptions.add("3");
 
-        while(menuInput != START_GAME) {
+        while(isGameLoaded == false || menuInput != START_GAME) {
             printStartMenu();
             menuInput = getMenuInput(menuOptions);
             if(menuInput == LOAD_XML) {
-                didLoadXMLfile = true;
+                isGameLoaded = true;
                 System.out.println("Please enter a XML path:");
                 Path filePath = getXMLPathFromUser();
 
@@ -73,30 +74,38 @@ public class GameUI
                     gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
                 } catch (NoXMLFile noXMLFile) {
                     //noXMLFile.printStackTrace();
-                    System.out.print("Error:" + noXMLFile);
+                    System.out.println("Error: " + noXMLFile);
+                    isGameLoaded = false;
                 } catch (PlayersInitPositionsOverrideEachOther playersInitPositionsOverrideEachOther) {
                     //playersInitPositionsOverrideEachOther.printStackTrace();
-                    System.out.print("Error:" + playersInitPositionsOverrideEachOther);
+                    System.out.println("Error: " + playersInitPositionsOverrideEachOther);
+                    isGameLoaded = false;
                 } catch (BoardSizeDoesntMatchNumOfPlayers boardSizeDoesntMatchNumOfPlayers) {
                     //boardSizeDoesntMatchNumOfPlayers.printStackTrace();
-                    System.out.print("Error:" + boardSizeDoesntMatchNumOfPlayers);
+                    System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayers);
+                    isGameLoaded = false;
                 } catch (PlayersInitPositionsOutOfRange playersInitPositionsOutOfRange) {
                     //playersInitPositionsOutOfRange.printStackTrace();
-                    System.out.print("Error:" + playersInitPositionsOutOfRange);
+                    System.out.println("Error: " + playersInitPositionsOutOfRange);
+                    isGameLoaded = false;
                 } catch (RowsNotInRange rowsNotInRange) {
                     //rowsNotInRange.printStackTrace();
-                    System.out.print("Error:" + rowsNotInRange);
+                    System.out.println("Error: " + rowsNotInRange);
+                    isGameLoaded = false;
                 } catch (ColumnsNotInRange columnsNotInRange) {
                     //columnsNotInRange.printStackTrace();
-                    System.out.print("Error:" + columnsNotInRange);
+                    System.out.println("Error: " + columnsNotInRange);
+                    isGameLoaded = false;
                 } catch (IslandsOnRegularMode islandsOnRegularMode) {
                     //islandsOnRegularMode.printStackTrace();
-                    System.out.print("Error:" + islandsOnRegularMode);
+                    System.out.println("Error: " + islandsOnRegularMode);
+                    isGameLoaded = false;
                 }
                 //TODO check if xml file is application legal
             }
             else if(menuInput == LOAD_PREVIOUSLY_SAVED_GAME) {
                 //TODO implement load method here (ido)
+                // use isGameLoaded boolean in this scope too.
             }
         }
 
@@ -179,7 +188,7 @@ public class GameUI
         System.out.println("History of board states: ");
         for (Board board : boardStatesList)
         {
-            printGameState(board);
+            printBoardState(board);
         }
         System.out.println();
     }
@@ -212,7 +221,6 @@ public class GameUI
         menuOptions.add("4");
         menuOptions.add("5");
 
-
         while(!gameManager.isGameOver() && !didUserAskToEndGame)
         {
            // GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
@@ -237,6 +245,78 @@ public class GameUI
         }
     }
 
+    private void printGameMode(GameManager gameManager)
+    {
+        System.out.print("Game mode: ");
+        System.out.println(gameManager.getGameMode());
+    }
+
+    private void printIsGameOver(GameManager gameManager)
+    {
+        if(gameManager.isGameOver())
+        {
+            System.out.println("Game is over!");
+        }
+        else System.out.println("Game isn't over.");
+    }
+
+    private void printPlayersStatistics(List<Player> playersList)
+    {
+        System.out.println();
+        System.out.println("Players Statistics:");
+        playersList.forEach(player ->
+        {
+            System.out.println();
+            System.out.print(player.GetName());
+            System.out.println(":");
+            System.out.print("Turns played: ");
+            System.out.println(player.getStatistics().getCountOfPlayedTurns());
+            System.out.print("Average of flips: ");
+            System.out.println(player.getStatistics().getAverageOfFlips());
+            System.out.print("Score: ");
+            System.out.println(player.getStatistics().getScore());
+        });
+    }
+
+    private void printGameState(GameManager gameManager)
+    {
+        System.out.println("Game Descriptions:");
+        System.out.println(getStringOfInitialDiscPointsOfPlayers(gameManager.getBoard().getInitialDiscPositionOfPlayers()));
+        printBoardState(gameManager.getInitialBoard()); // or printBoardState(gameManager.getBoard())?
+        printGameMode(gameManager);
+        printIsGameOver(gameManager);
+
+        if(!gameManager.isGameOver())
+        {
+            System.out.print("Active Player: ");
+            System.out.println(gameManager.getActivePlayer().getName());
+            printPlayersStatistics(gameManager.getPlayersList());
+        }
+        System.out.println();
+    }
+
+    public String getStringOfInitialDiscPointsOfPlayers(HashMap<Player, List<Point>> initialDiscPointsOfPlayers)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Initial positions for players: \n");
+
+        initialDiscPointsOfPlayers.forEach((player, discPointsList) ->
+                {
+                    stringBuilder.append(player.getName());
+                    stringBuilder.append(" ('"+player.GetDiscType()+"')");
+                    stringBuilder.append(":");
+                    for(Point discPoint : discPointsList)
+                    {
+                        stringBuilder.append(" " + discPoint.toString() + " ");
+                    }
+                    stringBuilder.append("\n");
+                }
+        );
+
+        return stringBuilder.toString();
+    }
+
     private boolean executeMenuCommand(int commandToExecute) {
          final int PRINT_GAME_STATE = 1;
          final int MAKE_MOVE = 2;
@@ -251,7 +331,7 @@ public class GameUI
         switch (commandToExecute){
             case PRINT_GAME_STATE:
                 //TODO implement (command 3 in reversi.doc) (saar)
-                printGameState(board);
+                printGameState(gameManager);
                 break;
             case MAKE_MOVE:
                 playNextMove(gameManager);
@@ -265,7 +345,7 @@ public class GameUI
             case UNDO:
                 gameManager.undo();
                 System.out.println("After undo the game state is:");
-                printGameState(gameManager.getBoard());
+                printBoardState(gameManager.getBoard());
                 printWhoseTurn(gameManager.getActivePlayer());
                 break;
             case SAVE_GAME:
@@ -284,7 +364,7 @@ public class GameUI
         GameManager.eMoveStatus moveStatus;
 
         if(gameManager.getActivePlayer().isHuman()) {
-            printGameState(board);
+            printBoardState(board);
             printWhoseTurn(gameManager.getActivePlayer());
         }
 
@@ -296,7 +376,7 @@ public class GameUI
         while(moveStatus != GameManager.eMoveStatus.OK);
 
         gameManager.changeTurn();
-        printGameState(board);
+        printBoardState(board);
     }
 
     private boolean isPlayerHumanUserAnswer(String playerNumber)
@@ -527,7 +607,7 @@ public class GameUI
         System.out.print(discType.toString());
     }
 
-    private void printGameState(Board board)
+    private void printBoardState(Board board)
     {
         printColsLetters(board);
         printRowsSeparators(board);

@@ -82,6 +82,18 @@ public class Player {
         public void incScore() {
             ++score;
         }
+
+        public int getCountOfPlayedTurns() {
+            return countOfPlayedTurns;
+        }
+
+        public double getAverageOfFlips() {
+            return averageOfFlips;
+        }
+
+        public int getScore() {
+            return score;
+        }
     }
 
     public BigInteger getId(){

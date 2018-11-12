@@ -28,6 +28,23 @@ public class GameManager
         currTurn = getCurrentTurn(); // ##
     }
 
+    public List<Player> getPlayersList()
+    {
+        return playersList;
+    }
+
+    public eGameMode getGameMode() {
+        return gameMode;
+    }
+
+    public Board getInitialBoard()
+    {
+        int boardHeight = board.getHeight();
+        int boardWidth = board.getWidth();
+        HashMap<Player, List<Point>> initialDiscPositionsOfPlayer = board.getInitialDiscPositionOfPlayers();
+        return new Board(boardHeight, boardWidth, initialDiscPositionsOfPlayer, gameMode);
+    }
+
     // Call this only after game is over.
     public Player getWinner()
     {
