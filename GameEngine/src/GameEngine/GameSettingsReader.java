@@ -8,6 +8,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,19 +41,24 @@ public class GameSettingsReader {
         // check path
 
         // ## REMEMBER TO CHANGE .XML !!
-        File file = new File(xmlFilePath.toString());
-        GameManager gameManager;
+        File xmlFile = new File(xmlFilePath.toString());//xmlFilePath.toString());
 
-        if(!Files.exists(Paths.get(xmlFilePath.toAbsolutePath().toString()))) {
-            throw new Exceptions.NoXMLFile();
-        }
-        else if(!xmlFilePath.toString().toLowerCase().endsWith(".xml") )
+//        if(xmlFile != null) {
+//            throw new Exceptions.NoXMLFile();
+//        }
+        if(!xmlFilePath.toString().toLowerCase().endsWith(".xml"))
         {
             throw new Exceptions.NoXMLFile();
         }
         else {
-            InputStream inputSteam = GameSettingsReader.class.getResourceAsStream(xmlFilePath.toString());
-            return extractGameSettings(inputSteam, playersList);
+            try
+            {
+                InputStream inputStream = new FileInputStream(xmlFile);
+                return extractGameSettings(inputStream, playersList);
+            } catch (IOException e)
+            {
+                throw new Exceptions.NoXMLFile();
+            }
         }
     }
 

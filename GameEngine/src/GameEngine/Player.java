@@ -152,8 +152,4 @@ public class Player {
         return isAbleToDoTheMove;
     }
 
-    public int getScore()
-    {
-        return statistics.score;
-    }
 }
