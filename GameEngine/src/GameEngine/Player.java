@@ -159,6 +159,7 @@ public class Player {
         if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
         {
             board.updateBoard(targetInsertionPoint, discType);
+            statistics.countOfPlayedTurns++;
         }
 
         return isAbleToDoTheMove;

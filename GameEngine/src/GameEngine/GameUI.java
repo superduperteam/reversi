@@ -227,7 +227,7 @@ public class GameUI
             printGameMenu();
             menuInput = getMenuInput(menuOptions);
 
-            didUserAskToEndGame =executeMenuCommand(menuInput);
+            didUserAskToEndGame = executeMenuCommand(menuInput);
 
            // gameManager.addTurnToHistory(currTurn);
 
@@ -280,8 +280,8 @@ public class GameUI
 
     private void printGameState(GameManager gameManager)
     {
-        System.out.println("Game Descriptions:");
-        System.out.println(getStringOfInitialDiscPointsOfPlayers(gameManager.getBoard().getInitialDiscPositionOfPlayers()));
+        System.out.println("Game Description:");
+       // System.out.println(getStringOfInitialDiscPointsOfPlayers(gameManager.getBoard().getInitialDiscPositionOfPlayers()));
         printBoardState(gameManager.getInitialBoard()); // or printBoardState(gameManager.getBoard())?
         printGameMode(gameManager);
         printIsGameOver(gameManager);
@@ -295,27 +295,27 @@ public class GameUI
         System.out.println();
     }
 
-    public String getStringOfInitialDiscPointsOfPlayers(HashMap<Player, List<Point>> initialDiscPointsOfPlayers)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("Initial positions for players: \n");
-
-        initialDiscPointsOfPlayers.forEach((player, discPointsList) ->
-                {
-                    stringBuilder.append(player.getName());
-                    stringBuilder.append(" ('"+player.GetDiscType()+"')");
-                    stringBuilder.append(":");
-                    for(Point discPoint : discPointsList)
-                    {
-                        stringBuilder.append(" " + discPoint.toString() + " ");
-                    }
-                    stringBuilder.append("\n");
-                }
-        );
-
-        return stringBuilder.toString();
-    }
+//    public String getStringOfInitialDiscPointsOfPlayers(HashMap<Player, List<Point>> initialDiscPointsOfPlayers)
+//    {
+//        StringBuilder stringBuilder = new StringBuilder();
+//
+//        stringBuilder.append("Initial positions for players: \n");
+//
+//        initialDiscPointsOfPlayers.forEach((player, discPointsList) ->
+//                {
+//                    stringBuilder.append(player.getName());
+//                    stringBuilder.append(" ('"+player.GetDiscType()+"')");
+//                    stringBuilder.append(":");
+//                    for(Point discPoint : discPointsList)
+//                    {
+//                        stringBuilder.append(" " + discPoint.toString() + " ");
+//                    }
+//                    stringBuilder.append("\n");
+//                }
+//        );
+//
+//        return stringBuilder.toString();
+//    }
 
     private boolean executeMenuCommand(int commandToExecute) {
          final int PRINT_GAME_STATE = 1;
@@ -571,7 +571,7 @@ public class GameUI
         playersList.get(0).setName(player1Name);
         playersList.get(0).setIsHuman(isFirstPlayerHuman);
         playersList.get(1).setName(player2Name);
-        playersList.get(0).setIsHuman(isSecondPlayerHuman);
+        playersList.get(1).setIsHuman(isSecondPlayerHuman);
 
         return playersList;
     }
