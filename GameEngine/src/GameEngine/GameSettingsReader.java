@@ -1,8 +1,6 @@
 package GameEngine;
 
 import Exceptions.*;
-import jaxb.schema.generated.Board;
-import jaxb.schema.generated.Players;
 import jaxb.schema.generated.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -10,10 +8,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.io.InputStream;
 import java.lang.String;
@@ -30,9 +25,9 @@ public class GameSettingsReader {
 
     // TODO: Check path, check XML
     
-    public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayers,
-            ColumnsNotInRange, IslandsOnRegularMode, NoXMLFile, PlayersInitPositionsOutOfRange,PlayersInitPositionsOverrideEachOther,
-            RowsNotInRange{
+    public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
+            ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFile, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
+            RowsNotInRangeException, PlayerHasNoInitialPositionsException {
 //        Scanner reader = new Scanner(System.in);
 //        String filePathString;
 //
@@ -62,12 +57,12 @@ public class GameSettingsReader {
         }
     }
 
-    private void areNumberOfRowsInRange(GameDescriptor gamedDescriptor) throws RowsNotInRange
+    private void areNumberOfRowsInRange(GameDescriptor gamedDescriptor) throws RowsNotInRangeException
     {
         byte xmlRows = gamedDescriptor.getGame().getBoard().getRows();
 
         if(xmlRows < MIN_ROWS || xmlRows > MAX_ROWS)
-            throw new RowsNotInRange();
+            throw new RowsNotInRangeException();
     }
 
     private GameManager getGameDetails(GameDescriptor gameDescriptor, List<GameEngine.Player> playersList)
@@ -123,14 +118,15 @@ public class GameSettingsReader {
 //        return null; // ## throw execption
 //    }
 
-    private GameManager extractGameSettings(InputStream xmlStream, List<GameEngine.Player> playersList) throws RowsNotInRange,
-            ColumnsNotInRange, IslandsOnRegularMode, PlayersInitPositionsOverrideEachOther,
-            BoardSizeDoesntMatchNumOfPlayers, PlayersInitPositionsOutOfRange
+    private GameManager extractGameSettings(InputStream xmlStream, List<GameEngine.Player> playersList) throws RowsNotInRangeException,
+            ColumnsNotInRangeException, IslandsOnRegularModeException, PlayersInitPositionsOverrideEachOtherException,
+            BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException
     {
         try{
             GameDescriptor gamedDescriptor = deserializeFrom(xmlStream);
             areNumberOfRowsInRange(gamedDescriptor);
             areNumberOfColsInRange(gamedDescriptor);
+            doEachPlayerHasAtLeastOneInitialPoint(gamedDescriptor);
             doesBoardSizeMatchNumOfPlayers(gamedDescriptor);
             areIntialPositionsInRange(gamedDescriptor);
             doIntialPositionsOverrideEachOther(gamedDescriptor);
@@ -149,7 +145,7 @@ public class GameSettingsReader {
         return (GameDescriptor) u.unmarshal(in);
     }
 
-    private void doIntialPositionsOverrideEachOther(GameDescriptor gameDescriptor) throws PlayersInitPositionsOverrideEachOther
+    private void doIntialPositionsOverrideEachOther(GameDescriptor gameDescriptor) throws PlayersInitPositionsOverrideEachOtherException
     {
         HashSet<Position> positionsSet = new HashSet<>();
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
@@ -167,13 +163,30 @@ public class GameSettingsReader {
                 }
                 else
                 {
-                    throw new PlayersInitPositionsOverrideEachOther();
+                    throw new PlayersInitPositionsOverrideEachOtherException();
                 }
             }
         }
     }
 
-    private void areThereIslandsOnRegularMode(GameDescriptor gameDescriptor, List<GameEngine.Player> playersList) throws  IslandsOnRegularMode{
+    private void doEachPlayerHasAtLeastOneInitialPoint(GameDescriptor gameDescriptor) throws PlayerHasNoInitialPositionsException
+    {
+        HashSet<Position> positionsSet = new HashSet<>();
+        List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
+        List<Position> currPlayerInitialPositions;
+
+        for(Participant participant : participantsList)
+        {
+            currPlayerInitialPositions = participant.getPosition();
+
+            if(currPlayerInitialPositions.size() == 0)
+            {
+                throw new PlayerHasNoInitialPositionsException();
+            }
+        }
+    }
+
+    private void areThereIslandsOnRegularMode(GameDescriptor gameDescriptor, List<GameEngine.Player> playersList) throws IslandsOnRegularModeException {
         GameEngine.Board board;
 
         board = createBoardFromGameDetails(gameDescriptor, playersList);
@@ -181,22 +194,22 @@ public class GameSettingsReader {
             for(int col = 0; col < board.getWidth(); ++col){
                 if(board.get(row,col) != null){
                     if(!board.isThereDiscAdjacent(new Point(row,col))){
-                        throw new IslandsOnRegularMode();
+                        throw new IslandsOnRegularModeException();
                     }
                 }
             }
         }
     }
 
-    private void areNumberOfColsInRange(GameDescriptor gamedDescriptor) throws ColumnsNotInRange
+    private void areNumberOfColsInRange(GameDescriptor gamedDescriptor) throws ColumnsNotInRangeException
     {
         byte xmlCols = gamedDescriptor.getGame().getBoard().getColumns();
 
         if(xmlCols < MIN_COLS || xmlCols > MAX_COLS)
-            throw new ColumnsNotInRange();
+            throw new ColumnsNotInRangeException();
     }
 
-    private void areIntialPositionsInRange(GameDescriptor gameDescriptor) throws PlayersInitPositionsOutOfRange
+    private void areIntialPositionsInRange(GameDescriptor gameDescriptor) throws PlayersInitPositionsOutOfRangeException
     {
         int maxRowInBoard = (int)gameDescriptor.getGame().getBoard().getRows();
         int maxColInBoard = (int)gameDescriptor.getGame().getBoard().getColumns();
@@ -211,17 +224,17 @@ public class GameSettingsReader {
             {
                 if(position.getRow() > maxRowInBoard || position.getRow() < 1)
                 {
-                    throw new PlayersInitPositionsOutOfRange();
+                    throw new PlayersInitPositionsOutOfRangeException();
                 }
                 if(position.getColumn() > maxColInBoard || position.getColumn() < 1)
                 {
-                    throw new PlayersInitPositionsOutOfRange();
+                    throw new PlayersInitPositionsOutOfRangeException();
                 }
             }
         }
     }
 
-    private void doesBoardSizeMatchNumOfPlayers(GameDescriptor gameDescriptor) throws BoardSizeDoesntMatchNumOfPlayers {
+    private void doesBoardSizeMatchNumOfPlayers(GameDescriptor gameDescriptor) throws BoardSizeDoesntMatchNumOfPlayersException {
         int boardSize, numOfEmptyCells, numOfInitPositions = 0;
         int numOfPlayers = 2;
 
@@ -236,7 +249,7 @@ public class GameSettingsReader {
 
         numOfEmptyCells = boardSize - numOfInitPositions;
         if(numOfEmptyCells % numOfPlayers != 0) {
-            throw new BoardSizeDoesntMatchNumOfPlayers();
+            throw new BoardSizeDoesntMatchNumOfPlayersException();
         }
     }
 

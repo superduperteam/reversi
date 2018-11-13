@@ -1,6 +1,6 @@
 package Exceptions;
 
-public class PlayersInitPositionsOutOfRange extends Exception  {
+public class PlayersInitPositionsOutOfRangeException extends Exception  {
     private final String errMessage = "Players initial positions are out of range";
 
     @Override

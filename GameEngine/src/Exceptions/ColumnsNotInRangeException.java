@@ -1,6 +1,6 @@
 package Exceptions;
 
-public class ColumnsNotInRange extends Exception  {
+public class ColumnsNotInRangeException extends Exception  {
     private final String errMessage = "Columns not in range";
 
     @Override

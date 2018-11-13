@@ -1,6 +1,6 @@
 package Exceptions;
 
-public class RowsNotInRange extends Exception  {
+public class RowsNotInRangeException extends Exception  {
     private final String errMessage = "Rows not in range";
 
     @Override

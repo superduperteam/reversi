@@ -1,6 +1,6 @@
 package Exceptions;
 
-public class PlayersInitPositionsOverrideEachOther extends Exception  {
+public class PlayersInitPositionsOverrideEachOtherException extends Exception  {
     private final String errMessage = "Players initial positions override each other";
 
     @Override

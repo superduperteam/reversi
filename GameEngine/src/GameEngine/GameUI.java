@@ -4,7 +4,6 @@ import Exceptions.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.lang.String;
@@ -76,29 +75,33 @@ public class GameUI
                     //noXMLFile.printStackTrace();
                     System.out.println("Error: " + noXMLFile);
                     isGameLoaded = false;
-                } catch (PlayersInitPositionsOverrideEachOther playersInitPositionsOverrideEachOther) {
-                    //playersInitPositionsOverrideEachOther.printStackTrace();
-                    System.out.println("Error: " + playersInitPositionsOverrideEachOther);
+                } catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
+                    System.out.println("Error: " + playerHasNoInitialPositionsException);
                     isGameLoaded = false;
-                } catch (BoardSizeDoesntMatchNumOfPlayers boardSizeDoesntMatchNumOfPlayers) {
-                    //boardSizeDoesntMatchNumOfPlayers.printStackTrace();
-                    System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayers);
+                }
+                catch (PlayersInitPositionsOverrideEachOtherException playersInitPositionsOverrideEachOtherException) {
+                    //playersInitPositionsOverrideEachOtherException.printStackTrace();
+                    System.out.println("Error: " + playersInitPositionsOverrideEachOtherException);
                     isGameLoaded = false;
-                } catch (PlayersInitPositionsOutOfRange playersInitPositionsOutOfRange) {
-                    //playersInitPositionsOutOfRange.printStackTrace();
-                    System.out.println("Error: " + playersInitPositionsOutOfRange);
+                } catch (BoardSizeDoesntMatchNumOfPlayersException boardSizeDoesntMatchNumOfPlayersException) {
+                    //boardSizeDoesntMatchNumOfPlayersException.printStackTrace();
+                    System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayersException);
                     isGameLoaded = false;
-                } catch (RowsNotInRange rowsNotInRange) {
-                    //rowsNotInRange.printStackTrace();
-                    System.out.println("Error: " + rowsNotInRange);
+                } catch (PlayersInitPositionsOutOfRangeException playersInitPositionsOutOfRangeException) {
+                    //playersInitPositionsOutOfRangeException.printStackTrace();
+                    System.out.println("Error: " + playersInitPositionsOutOfRangeException);
                     isGameLoaded = false;
-                } catch (ColumnsNotInRange columnsNotInRange) {
-                    //columnsNotInRange.printStackTrace();
-                    System.out.println("Error: " + columnsNotInRange);
+                } catch (RowsNotInRangeException rowsNotInRangeException) {
+                    //rowsNotInRangeException.printStackTrace();
+                    System.out.println("Error: " + rowsNotInRangeException);
                     isGameLoaded = false;
-                } catch (IslandsOnRegularMode islandsOnRegularMode) {
-                    //islandsOnRegularMode.printStackTrace();
-                    System.out.println("Error: " + islandsOnRegularMode);
+                } catch (ColumnsNotInRangeException columnsNotInRangeException) {
+                    //columnsNotInRangeException.printStackTrace();
+                    System.out.println("Error: " + columnsNotInRangeException);
+                    isGameLoaded = false;
+                } catch (IslandsOnRegularModeException islandsOnRegularModeException) {
+                    //islandsOnRegularModeException.printStackTrace();
+                    System.out.println("Error: " + islandsOnRegularModeException);
                     isGameLoaded = false;
                 }
                 //TODO check if xml file is application legal
