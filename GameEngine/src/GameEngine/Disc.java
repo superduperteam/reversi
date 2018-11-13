@@ -1,6 +1,8 @@
 package GameEngine;
 
-public class Disc
+import java.io.Serializable;
+
+public class Disc implements Serializable
 {
     private eDiscType type;
 

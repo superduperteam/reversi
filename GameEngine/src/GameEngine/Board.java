@@ -2,9 +2,10 @@ package GameEngine;
 
 import jaxb.schema.generated.Game;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Board
+public class Board implements Serializable
 {
     private int height;
     private int width;
@@ -58,7 +59,7 @@ public class Board
 
     private void copyInitialDiscPoints(HashMap<Player, List<Point>> initialDiscPointsOfPlayerToCopy)
     {
-        initialDiscPointsOfPlayers = new LinkedHashMap();
+        initialDiscPointsOfPlayers = new LinkedHashMap<>();
         List<Point> currPlayerPointsList;
 
         if(initialDiscPointsOfPlayerToCopy == null)

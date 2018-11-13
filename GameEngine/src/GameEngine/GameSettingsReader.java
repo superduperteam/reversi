@@ -26,7 +26,7 @@ public class GameSettingsReader {
     // TODO: Check path, check XML
     
     public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
-            ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFile, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
+            ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
             RowsNotInRangeException, PlayerHasNoInitialPositionsException {
 //        Scanner reader = new Scanner(System.in);
 //        String filePathString;
@@ -39,11 +39,11 @@ public class GameSettingsReader {
         File xmlFile = new File(xmlFilePath.toString());//xmlFilePath.toString());
 
 //        if(xmlFile != null) {
-//            throw new Exceptions.NoXMLFile();
+//            throw new Exceptions.NoXMLFileException();
 //        }
         if(!xmlFilePath.toString().toLowerCase().endsWith(".xml"))
         {
-            throw new Exceptions.NoXMLFile();
+            throw new NoXMLFileException();
         }
         else {
             try
@@ -52,7 +52,7 @@ public class GameSettingsReader {
                 return extractGameSettings(inputStream, playersList);
             } catch (IOException e)
             {
-                throw new Exceptions.NoXMLFile();
+                throw new NoXMLFileException();
             }
         }
     }

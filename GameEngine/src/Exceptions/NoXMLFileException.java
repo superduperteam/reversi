@@ -1,6 +1,6 @@
 package Exceptions;
 
-public class NoXMLFile extends Exception  {
+public class NoXMLFileException extends Exception  {
     private final String errMessage = "The given XML file doesn't exist";
 
     @Override

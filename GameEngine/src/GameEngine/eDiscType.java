@@ -1,6 +1,8 @@
 package GameEngine;
 
-public enum eDiscType {
+import java.io.Serializable;
+
+public enum eDiscType implements Serializable {
     BLACK {
         @Override
         public String toString() {

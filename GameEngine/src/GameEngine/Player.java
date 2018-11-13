@@ -1,11 +1,12 @@
 package GameEngine;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Player {
+public class Player implements Serializable {
     private Statistics statistics;
     private int countOfRemainingDiscs;
     private String name;
@@ -59,20 +60,20 @@ public class Player {
 //        statistics = new Statistics();
 //    }
 
-    public class Statistics {
+    public class Statistics implements  Serializable{
         private int countOfPlayedTurns;
-        private double averageOfFlips;
+        private double totalNumOfFlips;
         private int score;
 
         public Statistics() {
             countOfPlayedTurns = 0;
-            averageOfFlips = 0;
+            totalNumOfFlips = 0;
             score = 0;
         }
 
         public Statistics(Statistics toCopy) {
             this.countOfPlayedTurns = toCopy.countOfPlayedTurns;
-            this.averageOfFlips = toCopy.averageOfFlips;
+            this.totalNumOfFlips = toCopy.totalNumOfFlips;
             this.score = toCopy.score;
         }
 
@@ -89,7 +90,7 @@ public class Player {
         }
 
         public double getAverageOfFlips() {
-            return averageOfFlips;
+            return totalNumOfFlips / countOfPlayedTurns;
         }
 
         public int getScore() {
@@ -159,7 +160,7 @@ public class Player {
 
         if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
         {
-            board.updateBoard(targetInsertionPoint, discType);
+            statistics.totalNumOfFlips = board.updateBoard(targetInsertionPoint, discType);
             statistics.countOfPlayedTurns++;
         }
 

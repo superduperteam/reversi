@@ -2,6 +2,7 @@ package GameEngine;
 
 import Exceptions.*;
 
+import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class GameUI
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
     private GameManager gameManager;
+    private final String FILE_NAME = "saved_game_data.dat";
 
     public void start()
     {
@@ -51,6 +53,7 @@ public class GameUI
         int menuInput;
         boolean isGameLoaded = false;
         boolean doesUserWantToPlay = true;
+        boolean didLoadPreviouslyPlayedGame = false;
         List<Player> playersList = generateInitialPlayersList();
 
         List<String> menuOptions= new ArrayList<>
@@ -67,16 +70,25 @@ public class GameUI
             }
             else if(menuInput == LOAD_PREVIOUSLY_SAVED_GAME)
             {
-                //TODO implement load method here (ido)
+                gameManager = loadGameFromFile();
 
-                // use isGameLoaded boolean in this scope too.
+                if(gameManager != null){
+                    isGameLoaded = true;
+                    didLoadPreviouslyPlayedGame = true;
+                }
+                else{
+                    isGameLoaded = false;
+                    System.out.println("Failed to load previously saved game. Please try again");
+                }
             }
             else if(menuInput == START_GAME)
             {
                 if(isGameLoaded)
                 { // You must to have gameManager here
 //                playersList = getPlayersDetailsFromUser(playersList);
-                    getPlayersDetailsFromUser(gameManager.getPlayersList());
+                    if(!didLoadPreviouslyPlayedGame) {
+                        getPlayersDetailsFromUser(gameManager.getPlayersList());
+                    }
                     doesUserWantToPlay = gameLoop(gameManager);
                     gameManager.resetGame();
                 }
@@ -129,7 +141,7 @@ public class GameUI
 
         try {
             gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
-        } catch (NoXMLFile noXMLFile) {
+        } catch (NoXMLFileException noXMLFile) {
             //noXMLFile.printStackTrace();
             System.out.println("Error: " + noXMLFile);
             isGameLoaded = false;
@@ -171,7 +183,7 @@ public class GameUI
     private boolean gameLoop(GameManager gameManager)
     {
         // int i = 1; // Option 5 (History) check
-        List<String> menuOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5"));
+        List<String> menuOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6"));
         int menuInput;
         boolean didUserAskToEndGame = false;
         boolean doesUserWantToPlayAgain;
@@ -437,11 +449,44 @@ public class GameUI
                 printWhoseTurn(gameManager.getActivePlayer());
                 break;
             case SAVE_GAME:
-                //TODO implement serialization (ido)
+                saveGameToFile(gameManager);
+                System.out.println("Game saved to file");
                 break;
         }
 
         return  didUserAskToEndGame;
+    }
+
+    private GameManager loadGameFromFile(){
+        GameManager loadedGameManager = null;
+
+        try (ObjectInputStream in =
+                     new ObjectInputStream(
+                             new FileInputStream(FILE_NAME))) {
+            // we know that we read array list of Persons
+            loadedGameManager =
+                    (GameManager) in.readObject();
+        } catch (IOException e) {
+            //e.printStackTrace();
+            System.out.println("Error while trying to load file. Please try again.");
+        } catch (ClassNotFoundException e) {
+            //e.printStackTrace();
+            System.out.println("Error while trying to load file (Class Not Found). Please try again.");
+        }
+
+        return loadedGameManager;
+    }
+
+    private void saveGameToFile(GameManager gameManager) {
+        try (ObjectOutputStream out =
+                     new ObjectOutputStream(
+                             new FileOutputStream(FILE_NAME))) {
+            out.writeObject(gameManager);
+            out.flush();
+        } catch (IOException e) {
+            //e.printStackTrace();
+            System.out.println("Error while trying to save file. Please try again.");
+        }
     }
 
     private void playNextMove(GameManager gameManager)

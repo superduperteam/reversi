@@ -1,8 +1,9 @@
 package GameEngine;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameManager
+public class GameManager implements Serializable
 {
     private eGameMode gameMode;
     private HashMap<eDiscType, Player> discTypeToPlayer;
@@ -153,16 +154,14 @@ public class GameManager
         }
     }
 
-    public static class TurnHistory
-    {
+    public static class TurnHistory implements  Serializable {
         private Stack<Turn> turnHistoryStack;
 
         public TurnHistory(){
             turnHistoryStack = new Stack<>();
         }
 
-        public static class Turn
-        {
+        public static class Turn implements  Serializable {
             private List<Player> playersList;
             private Player activePlayer;
             private Board board;
