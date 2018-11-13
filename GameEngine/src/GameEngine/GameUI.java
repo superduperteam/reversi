@@ -4,6 +4,7 @@ import Exceptions.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.lang.String;
@@ -12,21 +13,20 @@ import java.nio.file.Paths;
 
 public class GameUI
 {
-    private static int colIntialNumber = 1;
-    private static int rowIntialNumber = 1;
+    private static int colInitialNumber = 1;
+    private static int rowInitialNumber = 1;
     private static int boardCellSize = 5;
     private static char space = ' ';
-    private static int height = 10;
-    private static int width = 10;
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
     private GameManager gameManager;
-    private final int LOAD_XML = 1;
-    private final int START_GAME = 2;
-    private final int LOAD_PREVIOUSLY_SAVED_GAME = 3;
 
     public void start()
     {
+        final int LOAD_XML = 1;
+        final int START_GAME = 2;
+        final int SHOW_GAME_DESCRIPTION = 3;
+        final int LOAD_PREVIOUSLY_SAVED_GAME = 4;
         //GameManager gameManager;
         // Test
         // Will be deleted after XML addition
@@ -48,72 +48,54 @@ public class GameUI
 //        Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
 //
 //        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
-        int menuInput = 0;
-        //boolean didLoadXMLfile = false;
+        int menuInput;
         boolean isGameLoaded = false;
-        GameSettingsReader gameSettingsReader = new GameSettingsReader();
-        List<Player> playersList = new ArrayList<>(2);
-        List<String> menuOptions= new ArrayList<>();
+        boolean doesUserWantToPlay = true;
+        List<Player> playersList = generateInitialPlayersList();
 
-        playersList.add(new Player("", true,eDiscType.BLACK, new BigInteger("1")));
-        playersList.add(new Player("", true,eDiscType.WHITE, new BigInteger("2")));
-        menuOptions.add("1");
-        menuOptions.add("2");
-        menuOptions.add("3");
+        List<String> menuOptions= new ArrayList<>
+                (Arrays.asList(String.valueOf(LOAD_XML), String.valueOf(START_GAME), String.valueOf(SHOW_GAME_DESCRIPTION), String.valueOf(LOAD_PREVIOUSLY_SAVED_GAME)));
 
-        while(isGameLoaded == false || menuInput != START_GAME) {
+        while(isGameLoaded == false || doesUserWantToPlay)
+        {
             printStartMenu();
             menuInput = getMenuInput(menuOptions);
-            if(menuInput == LOAD_XML) {
-                isGameLoaded = true;
-                System.out.println("Please enter a XML path:");
-                Path filePath = getXMLPathFromUser();
 
-                try {
-                    gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
-                } catch (NoXMLFile noXMLFile) {
-                    //noXMLFile.printStackTrace();
-                    System.out.println("Error: " + noXMLFile);
-                    isGameLoaded = false;
-                } catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
-                    System.out.println("Error: " + playerHasNoInitialPositionsException);
-                    isGameLoaded = false;
-                }
-                catch (PlayersInitPositionsOverrideEachOtherException playersInitPositionsOverrideEachOtherException) {
-                    //playersInitPositionsOverrideEachOtherException.printStackTrace();
-                    System.out.println("Error: " + playersInitPositionsOverrideEachOtherException);
-                    isGameLoaded = false;
-                } catch (BoardSizeDoesntMatchNumOfPlayersException boardSizeDoesntMatchNumOfPlayersException) {
-                    //boardSizeDoesntMatchNumOfPlayersException.printStackTrace();
-                    System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayersException);
-                    isGameLoaded = false;
-                } catch (PlayersInitPositionsOutOfRangeException playersInitPositionsOutOfRangeException) {
-                    //playersInitPositionsOutOfRangeException.printStackTrace();
-                    System.out.println("Error: " + playersInitPositionsOutOfRangeException);
-                    isGameLoaded = false;
-                } catch (RowsNotInRangeException rowsNotInRangeException) {
-                    //rowsNotInRangeException.printStackTrace();
-                    System.out.println("Error: " + rowsNotInRangeException);
-                    isGameLoaded = false;
-                } catch (ColumnsNotInRangeException columnsNotInRangeException) {
-                    //columnsNotInRangeException.printStackTrace();
-                    System.out.println("Error: " + columnsNotInRangeException);
-                    isGameLoaded = false;
-                } catch (IslandsOnRegularModeException islandsOnRegularModeException) {
-                    //islandsOnRegularModeException.printStackTrace();
-                    System.out.println("Error: " + islandsOnRegularModeException);
-                    isGameLoaded = false;
-                }
-                //TODO check if xml file is application legal
+            if(menuInput == LOAD_XML)
+            {
+                isGameLoaded = loadXML(playersList);
             }
-            else if(menuInput == LOAD_PREVIOUSLY_SAVED_GAME) {
+            else if(menuInput == LOAD_PREVIOUSLY_SAVED_GAME)
+            {
                 //TODO implement load method here (ido)
+
                 // use isGameLoaded boolean in this scope too.
             }
+            else if(menuInput == START_GAME)
+            {
+                if(isGameLoaded)
+                { // You must to have gameManager here
+//                playersList = getPlayersDetailsFromUser(playersList);
+                    getPlayersDetailsFromUser(gameManager.getPlayersList());
+                    doesUserWantToPlay = gameLoop(gameManager);
+                    gameManager.resetGame();
+                }
+                else System.out.println("Game isn't loaded yet.");
+            }
+            else if(menuInput == SHOW_GAME_DESCRIPTION)
+            {
+                if(isGameLoaded)
+                {
+                    printGameState(gameManager, false);
+                }
+                else System.out.println("Game isn't loaded yet.");
+            }
+
+            if(isGameLoaded && menuInput != START_GAME) {System.out.println("Game was loaded successfully!\n"); }
         }
 
-        playersList =  getPlayersDetailsFromUser(playersList);
-        gameLoop(gameManager);
+//        playersList = getPlayersDetailsFromUser(playersList);
+//        gameLoop(gameManager);
 
 //        board.nullifyBoardCells();
 //        board.board[7][5] = new Disc(eDiscType.BLACK);
@@ -135,6 +117,135 @@ public class GameUI
 //
 //        activePlayer.MakeMove(new Point(3, 5), board);
 //        printGameState(board);
+    }
+
+
+    private boolean loadXML(List<Player> playersList)
+    {
+        GameSettingsReader gameSettingsReader = new GameSettingsReader();
+        boolean isGameLoaded = true;
+        System.out.println("Please enter a XML path:");
+        Path filePath = getXMLPathFromUser();
+
+        try {
+            gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+        } catch (NoXMLFile noXMLFile) {
+            //noXMLFile.printStackTrace();
+            System.out.println("Error: " + noXMLFile);
+            isGameLoaded = false;
+        } catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
+            System.out.println("Error: " + playerHasNoInitialPositionsException);
+            isGameLoaded = false;
+        }
+        catch (PlayersInitPositionsOverrideEachOtherException playersInitPositionsOverrideEachOtherException) {
+            //playersInitPositionsOverrideEachOtherException.printStackTrace();
+            System.out.println("Error: " + playersInitPositionsOverrideEachOtherException);
+            isGameLoaded = false;
+        } catch (BoardSizeDoesntMatchNumOfPlayersException boardSizeDoesntMatchNumOfPlayersException) {
+            //boardSizeDoesntMatchNumOfPlayersException.printStackTrace();
+            System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayersException);
+            isGameLoaded = false;
+        } catch (PlayersInitPositionsOutOfRangeException playersInitPositionsOutOfRangeException) {
+            //playersInitPositionsOutOfRangeException.printStackTrace();
+            System.out.println("Error: " + playersInitPositionsOutOfRangeException);
+            isGameLoaded = false;
+        } catch (RowsNotInRangeException rowsNotInRangeException) {
+            //rowsNotInRangeException.printStackTrace();
+            System.out.println("Error: " + rowsNotInRangeException);
+            isGameLoaded = false;
+        } catch (ColumnsNotInRangeException columnsNotInRangeException) {
+            //columnsNotInRangeException.printStackTrace();
+            System.out.println("Error: " + columnsNotInRangeException);
+            isGameLoaded = false;
+        } catch (IslandsOnRegularModeException islandsOnRegularModeException) {
+            //islandsOnRegularModeException.printStackTrace();
+            System.out.println("Error: " + islandsOnRegularModeException);
+            isGameLoaded = false;
+        }
+        //TODO check if xml file is application legal
+
+        return isGameLoaded;
+    }
+
+    // returns true if user want to play again.
+    private boolean gameLoop(GameManager gameManager)
+    {
+        // int i = 1; // Option 5 (History) check
+        List<String> menuOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5"));
+        int menuInput;
+        boolean didUserAskToEndGame = false;
+        boolean doesUserWantToPlayAgain;
+
+        // call this only after all info about players is gathered. ##
+        gameManager.activateGame();
+
+        while(!gameManager.isGameOver() && !didUserAskToEndGame)
+        {
+            printGameMenu();
+            menuInput = getMenuInput(menuOptions);
+
+            didUserAskToEndGame = executeMenuCommand(menuInput);
+        }
+
+        if(!didUserAskToEndGame)
+        {
+            printWinnerDeclarationMessage();
+            doesUserWantToPlayAgain =  AskUserToPlayAgain();
+        }
+        else doesUserWantToPlayAgain = false;
+
+        return doesUserWantToPlayAgain;
+    }
+
+    private void printWinnerDeclarationMessage()
+    {
+        Player winnerPlayer = gameManager.getWinner();
+        System.out.print("The winner is: ");
+        System.out.println(winnerPlayer.getName());
+        System.out.print("Score: ");
+        System.out.println(winnerPlayer.getStatistics().getScore());
+
+        // Print for other players. (just one in this exercise)
+        for(Player player : gameManager.getPlayersList())
+        {
+            if(!player.equals(winnerPlayer))
+            {
+                System.out.println(player.getName());
+                System.out.print("Score: ");
+                System.out.println(player.getStatistics().getScore());
+            }
+        }
+    }
+
+    private boolean AskUserToPlayAgain()
+    {
+        boolean hasAnswered = false;
+        boolean doesUserWantToPlayAgain = false;
+        Scanner scanner = new Scanner(System.in);
+        String userInput;
+
+        while(!hasAnswered)
+        {
+            System.out.println("Do you want to play again? y/n");
+            userInput = scanner.nextLine();
+
+            if(userInput.toLowerCase().equals("y"))
+            {
+                hasAnswered = true;
+                doesUserWantToPlayAgain = true;
+            }
+            else if(userInput.toLowerCase().equals("n"))
+            {
+                hasAnswered = true;
+                doesUserWantToPlayAgain = false;
+            }
+            else
+            {
+                System.out.println("Please answer accordingly. Please try again.");
+            }
+        }
+
+        return doesUserWantToPlayAgain;
     }
 
     private int getMenuInput(List<String> numbersList) {
@@ -167,7 +278,8 @@ public class GameUI
         startMenuOptions.append("Please enter one of the options below (enter the desired option number)\n");
         startMenuOptions.append("1.Load new XML file\n");
         startMenuOptions.append("2.Start game\n");
-        startMenuOptions.append("3.Load previous saved game\n");
+        startMenuOptions.append("3.Show game description\n");
+        startMenuOptions.append("4.Load previous saved game\n");
 
         System.out.println(startMenuOptions.toString());
     }
@@ -200,7 +312,7 @@ public class GameUI
         StringBuilder gameMenuOptions = new StringBuilder();
 
         gameMenuOptions.append("Please enter one of the options below (enter the desired option number)\n");
-        gameMenuOptions.append("1.Show game state\n");
+        gameMenuOptions.append("1.Show game description\n");
         gameMenuOptions.append("2.Make a turn\n");
         gameMenuOptions.append("3.Show game history\n");
         gameMenuOptions.append("4.Exit\n");
@@ -210,57 +322,19 @@ public class GameUI
         System.out.println(gameMenuOptions.toString());
     }
 
-
-    private void gameLoop(GameManager gameManager)
-    {
-        // int i = 1; // Option 5 (History) check
-        List<String> menuOptions = new ArrayList<>();
-        int menuInput;
-        boolean didUserAskToEndGame = false;
-
-        menuOptions.add("1");
-        menuOptions.add("2");
-        menuOptions.add("3");
-        menuOptions.add("4");
-        menuOptions.add("5");
-
-        while(!gameManager.isGameOver() && !didUserAskToEndGame)
-        {
-           // GameManager.TurnHistory.Turn currTurn = gameManager.getCurrentTurn();
-            printGameMenu();
-            menuInput = getMenuInput(menuOptions);
-
-            didUserAskToEndGame = executeMenuCommand(menuInput);
-
-           // gameManager.addTurnToHistory(currTurn);
-
-
-//            if(i == 3) // Option 5 (History) check
-//                printHistoryOfBoardStates(gameManager);
-//            i++;
-        }
-
-        if(!didUserAskToEndGame) {
-            Player winnerPlayer = gameManager.getWinner();
-
-            System.out.print("The winner is: ");
-            System.out.println(winnerPlayer.getName());
-        }
-    }
-
     private void printGameMode(GameManager gameManager)
     {
         System.out.print("Game mode: ");
         System.out.println(gameManager.getGameMode());
     }
 
-    private void printIsGameOver(GameManager gameManager)
+    private void printIsGameActive(boolean isGameActive)
     {
-        if(gameManager.isGameOver())
+        if(isGameActive)
         {
-            System.out.println("Game is over!");
+            System.out.println("Game is active.");
         }
-        else System.out.println("Game isn't over.");
+        else System.out.println("Game isn't active.");
     }
 
     private void printPlayersStatistics(List<Player> playersList)
@@ -281,15 +355,26 @@ public class GameUI
         });
     }
 
-    private void printGameState(GameManager gameManager)
+    private void printPlayersAndTheirDiscType(List<Player> playersList) {
+        playersList.forEach(player ->
+        {
+            System.out.print(player.getName());
+            System.out.print(": '");
+            System.out.print(player.GetDiscType());
+            System.out.println("'");
+        });
+    }
+
+    private void printGameState(GameManager gameManager, boolean isGameActive)
     {
         System.out.println("Game Description:");
        // System.out.println(getStringOfInitialDiscPointsOfPlayers(gameManager.getBoard().getInitialDiscPositionOfPlayers()));
         printBoardState(gameManager.getInitialBoard()); // or printBoardState(gameManager.getBoard())?
+        printPlayersAndTheirDiscType(gameManager.getPlayersList());
         printGameMode(gameManager);
-        printIsGameOver(gameManager);
+        printIsGameActive(isGameActive);
 
-        if(!gameManager.isGameOver())
+        if(!gameManager.isGameOver() && isGameActive)
         {
             System.out.print("Active Player: ");
             System.out.println(gameManager.getActivePlayer().getName());
@@ -334,7 +419,7 @@ public class GameUI
         switch (commandToExecute){
             case PRINT_GAME_STATE:
                 //TODO implement (command 3 in reversi.doc) (saar)
-                printGameState(gameManager);
+                printGameState(gameManager, true);
                 break;
             case MAKE_MOVE:
                 playNextMove(gameManager);
@@ -389,8 +474,6 @@ public class GameUI
         Scanner reader = new Scanner(System.in);
         String isPlayerHumanUserStr;
         StringBuilder stringBuilder = new StringBuilder();
-        String yesStr = "y";
-        String noStr = "n";
 
         stringBuilder.append("Is ");
         stringBuilder.append(playerNumber);
@@ -400,10 +483,10 @@ public class GameUI
             System.out.println(stringBuilder.toString());
             isPlayerHumanUserStr = reader.nextLine();
 
-            if (isPlayerHumanUserStr.toLowerCase().equals(yesStr)) {
+            if (isPlayerHumanUserStr.toLowerCase().equals("y")) {
                 isPlayerHuman = true;
                 hasUserAnswered = true;
-            } else if (isPlayerHumanUserStr.toLowerCase().equals(noStr)) {
+            } else if (isPlayerHumanUserStr.toLowerCase().equals("n")) {
                 isPlayerHuman = false;
                 hasUserAnswered = true;
             }
@@ -495,7 +578,7 @@ public class GameUI
                         if (isStringOnlyDigits(coordinates[0]) && (isStringOnlyDigits(coordinates[1]))) {
                             row = Integer.parseInt(coordinates[0]);
                             col = Integer.parseInt(coordinates[1]);
-                            nextMoveOfUser = new Point(row - rowIntialNumber, col - colIntialNumber);
+                            nextMoveOfUser = new Point(row - rowInitialNumber, col - colInitialNumber);
 
 //                                if (gameBoard.isCellPointInRange(nextMoveOfUser)) {
                             isMoveSyntactic = true;
@@ -535,7 +618,7 @@ public class GameUI
         System.out.println(strBuilder.toString());
     }
 
-    private List<Player> getPlayersDetailsFromUser(List<Player> playersList)
+    private void getPlayersDetailsFromUser(List<Player> playersList)
     {
         boolean isFirstPlayerHuman, isSecondPlayerHuman;
         boolean areBothAIs = true;
@@ -575,8 +658,8 @@ public class GameUI
         playersList.get(0).setIsHuman(isFirstPlayerHuman);
         playersList.get(1).setName(player2Name);
         playersList.get(1).setIsHuman(isSecondPlayerHuman);
-
-        return playersList;
+//
+//        return playersList;
     }
 
     private boolean isStringOnlyDigits(String str)
@@ -619,7 +702,7 @@ public class GameUI
 
     private void printColsLetters(Board board)
     {
-        int colLetter = colIntialNumber;
+        int colLetter = colInitialNumber;
 
         printSpaces(boardCellSize);
         for (int i = 0; i < board.getWidth(); i++)
@@ -654,7 +737,7 @@ public class GameUI
 
     private void printInnerBoard(Board board)
     {
-        int rowLetter = rowIntialNumber;
+        int rowLetter = rowInitialNumber;
         Disc discInCell;
 
         for (int i = 0; i < board.getHeight(); i++)
@@ -706,5 +789,14 @@ public class GameUI
         {
             System.out.print(rowSeparator);
         }
+    }
+
+    private List<Player> generateInitialPlayersList()
+    {
+        List<Player> playersList = new ArrayList<>(2);
+        playersList.add(new Player("", true,eDiscType.BLACK, new BigInteger("1")));
+        playersList.add(new Player("", true,eDiscType.WHITE, new BigInteger("2")));
+
+        return playersList;
     }
 }

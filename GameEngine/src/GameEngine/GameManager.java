@@ -24,9 +24,9 @@ public class GameManager
         this.gameMode = gameMode;
         activePlayer = playersList.get(0);
         this.board = board;
-
-        currTurn = getCurrentTurn(); // ##
+//        currTurn = getCurrentTurn(); // ##
     }
+
 
     public List<Player> getPlayersList()
     {
@@ -88,6 +88,12 @@ public class GameManager
 //        UpdateGameScore();
 //    }
 
+    public void resetGame()
+    {
+        List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
+        goBackToTurn(turnsList.get(0));
+        turnHistory.turnHistoryStack.clear();
+    }
 
     public void changeTurn()
     {
@@ -216,7 +222,7 @@ public class GameManager
         return boardsList;
     }
 
-    public void addTurnToHistory(TurnHistory.Turn turnToAdd){
+    private void addTurnToHistory(TurnHistory.Turn turnToAdd){
 
         turnHistory.addHistoryEntry(turnToAdd);
     }
@@ -230,17 +236,22 @@ public class GameManager
             didUndoFailed = true;
         }
         else {
-            gameMode = lastTurn.board.getGameMode();
-            discTypeToPlayer = lastTurn.discTypeToPlayer;
-            playersList = lastTurn.playersList;
-            activePlayer = lastTurn.activePlayer;
-            activePlayerIndex = playersList.indexOf(activePlayer);
-            board = lastTurn.board;
-
-            currTurn = getCurrentTurn();
+            goBackToTurn(lastTurn);
         }
 
         return didUndoFailed;
+    }
+
+    private void goBackToTurn(TurnHistory.Turn turnToChangeTo)
+    {
+        gameMode = turnToChangeTo.board.getGameMode();
+        discTypeToPlayer = turnToChangeTo.discTypeToPlayer;
+        playersList = turnToChangeTo.playersList;
+        activePlayer = turnToChangeTo.activePlayer;
+        activePlayerIndex = playersList.indexOf(activePlayer);
+        board = turnToChangeTo.board;
+
+        currTurn = getCurrentTurn();
     }
 
     public enum eGameMode
@@ -263,5 +274,11 @@ public class GameManager
             public String toString() {
             return new String("The coordinates are not in the board's range!");
         }}
+    }
+
+    // call this only after all info about players is gathered.
+    public void activateGame()
+    {
+        currTurn = getCurrentTurn(); // ##
     }
 }

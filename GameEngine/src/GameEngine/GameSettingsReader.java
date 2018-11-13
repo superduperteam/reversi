@@ -83,7 +83,7 @@ public class GameSettingsReader {
         List<Point> currInitialPointsList;
         List<Position> currPlayerIntialPositions;
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
-        LinkedHashMap<GameEngine.Player, List<Point>> initialDiscsPointsOfPlayers = new  LinkedHashMap<>();
+        HashMap<GameEngine.Player, List<Point>> initialDiscsPointsOfPlayers = new  LinkedHashMap<>();
 
         for(Participant participant : participantsList)
         {

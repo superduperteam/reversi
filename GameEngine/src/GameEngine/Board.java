@@ -12,15 +12,6 @@ public class Board
     private Disc board[][];
     private HashMap<Player, List<Point>> initialDiscPointsOfPlayers;
 
-//    public Board(int height, int width, LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers, GameManager.eGameMode gameMode)
-//    {
-//        board = new Disc[height][width];
-//        initializeBoard(intialDiscsPointsOfPlayers);
-//        this.height = height;
-//        this.width = width;
-//        this.gameMode = gameMode;
-//    }
-
     public Board(jaxb.schema.generated.Board board, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
 //        this.height = board.getRows();
@@ -38,9 +29,9 @@ public class Board
         this.height = height;
         this.width = width;
         this.board = new Disc[height][width];
-        initializeBoard(initialDiscPointsOfPlayers);
-        this.gameMode = gameMode;
         this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
+        initializeBoard(this.initialDiscPointsOfPlayers);
+        this.gameMode = gameMode;
     }
 
     public HashMap<Player, List<Point>> getInitialDiscPositionOfPlayers()
@@ -54,6 +45,8 @@ public class Board
         this.board = new Disc[height][width];
         gameMode = toCopy.gameMode; //note(ido): i assume game mode won't change during the game.
                                     // if it can change , I need to change the logic here.
+        copyInitialDiscPoints(toCopy.initialDiscPointsOfPlayers);
+
         for(int row = 0; row < height; ++row){
             for(int col = 0; col < width; ++col){
                 if(toCopy.board[row][col] != null) {
@@ -63,7 +56,32 @@ public class Board
         }
     }
 
-    // Returns the number of flipped discs that were flipped because of the given move.
+    private void copyInitialDiscPoints(HashMap<Player, List<Point>> initialDiscPointsOfPlayerToCopy)
+    {
+        initialDiscPointsOfPlayers = new LinkedHashMap();
+        List<Point> currPlayerPointsList;
+
+        if(initialDiscPointsOfPlayerToCopy == null)
+        {
+            this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayerToCopy;
+        }
+        else
+        {
+            for(Player player : initialDiscPointsOfPlayerToCopy.keySet())
+            {
+                currPlayerPointsList = new ArrayList<>();
+
+                for(Point point : initialDiscPointsOfPlayerToCopy.get(player))
+                {
+                    currPlayerPointsList.add(point);
+                }
+
+                initialDiscPointsOfPlayers.put(player, currPlayerPointsList);
+            }
+        }
+    }
+
+    // Returns the number of flipped discs that were flipped due to the given move.
     public int updateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
         board[targetInsertionPoint.getRow()][targetInsertionPoint.getCol()] = new Disc(discTypeToBeInserted);
