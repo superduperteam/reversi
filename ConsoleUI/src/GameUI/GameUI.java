@@ -23,54 +23,31 @@ public class GameUI
     private static char colSeparator = '|';
     private GameManager gameManager;
     private final String FILE_NAME = "saved_game_data.dat";
+    final int MAIN_MENU_LOAD_XML = 1;
+    final int MAIN_MENU_START_GAME = 2;
+    final int MAIN_MENU_SHOW_GAME_DESCRIPTION = 3;
+    final int MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME = 4;
 
     public void start()
     {
-        final int LOAD_XML = 1;
-        final int START_GAME = 2;
-        final int SHOW_GAME_DESCRIPTION = 3;
-        final int LOAD_PREVIOUSLY_SAVED_GAME = 4;
-        //GameManager gameManager;
-        // Test
-        // Will be deleted after XML addition
-//        List<Player> playersList = new ArrayList<>(2);
-//        playersList.add(new Player("Ido", true, eDiscType.BLACK, new BigInteger("0")));
-//        playersList.add(new Player("Saar", true, eDiscType.WHITE, new BigInteger("1")));
-//
-//        LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers = new  LinkedHashMap<Player, ArrayList<Point>>();
-//        ArrayList<Point> IdoPoints = new ArrayList<>();
-//        IdoPoints.add(new Point(4, 4));
-//        IdoPoints.add(new Point(5, 5));
-//
-//        ArrayList<Point> SaarPoints = new ArrayList<>();
-//        SaarPoints.add(new Point(5, 4));
-//        SaarPoints.add(new Point(4, 5));
-//
-//        intialDiscsPointsOfPlayers.put(playersList.get(0), IdoPoints);
-//        intialDiscsPointsOfPlayers.put(playersList.get(1), SaarPoints);
-//        Board board = new Board(height, width, intialDiscsPointsOfPlayers, GameManager.eGameMode.Regular);
-//
-//        GameManager gameManager = new GameManager(GameManager.eGameMode.Regular, playersList, board);
         int menuInput;
         boolean isGameLoaded = false;
         boolean doesUserWantToPlay = true;
         boolean didLoadPreviouslyPlayedGame = false;
         List<Player> playersList = generateInitialPlayersList();
-
         List<String> menuOptions= new ArrayList<>
-                (Arrays.asList(String.valueOf(LOAD_XML), String.valueOf(START_GAME), String.valueOf(SHOW_GAME_DESCRIPTION), String.valueOf(LOAD_PREVIOUSLY_SAVED_GAME)));
+                (Arrays.asList(String.valueOf(MAIN_MENU_LOAD_XML), String.valueOf(MAIN_MENU_START_GAME),
+                        String.valueOf(MAIN_MENU_SHOW_GAME_DESCRIPTION), String.valueOf(MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME)));
 
         while(isGameLoaded == false || doesUserWantToPlay)
         {
             printStartMenu();
             menuInput = getMenuInput(menuOptions);
 
-            if(menuInput == LOAD_XML)
-            {
+            if(menuInput == MAIN_MENU_LOAD_XML) {
                 isGameLoaded = loadXML(playersList);
             }
-            else if(menuInput == LOAD_PREVIOUSLY_SAVED_GAME)
-            {
+            else if(menuInput == MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME) {
                 gameManager = loadGameFromFile();
 
                 if(gameManager != null){
@@ -82,11 +59,8 @@ public class GameUI
                     System.out.println("Failed to load previously saved game. Please try again");
                 }
             }
-            else if(menuInput == START_GAME)
-            {
-                if(isGameLoaded)
-                { // You must to have gameManager here
-//                playersList = getPlayersDetailsFromUser(playersList);
+            else if(menuInput == MAIN_MENU_START_GAME) {
+                if(isGameLoaded) { // You must to have gameManager here
                     if(!didLoadPreviouslyPlayedGame) {
                         getPlayersDetailsFromUser(gameManager.getPlayersList());
                     }
@@ -95,43 +69,22 @@ public class GameUI
                 }
                 else System.out.println("Game isn't loaded yet.");
             }
-            else if(menuInput == SHOW_GAME_DESCRIPTION)
+            else if(menuInput == MAIN_MENU_SHOW_GAME_DESCRIPTION)
             {
-                if(isGameLoaded)
-                {
-                    printGameState(gameManager, false);
-                }
+                if(isGameLoaded) { printGameState(gameManager, false); }
                 else System.out.println("Game isn't loaded yet.");
             }
 
-            if(isGameLoaded && menuInput != START_GAME) {System.out.println("Game was loaded successfully!\n"); }
+            printUserIfGameWasLoadedSuccessfully(isGameLoaded, menuInput);
         }
-
-//        playersList = getPlayersDetailsFromUser(playersList);
-//        gameLoop(gameManager);
-
-//        board.nullifyBoardCells();
-//        board.board[7][5] = new Disc(eDiscType.BLACK);
-//        board.board[7][5] = new Disc(eDiscType.BLACK);
-//        board.board[7][1] = new Disc(eDiscType.BLACK);
-//
-//        board.board[4][4] = new Disc(eDiscType.WHITE);
-//        board.board[4][5] = new Disc(eDiscType.WHITE);
-//        board.board[5][3] = new Disc(eDiscType.WHITE);
-//        board.board[5][5] = new Disc(eDiscType.WHITE);
-//        board.board[6][2] = new Disc(eDiscType.WHITE);
-//        board.board[6][5] = new Disc(eDiscType.WHITE);
-//
-//        board.board[2][4] = new Disc(eDiscType.WHITE);
-//
-//        printGameState(board);
-//
-//        Player activePlayer = gameManager.GetActivePlayer();
-//
-//        activePlayer.MakeMove(new Point(3, 5), board);
-//        printGameState(board);
     }
 
+    private void printUserIfGameWasLoadedSuccessfully(boolean isGameLoaded, int userMenuInput)
+    {
+        if(isGameLoaded && userMenuInput != MAIN_MENU_START_GAME) {
+            System.out.println("Game was loaded successfully!\n");
+        }
+    }
 
     private boolean loadXML(List<Player> playersList)
     {
