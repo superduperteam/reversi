@@ -90,7 +90,12 @@ public class Player implements Serializable {
         }
 
         public double getAverageOfFlips() {
-            return totalNumOfFlips / countOfPlayedTurns;
+            double avgNumOfFlips = 0;
+
+            if(countOfPlayedTurns > 0){
+                avgNumOfFlips = totalNumOfFlips / countOfPlayedTurns;
+            }
+            return  avgNumOfFlips;
         }
 
         public int getScore() {
