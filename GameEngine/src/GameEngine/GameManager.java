@@ -91,9 +91,12 @@ public class GameManager implements Serializable
 
     public void resetGame()
     {
-        List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
-        goBackToTurn(turnsList.get(0));
-        turnHistory.turnHistoryStack.clear();
+        if(!turnHistory.turnHistoryStack.isEmpty())
+        {
+            List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
+            goBackToTurn(turnsList.get(0));
+            turnHistory.turnHistoryStack.clear();
+        }
     }
 
     public void changeTurn()

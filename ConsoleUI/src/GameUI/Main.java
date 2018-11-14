@@ -1,4 +1,4 @@
-package GameEngine;
+package GameUI;
 
 public class Main
 {
