@@ -1,6 +1,7 @@
 package GameEngine;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Point implements Serializable
 {
@@ -21,6 +22,20 @@ public class Point implements Serializable
     {
         this.row = row;
         this.col = col;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return col == point.col &&
+                row == point.row;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(col, row);
     }
 
     @Override

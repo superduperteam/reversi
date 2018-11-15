@@ -158,9 +158,10 @@ public class GameSettingsReader {
 
     private void doIntialPositionsOverrideEachOther(GameDescriptor gameDescriptor) throws PlayersInitPositionsOverrideEachOtherException
     {
-        HashSet<Position> positionsSet = new HashSet<>();
+        HashSet<Point> positionsSet = new HashSet<>();
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
         List<Position> currPlayerInitialPositions;
+        Point currCellPoint;
 
         for(Participant participant : participantsList)
         {
@@ -168,9 +169,11 @@ public class GameSettingsReader {
 
             for(Position position : currPlayerInitialPositions)
             {
-                if(!positionsSet.contains(position))
+                currCellPoint = new Point(position.getRow(),position.getColumn());
+
+                if(!positionsSet.contains(currCellPoint))
                 {
-                    positionsSet.add(position);
+                    positionsSet.add(currCellPoint);
                 }
                 else
                 {
