@@ -90,7 +90,7 @@ public class GameUI
     {
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
         boolean isGameLoaded = true;
-        System.out.println("Please enter a XML path:");
+        System.out.println("Please enter a XML path (it should end with .xml)");
         Path filePath = getXMLPathFromUser();
 
         try {
@@ -319,7 +319,9 @@ public class GameUI
             System.out.print("Turns played: ");
             System.out.println(player.getStatistics().getCountOfPlayedTurns());
             System.out.print("Average of flips: ");
-            System.out.println(player.getStatistics().getAverageOfFlips());
+            //System.out.println(player.getStatistics().getAverageOfFlips());
+            System.out.printf("%.2f", player.getStatistics().getAverageOfFlips());
+            System.out.println();
             System.out.print("Score: ");
             System.out.println(player.getStatistics().getScore());
         });

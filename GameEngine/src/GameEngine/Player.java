@@ -165,7 +165,7 @@ public class Player implements Serializable {
 
         if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
         {
-            statistics.totalNumOfFlips = board.updateBoard(targetInsertionPoint, discType);
+            statistics.totalNumOfFlips += board.updateBoard(targetInsertionPoint, discType);
             statistics.countOfPlayedTurns++;
         }
 
