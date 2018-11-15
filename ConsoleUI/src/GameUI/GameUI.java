@@ -23,10 +23,10 @@ public class GameUI
     private static char colSeparator = '|';
     private GameManager gameManager;
     private final String FILE_NAME = "saved_game_data.dat";
-    final int MAIN_MENU_LOAD_XML = 1;
-    final int MAIN_MENU_START_GAME = 2;
-    final int MAIN_MENU_SHOW_GAME_DESCRIPTION = 3;
-    final int MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME = 4;
+    private final int MAIN_MENU_LOAD_XML = 1;
+    private final int MAIN_MENU_START_GAME = 2;
+    private final int MAIN_MENU_SHOW_GAME_DESCRIPTION = 3;
+    private final int MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME = 4;
 
     public void start()
     {
@@ -99,7 +99,11 @@ public class GameUI
             //noXMLFile.printStackTrace();
             System.out.println("Error: " + noXMLFile);
             isGameLoaded = false;
-        } catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
+        } catch (OutOfRangeNumberOfParticipantsException playersInitPositionsOutOfRangeException) {
+            System.out.println("Error: " + playersInitPositionsOutOfRangeException);
+            isGameLoaded = false;
+        }
+        catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
             System.out.println("Error: " + playerHasNoInitialPositionsException);
             isGameLoaded = false;
         }

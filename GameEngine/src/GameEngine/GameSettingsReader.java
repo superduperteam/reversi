@@ -22,12 +22,14 @@ public class GameSettingsReader {
     private final byte MIN_COLS = 4;
     private final int MIN_NUMBER_OF_PLAYERS = 2;
     private final int MAX_NUMBER_OF_PLAYERS = 2;
+    private int expectedNumberOfParticipants = 2; // ## to be removed in exercise 2
 
     // TODO: Check path, check XML
-    
+
+
     public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
-            RowsNotInRangeException, PlayerHasNoInitialPositionsException {
+            RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException {
 //        Scanner reader = new Scanner(System.in);
 //        String filePathString;
 //
@@ -54,6 +56,14 @@ public class GameSettingsReader {
             {
                 throw new NoXMLFileException();
             }
+        }
+    }
+
+    private void checkNumberOfParticipants(GameDescriptor gameDescriptor, int expectedNumberOfParticipants) throws OutOfRangeNumberOfParticipantsException
+    {
+        if(gameDescriptor.getGame().getInitialPositions().getParticipant().size()!= expectedNumberOfParticipants)
+        {
+            throw new OutOfRangeNumberOfParticipantsException(expectedNumberOfParticipants);
         }
     }
 
@@ -120,12 +130,13 @@ public class GameSettingsReader {
 
     private GameManager extractGameSettings(InputStream xmlStream, List<GameEngine.Player> playersList) throws RowsNotInRangeException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, PlayersInitPositionsOverrideEachOtherException,
-            BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException
+            BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException
     {
         try{
             GameDescriptor gamedDescriptor = deserializeFrom(xmlStream);
             areNumberOfRowsInRange(gamedDescriptor);
             areNumberOfColsInRange(gamedDescriptor);
+            checkNumberOfParticipants(gamedDescriptor, expectedNumberOfParticipants);
             doEachPlayerHasAtLeastOneInitialPoint(gamedDescriptor);
             doesBoardSizeMatchNumOfPlayers(gamedDescriptor);
             areIntialPositionsInRange(gamedDescriptor);
