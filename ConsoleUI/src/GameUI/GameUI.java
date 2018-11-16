@@ -83,6 +83,7 @@ public class GameUI
     {
         if(isGameLoaded && userMenuInput != MAIN_MENU_START_GAME) {
             System.out.println("Game was loaded successfully!\n");
+            printGameState(gameManager, false);
         }
     }
 
