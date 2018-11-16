@@ -91,7 +91,7 @@ public class GameUI
     {
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
         boolean isGameLoaded = true;
-        System.out.println("Please enter a XML path (it should end with .xml)");
+        System.out.println("Please enter a XML path (it should end with \".xml\")");
         Path filePath = getFilePathFromUser();
 
         try {
@@ -416,44 +416,76 @@ public class GameUI
         return  didUserAskToEndGame;
     }
 
+    private boolean doesFileEndWithDotdat(Path filePath)
+    {
+        if(filePath.toString().endsWith(".dat"))
+        {
+            return true;
+        }
+        else return false;
+    }
+
     private GameManager loadGameFromFile(){
         GameManager loadedGameManager = null;
 
         System.out.println("What file would you like to load? please enter a full path");
         Path filePath = getFilePathFromUser();
 
-        try (ObjectInputStream in =
-                     new ObjectInputStream(
-                             new FileInputStream(filePath.toAbsolutePath().toString()))) {
-            loadedGameManager =
-                    (GameManager) in.readObject();
-        } catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("Error while trying to load file. Please make sure the file exists and try again.");
-        } catch (ClassNotFoundException e) {
-            //e.printStackTrace();
-            System.out.println("Error while trying to load file (Class Not Found). Please try again.");
+        if(doesFileEndWithDotdat(filePath))
+        {
+            try (ObjectInputStream in =
+                         new ObjectInputStream(
+                                 new FileInputStream(filePath.toAbsolutePath().toString()))) {
+                loadedGameManager =
+                        (GameManager) in.readObject();
+            } catch (IOException e) {
+                //e.printStackTrace();
+                System.out.println("Error while trying to load file. Please make sure the file exists and try again.");
+            } catch (ClassNotFoundException e) {
+                //e.printStackTrace();
+                System.out.println("Error while trying to load file (Class Not Found). Please try again.");
+            }
         }
+        else printFileShouldEndWith(".dat");
 
         return loadedGameManager;
     }
 
+    private void printFileShouldEndWith(String ending)
+    {
+       StringBuilder stringBuilder = new StringBuilder();
+
+       stringBuilder.append("Error: file path should end with ");
+       stringBuilder.append("\"");
+       stringBuilder.append(ending);
+       stringBuilder.append("\"");
+
+        System.out.print(stringBuilder.toString());
+        System.out.println(". Please try again.");
+        System.out.println();
+    }
+
     private void saveGameToFile(GameManager gameManager) {
         System.out.println("Where would you like the save to be stored?");
+        System.out.println("Instructions: please enter a full path and make sure it ends with \".dat\"");
         Path filePath = getFilePathFromUser();
       //  FILE_NAME = filePath;
 
-        try (ObjectOutputStream out =
-                     new ObjectOutputStream(
-                             new FileOutputStream(filePath.toAbsolutePath().toString()))) {
-            out.writeObject(gameManager);
-            out.flush();
-            System.out.println("Game saved to file");
+        if(doesFileEndWithDotdat(filePath))
+        {
+            try (ObjectOutputStream out =
+                         new ObjectOutputStream(
+                                 new FileOutputStream(filePath.toAbsolutePath().toString()))) {
+                out.writeObject(gameManager);
+                out.flush();
+                System.out.println("Game saved to file");
+            }
+            catch (IOException e) {
+                //e.printStackTrace();
+                System.out.println("Error while trying to save file. Please make sure its path exists and try again.");
+            }
         }
-        catch (IOException e) {
-            //e.printStackTrace();
-            System.out.println("Error while trying to save file. Please make sure its path exists and try again.");
-        }
+        else printFileShouldEndWith(".dat");
     }
 
     private void playNextMove(GameManager gameManager)
