@@ -458,9 +458,6 @@ public class GameUI
             } else printFileShouldEndWith(".dat");
 
         }
-        else {
-            System.out.println("Error - illegal path entered. Please try again.");
-        }
         return loadedGameManager;
     }
     private void printFileShouldEndWith(String ending)
