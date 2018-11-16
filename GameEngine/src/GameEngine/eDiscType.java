@@ -31,4 +31,7 @@ public enum eDiscType implements Serializable {
             return "%";
         }
     }
+
+//    fixed a bug where ui acceped move input such: "1,4,3"
+//    and another bug where an input to xml path like "<>"  caused a crash (invalid path exception)
 }

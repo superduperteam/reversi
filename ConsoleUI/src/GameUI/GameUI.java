@@ -5,6 +5,7 @@ import GameEngine.*;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,47 +95,49 @@ public class GameUI
         System.out.println("Please enter a XML path (it should end with \".xml\")");
         Path filePath = getFilePathFromUser();
 
-        try {
-            gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
-        } catch (NoXMLFileException noXMLFile) {
-            //noXMLFile.printStackTrace();
-            System.out.println("Error: " + noXMLFile);
-            isGameLoaded = false;
-        } catch (OutOfRangeNumberOfParticipantsException playersInitPositionsOutOfRangeException) {
-            System.out.println("Error: " + playersInitPositionsOutOfRangeException);
-            isGameLoaded = false;
+        if(filePath != null) {
+            try {
+                gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+            } catch (NoXMLFileException noXMLFile) {
+                //noXMLFile.printStackTrace();
+                System.out.println("Error: " + noXMLFile);
+                isGameLoaded = false;
+            } catch (OutOfRangeNumberOfParticipantsException playersInitPositionsOutOfRangeException) {
+                System.out.println("Error: " + playersInitPositionsOutOfRangeException);
+                isGameLoaded = false;
+            } catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
+                System.out.println("Error: " + playerHasNoInitialPositionsException);
+                isGameLoaded = false;
+            } catch (PlayersInitPositionsOverrideEachOtherException playersInitPositionsOverrideEachOtherException) {
+                //playersInitPositionsOverrideEachOtherException.printStackTrace();
+                System.out.println("Error: " + playersInitPositionsOverrideEachOtherException);
+                isGameLoaded = false;
+            } catch (BoardSizeDoesntMatchNumOfPlayersException boardSizeDoesntMatchNumOfPlayersException) {
+                //boardSizeDoesntMatchNumOfPlayersException.printStackTrace();
+                System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayersException);
+                isGameLoaded = false;
+            } catch (PlayersInitPositionsOutOfRangeException playersInitPositionsOutOfRangeException) {
+                //playersInitPositionsOutOfRangeException.printStackTrace();
+                System.out.println("Error: " + playersInitPositionsOutOfRangeException);
+                isGameLoaded = false;
+            } catch (RowsNotInRangeException rowsNotInRangeException) {
+                //rowsNotInRangeException.printStackTrace();
+                System.out.println("Error: " + rowsNotInRangeException);
+                isGameLoaded = false;
+            } catch (ColumnsNotInRangeException columnsNotInRangeException) {
+                //columnsNotInRangeException.printStackTrace();
+                System.out.println("Error: " + columnsNotInRangeException);
+                isGameLoaded = false;
+            } catch (IslandsOnRegularModeException islandsOnRegularModeException) {
+                //islandsOnRegularModeException.printStackTrace();
+                System.out.println("Error: " + islandsOnRegularModeException);
+                isGameLoaded = false;
+            }
+            //TODO check if xml file is application legal
         }
-        catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
-            System.out.println("Error: " + playerHasNoInitialPositionsException);
-            isGameLoaded = false;
+        else {
+            isGameLoaded  = false;
         }
-        catch (PlayersInitPositionsOverrideEachOtherException playersInitPositionsOverrideEachOtherException) {
-            //playersInitPositionsOverrideEachOtherException.printStackTrace();
-            System.out.println("Error: " + playersInitPositionsOverrideEachOtherException);
-            isGameLoaded = false;
-        } catch (BoardSizeDoesntMatchNumOfPlayersException boardSizeDoesntMatchNumOfPlayersException) {
-            //boardSizeDoesntMatchNumOfPlayersException.printStackTrace();
-            System.out.println("Error: " + boardSizeDoesntMatchNumOfPlayersException);
-            isGameLoaded = false;
-        } catch (PlayersInitPositionsOutOfRangeException playersInitPositionsOutOfRangeException) {
-            //playersInitPositionsOutOfRangeException.printStackTrace();
-            System.out.println("Error: " + playersInitPositionsOutOfRangeException);
-            isGameLoaded = false;
-        } catch (RowsNotInRangeException rowsNotInRangeException) {
-            //rowsNotInRangeException.printStackTrace();
-            System.out.println("Error: " + rowsNotInRangeException);
-            isGameLoaded = false;
-        } catch (ColumnsNotInRangeException columnsNotInRangeException) {
-            //columnsNotInRangeException.printStackTrace();
-            System.out.println("Error: " + columnsNotInRangeException);
-            isGameLoaded = false;
-        } catch (IslandsOnRegularModeException islandsOnRegularModeException) {
-            //islandsOnRegularModeException.printStackTrace();
-            System.out.println("Error: " + islandsOnRegularModeException);
-            isGameLoaded = false;
-        }
-        //TODO check if xml file is application legal
-
         return isGameLoaded;
     }
 
@@ -259,10 +262,17 @@ public class GameUI
     {
         Scanner reader = new Scanner(System.in);
         String filePathString;
+        Path filePath;
 
         filePathString = reader.nextLine();
-        Path filePath = Paths.get(filePathString);
 
+        try {
+            filePath = Paths.get(filePathString);
+        }
+        catch (InvalidPathException e) {
+            System.out.println("Error- illegal path entered. Please try again.");
+            return null;
+        }
         return filePath;
     }
 
@@ -425,32 +435,34 @@ public class GameUI
         else return false;
     }
 
-    private GameManager loadGameFromFile(){
+    private GameManager loadGameFromFile() {
         GameManager loadedGameManager = null;
 
         System.out.println("What file would you like to load? please enter a full path");
         Path filePath = getFilePathFromUser();
 
-        if(doesFileEndWithDotdat(filePath))
-        {
-            try (ObjectInputStream in =
-                         new ObjectInputStream(
-                                 new FileInputStream(filePath.toAbsolutePath().toString()))) {
-                loadedGameManager =
-                        (GameManager) in.readObject();
-            } catch (IOException e) {
-                //e.printStackTrace();
-                System.out.println("Error while trying to load file. Please make sure the file exists and try again.");
-            } catch (ClassNotFoundException e) {
-                //e.printStackTrace();
-                System.out.println("Error while trying to load file (Class Not Found). Please try again.");
-            }
-        }
-        else printFileShouldEndWith(".dat");
+        if (filePath != null) {
+            if (doesFileEndWithDotdat(filePath)) {
+                try (ObjectInputStream in =
+                             new ObjectInputStream(
+                                     new FileInputStream(filePath.toAbsolutePath().toString()))) {
+                    loadedGameManager =
+                            (GameManager) in.readObject();
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    System.out.println("Error while trying to load file. Please make sure the file exists and try again.");
+                } catch (ClassNotFoundException e) {
+                    //e.printStackTrace();
+                    System.out.println("Error while trying to load file (Class Not Found). Please try again.");
+                }
+            } else printFileShouldEndWith(".dat");
 
+        }
+        else {
+            System.out.println("Error - illegal path entered. Please try again.");
+        }
         return loadedGameManager;
     }
-
     private void printFileShouldEndWith(String ending)
     {
        StringBuilder stringBuilder = new StringBuilder();
@@ -471,21 +483,20 @@ public class GameUI
         Path filePath = getFilePathFromUser();
       //  FILE_NAME = filePath;
 
-        if(doesFileEndWithDotdat(filePath))
-        {
-            try (ObjectOutputStream out =
-                         new ObjectOutputStream(
-                                 new FileOutputStream(filePath.toAbsolutePath().toString()))) {
-                out.writeObject(gameManager);
-                out.flush();
-                System.out.println("Game saved to file");
-            }
-            catch (IOException e) {
-                //e.printStackTrace();
-                System.out.println("Error while trying to save file. Please make sure its path exists and try again.");
-            }
+        if(filePath != null) {
+            if (doesFileEndWithDotdat(filePath)) {
+                try (ObjectOutputStream out =
+                             new ObjectOutputStream(
+                                     new FileOutputStream(filePath.toAbsolutePath().toString()))) {
+                    out.writeObject(gameManager);
+                    out.flush();
+                    System.out.println("Game saved to file");
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    System.out.println("Error while trying to save file. Please make sure its path exists and try again.");
+                }
+            } else printFileShouldEndWith(".dat");
         }
-        else printFileShouldEndWith(".dat");
     }
 
     private void playNextMove(GameManager gameManager)
@@ -586,6 +597,18 @@ public class GameUI
         return targetInsertionPoint;
     }
 
+    private boolean stringContainsSingleSeparator(String str) {
+        int numOfSeparators = 0;
+
+        for(char ch : str.toCharArray()) {
+            if(ch == ',') {
+                ++numOfSeparators;
+            }
+        }
+
+        return numOfSeparators == 1;
+    }
+
     private Point getMoveFromHuman() {
         Point nextMoveOfUser = null;
         int row, col;
@@ -599,7 +622,7 @@ public class GameUI
             String userInputStr = reader.nextLine();
 
 
-            if (isStringOnlyDigitsAndSeperator(userInputStr)) {
+            if (isStringOnlyDigitsAndSeperator(userInputStr) && stringContainsSingleSeparator(userInputStr)) {
                 if (userInputStr.contains(",")) {
                     String[] coordinates = userInputStr.split(",");
                     if (coordinates[0].length() != 0 && coordinates[1].length() != 0) {
@@ -627,7 +650,7 @@ public class GameUI
                     System.out.println();
                 }
             } else {
-                System.out.println("Your input doesn't contain only numbers and ','. Please Try again.");
+                System.out.println("Your input doesn't contain only numbers or a single ','. Please Try again.");
                 System.out.println();
             }
         }
