@@ -22,7 +22,7 @@ public class GameUI
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
     private GameManager gameManager;
-    private final String FILE_NAME = "saved_game_data.dat";
+    private String FILE_NAME = "saved_game_data.dat";
     private final int MAIN_MENU_LOAD_XML = 1;
     private final int MAIN_MENU_START_GAME = 2;
     private final int MAIN_MENU_SHOW_GAME_DESCRIPTION = 3;
@@ -71,7 +71,7 @@ public class GameUI
             }
             else if(menuInput == MAIN_MENU_SHOW_GAME_DESCRIPTION)
             {
-                if(isGameLoaded) { printGameState(gameManager, false); }
+                if(isGameLoaded) { printGameState(gameManager, gameManager.isGameActive()); }
                 else System.out.println("Game isn't loaded yet.");
             }
 
@@ -83,7 +83,7 @@ public class GameUI
     {
         if(isGameLoaded && userMenuInput != MAIN_MENU_START_GAME) {
             System.out.println("Game was loaded successfully!\n");
-            printGameState(gameManager, false);
+            printGameState(gameManager, gameManager.isGameActive());
         }
     }
 
@@ -92,7 +92,7 @@ public class GameUI
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
         boolean isGameLoaded = true;
         System.out.println("Please enter a XML path (it should end with .xml)");
-        Path filePath = getXMLPathFromUser();
+        Path filePath = getFilePathFromUser();
 
         try {
             gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
@@ -255,7 +255,7 @@ public class GameUI
         System.out.println(startMenuOptions.toString());
     }
 
-    private Path getXMLPathFromUser()
+    private Path getFilePathFromUser()
     {
         Scanner reader = new Scanner(System.in);
         String filePathString;
@@ -391,8 +391,7 @@ public class GameUI
 
         switch (commandToExecute){
             case PRINT_GAME_STATE:
-                //TODO implement (command 3 in reversi.doc) (saar)
-                printGameState(gameManager, true);
+                printGameState(gameManager, gameManager.isGameActive());
                 break;
             case MAKE_MOVE:
                 playNextMove(gameManager);
@@ -411,7 +410,6 @@ public class GameUI
                 break;
             case SAVE_GAME:
                 saveGameToFile(gameManager);
-                System.out.println("Game saved to file");
                 break;
         }
 
@@ -421,15 +419,17 @@ public class GameUI
     private GameManager loadGameFromFile(){
         GameManager loadedGameManager = null;
 
+        System.out.println("What file would you like to load? please enter a full path");
+        Path filePath = getFilePathFromUser();
+
         try (ObjectInputStream in =
                      new ObjectInputStream(
-                             new FileInputStream(FILE_NAME))) {
-            // we know that we read array list of Persons
+                             new FileInputStream(filePath.toAbsolutePath().toString()))) {
             loadedGameManager =
                     (GameManager) in.readObject();
         } catch (IOException e) {
             //e.printStackTrace();
-            System.out.println("Error while trying to load file. Please try again.");
+            System.out.println("Error while trying to load file. Please make sure the file exists and try again.");
         } catch (ClassNotFoundException e) {
             //e.printStackTrace();
             System.out.println("Error while trying to load file (Class Not Found). Please try again.");
@@ -439,14 +439,20 @@ public class GameUI
     }
 
     private void saveGameToFile(GameManager gameManager) {
+        System.out.println("Where would you like the save to be stored?");
+        Path filePath = getFilePathFromUser();
+      //  FILE_NAME = filePath;
+
         try (ObjectOutputStream out =
                      new ObjectOutputStream(
-                             new FileOutputStream(FILE_NAME))) {
+                             new FileOutputStream(filePath.toAbsolutePath().toString()))) {
             out.writeObject(gameManager);
             out.flush();
-        } catch (IOException e) {
+            System.out.println("Game saved to file");
+        }
+        catch (IOException e) {
             //e.printStackTrace();
-            System.out.println("Error while trying to save file. Please try again.");
+            System.out.println("Error while trying to save file. Please make sure its path exists and try again.");
         }
     }
 

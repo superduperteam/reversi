@@ -14,6 +14,7 @@ public class GameManager implements Serializable
     private Player activePlayer;
     private Board board;
     private TurnHistory.Turn currTurn;
+    private boolean isGameActive;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -25,9 +26,13 @@ public class GameManager implements Serializable
         this.gameMode = gameMode;
         activePlayer = playersList.get(0);
         this.board = board;
+        isGameActive = false;
 //        currTurn = getCurrentTurn(); // ##
     }
 
+    public boolean isGameActive() {
+        return isGameActive;
+    }
 
     public List<Player> getPlayersList()
     {
@@ -96,6 +101,7 @@ public class GameManager implements Serializable
             List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
             goBackToTurn(turnsList.get(0));
             turnHistory.turnHistoryStack.clear();
+            isGameActive = false;
         }
     }
 
@@ -281,6 +287,7 @@ public class GameManager implements Serializable
     // call this only after all info about players is gathered.
     public void activateGame()
     {
+        isGameActive = true;
         currTurn = getCurrentTurn(); // ##
     }
 }
