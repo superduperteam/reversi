@@ -296,5 +296,6 @@ public class GameManager implements Serializable
     {
         isGameActive = true;
         currTurn = getCurrentTurn(); // ##
+        updateGameScore();
     }
 }
