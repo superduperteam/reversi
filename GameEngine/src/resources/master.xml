@@ -3,15 +3,25 @@
 	<GameType>Basic</GameType>
 	<Game>
 		<Board rows="4" columns="4"/>
-		<Variant>Regular</Variant>
+		<Variant>Islands</Variant>
 		<InitialPositions>
 			<Participant number="1">
-				<Position row="2" column="2"/>
+				<Position row="2" column="1"/>
 				<Position row="2" column="3"/>
+				<Position row="2" column="4"/>
+				<Position row="3" column="1"/>
+				<Position row="3" column="2"/>
+				<Position row="4" column="1"/>
 			</Participant>
 			<Participant number="2">
 				<Position row="1" column="2"/>
 				<Position row="1" column="3"/>
+				<Position row="1" column="4"/>
+				<Position row="2" column="2"/>
+				<Position row="3" column="3"/>
+				<Position row="4" column="2"/>
+				<Position row="4" column="3"/>
+				<Position row="4" column="4"/>
 			</Participant>
 		</InitialPositions>
 	</Game>

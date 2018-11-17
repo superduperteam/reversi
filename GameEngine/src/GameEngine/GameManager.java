@@ -52,21 +52,28 @@ public class GameManager implements Serializable
     }
 
     // Call this only after game is over.
-    public Player getWinner()
+    // should be test again when more than 2 players are allowed in a game.
+    public List<Player> getHighestScoringPlayers()
     {
+        List<Player> highestScoringPlayers = new ArrayList<>();
         int maxPlayerPoints = playersList.get(0).getScore();
-        Player winner = playersList.get(0);
+        highestScoringPlayers.add(playersList.get(0));
 
         for(Player player : playersList)
         {
-            if(maxPlayerPoints < player.getScore())
+            if(player.getScore() > maxPlayerPoints)
             {
                 maxPlayerPoints = player.getScore();
-                winner = player;
+                highestScoringPlayers.clear(); // everybody that is in the list is not relevant anymore..
+                highestScoringPlayers.add(player);
+            }
+            else if(player.getScore() == maxPlayerPoints)
+            {
+                highestScoringPlayers.add(player);
             }
         }
 
-        return winner;
+        return highestScoringPlayers;
     }
 
     public boolean isGameOver(){

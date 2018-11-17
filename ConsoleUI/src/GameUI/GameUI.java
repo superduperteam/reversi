@@ -163,7 +163,7 @@ public class GameUI
 
         if(!didUserAskToEndGame)
         {
-            printWinnerDeclarationMessage();
+            printEndOfGameMessage();
             doesUserWantToPlayAgain =  AskUserToPlayAgain();
         }
         else doesUserWantToPlayAgain = false;
@@ -171,24 +171,46 @@ public class GameUI
         return doesUserWantToPlayAgain;
     }
 
-    private void printWinnerDeclarationMessage()
+    private void printTie()
     {
-        Player winnerPlayer = gameManager.getWinner();
+        System.out.println("It is a tie!");
+    }
+
+    private  void printWinnerDeclarationMessage(Player winnerPlayer)
+    {
         System.out.print("The winner is: ");
         System.out.println(winnerPlayer.getName());
         System.out.print("Score: ");
         System.out.println(winnerPlayer.getStatistics().getScore());
+    }
+
+    private void printEndOfGameMessage()
+    {
+        Player winnerPlayer = null;
+
+        if(gameManager.getHighestScoringPlayers().size() == 1)
+        {
+            winnerPlayer = gameManager.getHighestScoringPlayers().get(0);
+            printWinnerDeclarationMessage(winnerPlayer);
+        }
+        else
+        {
+            printTie();
+        }
 
         // Print for other players. (just one in this exercise)
         for(Player player : gameManager.getPlayersList())
         {
             if(!player.equals(winnerPlayer))
             {
-                System.out.println(player.getName());
+                System.out.print(player.getName());
+                System.out.println(": ");
                 System.out.print("Score: ");
                 System.out.println(player.getStatistics().getScore());
             }
         }
+
+        System.out.println();
     }
 
     private boolean AskUserToPlayAgain()
