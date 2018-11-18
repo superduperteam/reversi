@@ -69,7 +69,8 @@ public class GameManager implements Serializable
             }
             else if(player.getScore() == maxPlayerPoints)
             {
-                highestScoringPlayers.add(player);
+                if(!highestScoringPlayers.contains(player)) // maybe it's the first
+                    highestScoringPlayers.add(player);
             }
         }
 
