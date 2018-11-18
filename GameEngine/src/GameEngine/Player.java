@@ -14,17 +14,6 @@ public class Player implements Serializable {
     private eDiscType discType;
     private BigInteger id;
 
-    // probably not needed
-//    public void SetDiscType(eDiscType discType)
-//    {
-//        this.discType = discType;
-//    }
-
-    public eDiscType GetDiscType()
-    {
-        return discType;
-    }
-
     public Player(String name, boolean isHuman, eDiscType discType, BigInteger id)
     {
         this.name = name;
@@ -42,6 +31,11 @@ public class Player implements Serializable {
         this.discType = toCopy.discType; //note (from ido): im assuming that playaer doesn't change his disk type.
                                         // if he does, a different logic should be implemented
         this.id = new BigInteger(toCopy.getId().toString());
+    }
+
+    public eDiscType GetDiscType()
+    {
+        return discType;
     }
 
     public void setName(String name) {

@@ -280,20 +280,3 @@ public class GameSettingsReader {
     }
 }
 
-
-//    public static void main(String[] args) {
-//        InputStream inputStream = SchemaBasedJAXBMain.class.getResourceAsStream("/resources/world.xml");
-//        try {
-//            Countries countries = deserializeFrom(inputStream);
-//            System.out.println("name of first country is: " + countries.getCountry().get(0).getName());
-//        } catch (JAXBException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private static Countries deserializeFrom(InputStream in) throws JAXBException {
-//        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
-//        Unmarshaller u = jc.createUnmarshaller();
-//        return (Countries) u.unmarshal(in);
-//    }
-

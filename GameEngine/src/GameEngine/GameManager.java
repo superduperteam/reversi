@@ -9,7 +9,6 @@ public class GameManager implements Serializable
     private HashMap<eDiscType, Player> discTypeToPlayer;
     private TurnHistory turnHistory;
     private List<Player> playersList;
-//    private ListIterator<Player> playersIterator; // not working :(
     private  int activePlayerIndex;
     private Player activePlayer;
     private Board board;
@@ -20,7 +19,6 @@ public class GameManager implements Serializable
     {
         turnHistory = new TurnHistory();
         this.playersList = new ArrayList<>(playersList);
-//        playersIterator = playersList.listIterator(); // not working :(
         activePlayerIndex = 0;
         mapDiscTypesToPlayers();
         this.gameMode = gameMode;
@@ -85,22 +83,6 @@ public class GameManager implements Serializable
     {
         return board;
     }
-
-    // Not working :(
-//    public void ChangeTurn()
-//    {
-//        if(playersIterator.hasNext())
-//        {
-//            activePlayer = playersIterator.next();
-//        }
-//        else // Iterator is pointing to the tail of the list.
-//        {
-//            playersIterator = playersList.listIterator();
-//            activePlayer = playersIterator.;
-//        }
-//
-//        UpdateGameScore();
-//    }
 
     public void resetGame()
     {

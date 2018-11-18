@@ -131,15 +131,6 @@ public class Board implements Serializable
         List<Point> allPossibleAdjacentCellPoints = new ArrayList<Point>(8);
         List<Point> allPossibleAdjacentCellPointsInBoardRange = new ArrayList<>(8);
 
-//        allPossibleAdjacentCellPoints.add(new Point(row -1, col +0));
-//        allPossibleAdjacentCellPoints.add(new Point(row -1, col +1));
-//        allPossibleAdjacentCellPoints.add(new Point(row +0, col +1));
-//        allPossibleAdjacentCellPoints.add(new Point(row +1, col +1));
-//        allPossibleAdjacentCellPoints.add(new Point(row +1, col +0));
-//        allPossibleAdjacentCellPoints.add(new Point(row +1, col -1));
-//        allPossibleAdjacentCellPoints.add(new Point(row +0, col -1));
-//        allPossibleAdjacentCellPoints.add(new Point(row -1, col -1));
-
         // We want to get a list of all adjacent points.
         for(Direction direction : allDirections)
         {
@@ -224,15 +215,6 @@ public class Board implements Serializable
             }
         }
 
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, -1, +0, discTypeToBeInserted); // UP
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, -1, +1, discTypeToBeInserted); // UP-RIGHT
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, +0, +1, discTypeToBeInserted); // RIGHT
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, +1, +1, discTypeToBeInserted); // DOWN-RIGHT
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, +1, +0, discTypeToBeInserted); // DOWN
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, +1, -1, discTypeToBeInserted); // DOWN-LEFT
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, +0, -1, discTypeToBeInserted); // LEFT
-//        canFlip = canFlip || canFlipEnemyDiscsInDirection(targetInsertionPoint, -1, -1, discTypeToBeInserted); // UP-LEFT
-
         return false;
     }
 
@@ -279,15 +261,6 @@ public class Board implements Serializable
         int countOfFlippedDiscs = 0;
         List<Direction> allDirections = generateListOfAllDirection();
 
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +1, +0, discTypeToBeInserted); // UP
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +1, +1, discTypeToBeInserted); // UP-RIGHT
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +0, +1, discTypeToBeInserted); // RIGHT
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, -1, +1, discTypeToBeInserted); // DOWN-RIGHT
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, -1, +0, discTypeToBeInserted); // DOWN
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, -1, -1, discTypeToBeInserted); // DOWN-LEFT
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +0, -1, discTypeToBeInserted); // LEFT
-//        CountOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, +1, -1, discTypeToBeInserted); // UP-LEFT
-
         for(Direction direction : allDirections)
         {
             countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted);
@@ -322,23 +295,6 @@ public class Board implements Serializable
         }
         return countOfFlippedDiscs;
     }
-
-//    private void InitializeBoard(LinkedHashMap<Player, ArrayList<Point>> intialDiscsPointsOfPlayers)
-//    {
-//        nullifyBoardCells();
-//        ArrayList<Point> currentPlayerIntialDiscs;
-//        Set<Player> playersSet = intialDiscsPointsOfPlayers.keySet();
-//
-//        for(Player player : playersSet)
-//        {
-//            currentPlayerIntialDiscs = intialDiscsPointsOfPlayers.get(player);
-//
-//            for(Point point : currentPlayerIntialDiscs)
-//            {
-//                board[point.GetRow()][point.GetCol()] = new Disc(player.GetDiscType());
-//            }
-//        }
-//    }
 
     public Disc get(int row, int col)
     {
