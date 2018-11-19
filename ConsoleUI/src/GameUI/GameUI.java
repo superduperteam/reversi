@@ -17,12 +17,12 @@ import java.nio.file.Paths;
 
 public class GameUI
 {
-    private static int colInitialNumber = 1;
-    private static int rowInitialNumber = 1;
-    private static int boardCellSize = 5;
-    private static char space = ' ';
-    private static char rowSeparator = '=';
-    private static char colSeparator = '|';
+    private final int colInitialNumber = 1;
+    private final int rowInitialNumber = 1;
+    private final int boardCellSize = 5;
+    private final char space = ' ';
+    private final char rowSeparator = '=';
+    private final char colSeparator = '|';
     private GameManager gameManager = null;
     private final int MAIN_MENU_LOAD_XML = 1;
     private final int MAIN_MENU_START_GAME = 2;
