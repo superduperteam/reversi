@@ -7,6 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="GameEngine" />
+    <orderEntry type="library" name="GameEngine" level="project" />
   </component>
 </module>
