@@ -24,7 +24,6 @@ public class GameUI
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
     private GameManager gameManager = null;
-    private String FILE_NAME = "saved_game_data.dat";
     private final int MAIN_MENU_LOAD_XML = 1;
     private final int MAIN_MENU_START_GAME = 2;
     private final int MAIN_MENU_SHOW_GAME_DESCRIPTION = 3;
@@ -160,7 +159,6 @@ public class GameUI
                 System.out.println("Error: " + islandsOnRegularModeException);
                 isGameLoaded = false;
             }
-            //TODO check if xml file is application legal
         }
         else {
             isGameLoaded  = false;
