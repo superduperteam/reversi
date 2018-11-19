@@ -2,6 +2,7 @@ package GameUI;
 
 import Exceptions.*;
 import GameEngine.*;
+import jaxb.schema.generated.Game;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -22,47 +23,54 @@ public class GameUI
     private static char space = ' ';
     private static char rowSeparator = '=';
     private static char colSeparator = '|';
-    private GameManager gameManager;
+    private GameManager gameManager = null;
     private String FILE_NAME = "saved_game_data.dat";
     private final int MAIN_MENU_LOAD_XML = 1;
     private final int MAIN_MENU_START_GAME = 2;
     private final int MAIN_MENU_SHOW_GAME_DESCRIPTION = 3;
     private final int MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME = 4;
+    private final int MAIN_MENU_EXIT = 5;
 
     public void start()
     {
+        GameManager currGameManager;
         int menuInput;
         boolean isGameLoaded = false;
+        boolean isGameLoadedInThisIteration = false;
         boolean doesUserWantToPlay = true;
         boolean didLoadPreviouslyPlayedGame = false;
         List<Player> playersList = generateInitialPlayersList();
         List<String> menuOptions= new ArrayList<>
                 (Arrays.asList(String.valueOf(MAIN_MENU_LOAD_XML), String.valueOf(MAIN_MENU_START_GAME),
-                        String.valueOf(MAIN_MENU_SHOW_GAME_DESCRIPTION), String.valueOf(MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME)));
+                        String.valueOf(MAIN_MENU_SHOW_GAME_DESCRIPTION), String.valueOf(MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME), String.valueOf(MAIN_MENU_EXIT)));
 
-        while(isGameLoaded == false || doesUserWantToPlay)
+        while(/*isGameLoaded == false || */doesUserWantToPlay)
         {
             printStartMenu();
             menuInput = getMenuInput(menuOptions);
 
             if(menuInput == MAIN_MENU_LOAD_XML) {
-                isGameLoaded = loadXML(playersList);
+                isGameLoadedInThisIteration = loadXML(playersList);
+                isGameLoaded = isGameLoaded || isGameLoadedInThisIteration;
             }
             else if(menuInput == MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME) {
-                gameManager = loadGameFromFile();
+                isGameLoadedInThisIteration = loadGameManagerFromFile();
+                isGameLoaded = isGameLoaded || isGameLoadedInThisIteration;
 
-                if(gameManager != null){
-                    isGameLoaded = true;
-                    didLoadPreviouslyPlayedGame = true;
-                }
-                else{
-                    isGameLoaded = false;
+                if(!isGameLoadedInThisIteration)
+                {
                     System.out.println("Failed to load previously saved game. Please try again");
                 }
+//                if(currGameManager != null){
+//                    gameManager = currGameManager;
+//                    isGameLoaded = true;
+//                    didLoadPreviouslyPlayedGame = true;
+//                }
+//                else{ System.out.println("Failed to load previously saved game. Please try again"); } //isGameLoaded = false;
             }
             else if(menuInput == MAIN_MENU_START_GAME) {
                 if(isGameLoaded) { // You must to have gameManager here
-                    if(!didLoadPreviouslyPlayedGame) {
+                    if(!gameManager.isGameActive()) {
                         getPlayersDetailsFromUser(gameManager.getPlayersList());
                     }
                     doesUserWantToPlay = gameLoop(gameManager);
@@ -70,19 +78,33 @@ public class GameUI
                 }
                 else System.out.println("Game isn't loaded yet.");
             }
-            else if(menuInput == MAIN_MENU_SHOW_GAME_DESCRIPTION)
-            {
+            else if(menuInput == MAIN_MENU_SHOW_GAME_DESCRIPTION) {
                 if(isGameLoaded) { printGameState(gameManager, gameManager.isGameActive()); }
                 else System.out.println("Game isn't loaded yet.");
             }
+            else if(menuInput == MAIN_MENU_EXIT) {doesUserWantToPlay = false;}
 
-            printUserIfGameWasLoadedSuccessfully(isGameLoaded, menuInput);
+            printUserIfGameWasLoadedSuccessfully(isGameLoadedInThisIteration, menuInput);
         }
     }
 
+    private boolean loadGameManagerFromFile()
+    {
+        boolean hasGameLoaded = false;
+        GameManager currGameManager = loadGameFromFile();
+
+        if(currGameManager != null) {
+            gameManager = currGameManager;
+            hasGameLoaded = true;
+        }
+
+        return hasGameLoaded;
+    }
+
+
     private void printUserIfGameWasLoadedSuccessfully(boolean isGameLoaded, int userMenuInput)
     {
-        if(isGameLoaded && userMenuInput != MAIN_MENU_START_GAME) {
+        if(isGameLoaded && (userMenuInput == MAIN_MENU_LOAD_XML || userMenuInput == MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME)) {
             System.out.println("Game was loaded successfully!\n");
             printGameState(gameManager, gameManager.isGameActive());
         }
@@ -90,6 +112,7 @@ public class GameUI
 
     private boolean loadXML(List<Player> playersList)
     {
+        GameManager currGameManager;
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
         boolean isGameLoaded = true;
         System.out.println("Please enter a XML path (it should end with \".xml\")");
@@ -97,7 +120,11 @@ public class GameUI
 
         if(filePath != null) {
             try {
-                gameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+                currGameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+                if(currGameManager != null)
+                {
+                    gameManager = currGameManager;
+                }
             } catch (NoXMLFileException noXMLFile) {
                 //noXMLFile.printStackTrace();
                 System.out.println("Error: " + noXMLFile);
@@ -276,6 +303,7 @@ public class GameUI
         startMenuOptions.append("2.Start game\n");
         startMenuOptions.append("3.Show game description\n");
         startMenuOptions.append("4.Load previous saved game\n");
+        startMenuOptions.append("5.Exit\n");
 
         System.out.println(startMenuOptions.toString());
     }
