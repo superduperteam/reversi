@@ -74,6 +74,7 @@ public class GameUI
                     }
                     doesUserWantToPlay = gameLoop(gameManager);
                     gameManager.resetGame();
+                    playersList = generateInitialPlayersList();
                 }
                 else System.out.println("Game isn't loaded yet.");
             }
