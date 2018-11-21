@@ -71,6 +71,13 @@ public class Player implements Serializable {
             this.score = toCopy.score;
         }
 
+        public void resetStatistics()
+        {
+            resetScore();
+            countOfPlayedTurns = 0;
+            totalNumOfFlips = 0;
+        }
+
         public void resetScore() {
             score = 0;
         }

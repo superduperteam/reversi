@@ -93,6 +93,8 @@ public class GameManager implements Serializable
             turnHistory.turnHistoryStack.clear();
             isGameActive = false;
         }
+
+        playersList.forEach(player -> player.getStatistics().resetStatistics());
     }
 
     public void changeTurn()

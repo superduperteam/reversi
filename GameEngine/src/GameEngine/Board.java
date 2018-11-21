@@ -15,14 +15,7 @@ public class Board implements Serializable
 
     public Board(jaxb.schema.generated.Board board, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
-//        this.height = board.getRows();
-//        this.width = board.getColumns();
-//        this.board = new Disc[height][width];
-//        initializeBoard(initialDiscPointsOfPlayers);
-//        this.gameMode = gameMode;
         this(board.getRows(), board.getColumns(), initialDiscPointsOfPlayers, gameMode);
-       // this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
-
     }
 
     public Board(int height, int width, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
