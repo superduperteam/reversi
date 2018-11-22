@@ -125,6 +125,9 @@ public class GameUI
                 {
                     gameManager = currGameManager;
                 }
+            } catch (FileIsNotXML fileIsNotXML){
+                System.out.println("Error: " + fileIsNotXML);
+                isGameLoaded = false;
             } catch (NoXMLFileException noXMLFile) {
                 //noXMLFile.printStackTrace();
                 System.out.println("Error: " + noXMLFile);

@@ -29,7 +29,7 @@ public class GameSettingsReader {
 
     public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
-            RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException {
+            RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException, FileIsNotXML {
 //        Scanner reader = new Scanner(System.in);
 //        String filePathString;
 //
@@ -45,7 +45,7 @@ public class GameSettingsReader {
 //        }
         if(!xmlFilePath.toString().toLowerCase().endsWith(".xml"))
         {
-            throw new NoXMLFileException();
+            throw new FileIsNotXML();
         }
         else {
             try
