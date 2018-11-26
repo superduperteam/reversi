@@ -442,6 +442,7 @@ public class GameUI
         final int RETIRE_FROM_GAME = 7;
         Board board = gameManager.getBoard();
         boolean didUserAskToEndGame = false;
+        Player retiredPlayer;
 
 
         switch (commandToExecute){
@@ -462,6 +463,11 @@ public class GameUI
                 System.out.println("After undo the game state is:");
                 printBoardState(gameManager.getBoard());
                 printWhoseTurn(gameManager.getActivePlayer());
+                retiredPlayer = gameManager.getReturnedRetiredPlayer();
+                if(retiredPlayer != null)
+                {
+                    System.out.println(retiredPlayer.getName() + "has returned!");
+                }
                 break;
             case SAVE_GAME:
                 saveGameToFile(gameManager);
