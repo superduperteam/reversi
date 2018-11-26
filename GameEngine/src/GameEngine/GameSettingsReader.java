@@ -21,8 +21,8 @@ public class GameSettingsReader {
     private final byte MAX_COLS = 30; // cols in [4, 30]
     private final byte MIN_COLS = 4;
     private final int MIN_NUMBER_OF_PLAYERS = 2;
-    private final int MAX_NUMBER_OF_PLAYERS = 2;
-    private int expectedNumberOfParticipants = 2; // ## to be removed in exercise 2
+    private final int MAX_NUMBER_OF_PLAYERS = 4;
+    private int expectedNumberOfParticipants = 4; // ## to be removed in exercise 2
 
     // TODO: Check path, check XML
 

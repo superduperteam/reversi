@@ -186,7 +186,7 @@ public class Board implements Serializable
             {
                 insertionCellPoint = new Point(row, col);
 
-                if (isMoveLegal(insertionCellPoint, playerToSearchFor.GetDiscType()) == GameManager.eMoveStatus.OK)
+                if (isMoveLegal(insertionCellPoint, playerToSearchFor.getDiscType()) == GameManager.eMoveStatus.OK)
                 {
                     listOfAllPossibleMoves.add(insertionCellPoint);
                 }
@@ -319,7 +319,7 @@ public class Board implements Serializable
 
             for(Point point : currentPlayerInitialDiscs)
             {
-                board[point.getRow()][point.getCol()] = new Disc(player.GetDiscType());
+                board[point.getRow()][point.getCol()] = new Disc(player.getDiscType());
             }
         }
     }

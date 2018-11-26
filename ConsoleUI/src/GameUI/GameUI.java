@@ -174,7 +174,7 @@ public class GameUI
     private boolean gameLoop(GameManager gameManager)
     {
         // int i = 1; // Option 5 (History) check
-        List<String> menuOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6"));
+        List<String> menuOptions = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7"));
         int menuInput;
         boolean didUserAskToEndGame = false;
         boolean doesUserWantToPlayAgain;
@@ -351,6 +351,7 @@ public class GameUI
         gameMenuOptions.append("4.Exit\n");
         gameMenuOptions.append("5.Undo last move\n");
         gameMenuOptions.append("6.Save game\n");
+        gameMenuOptions.append("7.Retire from game\n");
 
         System.out.println(gameMenuOptions.toString());
     }
@@ -377,7 +378,7 @@ public class GameUI
         playersList.forEach(player ->
         {
             System.out.println();
-            System.out.print(player.GetName());
+            System.out.print(player.getName());
             System.out.println(":");
             System.out.print("Turns played: ");
             System.out.println(player.getStatistics().getCountOfPlayedTurns());
@@ -395,7 +396,7 @@ public class GameUI
         {
             System.out.print(player.getName());
             System.out.print(": '");
-            System.out.print(player.GetDiscType());
+            System.out.print(player.getDiscType());
             System.out.println("'");
         });
     }
@@ -447,6 +448,7 @@ public class GameUI
         final int EXIT = 4;
         final int UNDO = 5;
         final int SAVE_GAME = 6;
+        final int RETIRE_FROM_GAME = 7;
         Board board = gameManager.getBoard();
         boolean didUserAskToEndGame = false;
 
@@ -472,6 +474,10 @@ public class GameUI
                 break;
             case SAVE_GAME:
                 saveGameToFile(gameManager);
+                break;
+            case RETIRE_FROM_GAME:
+                gameManager.getActivePlayer().quitGame(gameManager);
+                //gameManager.changeTurn();
                 break;
         }
 
@@ -621,9 +627,9 @@ public class GameUI
 
         if(activePlayer.getIsHuman()) {
 
-            strBuilder.append(activePlayer.GetName());
+            strBuilder.append(activePlayer.getName());
             strBuilder.append("'s turn ('");
-            strBuilder.append(activePlayer.GetDiscType().toString());
+            strBuilder.append(activePlayer.getDiscType().toString());
             strBuilder.append("')!");
             System.out.println(strBuilder.toString());
         }
@@ -720,22 +726,23 @@ public class GameUI
 
     private void getPlayersDetailsFromUser(List<Player> playersList)
     {
-        boolean isFirstPlayerHuman, isSecondPlayerHuman;
-        boolean areBothAIs;
+        boolean isFirstPlayerHuman, isSecondPlayerHuman, isThirdPlayerHuman, isFourthPlayerHuman;
+        boolean areAllAIs;
 
         do {
             isFirstPlayerHuman = isPlayerHumanUserAnswer("first");
-
-
             isSecondPlayerHuman = isPlayerHumanUserAnswer("second");
-            if(!isFirstPlayerHuman && !isSecondPlayerHuman)
+            isThirdPlayerHuman = isPlayerHumanUserAnswer("third");
+            isFourthPlayerHuman = isPlayerHumanUserAnswer("fourth");
+
+            if(!isFirstPlayerHuman && !isSecondPlayerHuman && !isThirdPlayerHuman && !isFourthPlayerHuman)
             {
                 System.out.println("Both players can't be AIs. Please try again.");
-                areBothAIs = true;
+                areAllAIs = true;
             }
 
-            areBothAIs = !isFirstPlayerHuman && !isSecondPlayerHuman;
-        }while(areBothAIs);
+            areAllAIs = !isFirstPlayerHuman && !isSecondPlayerHuman && !isThirdPlayerHuman && !isFourthPlayerHuman;
+        }while(areAllAIs);
 
         // Now we have all the data we need
         playersList.get(0).setIsHuman(isFirstPlayerHuman);
@@ -876,6 +883,8 @@ public class GameUI
         List<Player> playersList = new ArrayList<>(2);
         playersList.add(new Player("Player 1", true,eDiscType.BLACK, new BigInteger("1")));
         playersList.add(new Player("Player 2", true,eDiscType.WHITE, new BigInteger("2")));
+        playersList.add(new Player("Player 3", true,eDiscType.BLUE, new BigInteger("3")));
+        playersList.add(new Player("Player 4", true,eDiscType.GREEN, new BigInteger("4")));
 
         return playersList;
     }

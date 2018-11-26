@@ -9,7 +9,7 @@ public class GameManager implements Serializable
     private HashMap<eDiscType, Player> discTypeToPlayer;
     private TurnHistory turnHistory;
     private List<Player> playersList;
-    private  int activePlayerIndex;
+    private int activePlayerIndex;
     private Player activePlayer;
     private Board board;
     private TurnHistory.Turn currTurn;
@@ -28,6 +28,20 @@ public class GameManager implements Serializable
 //        currTurn = getCurrentTurn(); // ##
     }
 
+    public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
+    {
+        if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
+            addTurnToHistory(currTurn);
+           // setActivePlayerToBeNextPlayer();
+
+            discTypeToPlayer.remove(quitter.getDiscType());
+            playersList.remove(quitter);
+            activePlayer = playersList.get(activePlayerIndex % playersList.size());
+
+            currTurn = getCurrentTurn();
+        }
+    }
+
     public boolean isGameActive() {
         return isGameActive;
     }
@@ -39,6 +53,12 @@ public class GameManager implements Serializable
 
     public eGameMode getGameMode() {
         return gameMode;
+    }
+
+    private void setActivePlayerToBeNextPlayer()
+    {
+        activePlayerIndex = (activePlayerIndex + 1)%(playersList.size());
+        activePlayer = playersList.get(activePlayerIndex);
     }
 
     public Board getInitialBoard()
@@ -76,7 +96,7 @@ public class GameManager implements Serializable
     }
 
     public boolean isGameOver(){
-        return !board.areThereAnyMovesForPlayers(playersList);
+        return !board.areThereAnyMovesForPlayers(playersList) || playersList.size() == 1;
     }
 
     public Board getBoard()
@@ -100,9 +120,7 @@ public class GameManager implements Serializable
     public void changeTurn()
     {
         addTurnToHistory(currTurn);
-
-        activePlayerIndex = (activePlayerIndex + 1)%(playersList.size());
-        activePlayer = playersList.get(activePlayerIndex);
+        setActivePlayerToBeNextPlayer();
 
         updateGameScore();
 
@@ -148,8 +166,11 @@ public class GameManager implements Serializable
 
                 if(currDisc != null)
                 {
-                    playerToAddScoreTo = discTypeToPlayer.get(currDisc.getType());
-                    playerToAddScoreTo.getStatistics().incScore();
+                    if(discTypeToPlayer.containsKey(currDisc.getType()))
+                    {
+                        playerToAddScoreTo = discTypeToPlayer.get(currDisc.getType());
+                        playerToAddScoreTo.getStatistics().incScore();
+                    }
                 }
             }
         }
