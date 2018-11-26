@@ -28,20 +28,6 @@ public class GameManager implements Serializable
 //        currTurn = getCurrentTurn(); // ##
     }
 
-    public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
-    {
-        if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
-            addTurnToHistory(currTurn);
-           // setActivePlayerToBeNextPlayer();
-
-            discTypeToPlayer.remove(quitter.getDiscType());
-            playersList.remove(quitter);
-            activePlayer = playersList.get(activePlayerIndex % playersList.size());
-
-            currTurn = getCurrentTurn();
-        }
-    }
-
     public boolean isGameActive() {
         return isGameActive;
     }
@@ -124,7 +110,19 @@ public class GameManager implements Serializable
 
         updateGameScore();
 
-        currTurn = getCurrentTurn(); // ##
+        currTurn = getCurrentTurn();
+    }
+
+    public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
+    {
+        if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
+            currTurn.retiredPlayer = quitter;
+            addTurnToHistory(currTurn);
+            discTypeToPlayer.remove(quitter.getDiscType());
+            playersList.remove(quitter);
+            activePlayer = playersList.get(activePlayerIndex % playersList.size());
+            currTurn = getCurrentTurn();
+        }
     }
 
     public Player getActivePlayer()
@@ -188,12 +186,14 @@ public class GameManager implements Serializable
             private Player activePlayer;
             private Board board;
             private HashMap<eDiscType, Player> discTypeToPlayer;
+            private Player retiredPlayer = null;
 
             //the method clones the last turn using copy constructors.
             public Turn(Board board, Player activePlayer, List<Player> players) {
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
+                this.retiredPlayer = retiredPlayer;
 
                 for(Player player: players) {
                     Player copiedPlayer = new Player(player);
@@ -212,7 +212,7 @@ public class GameManager implements Serializable
             turnHistoryStack.push(turn);
         }
 
-        //is there are no turns in the stack: returns null
+        //if there are no turns in the stack: returns null
         public Turn getLastTurn() {
             if(turnHistoryStack.isEmpty()) {
                 return null;
@@ -222,7 +222,7 @@ public class GameManager implements Serializable
         }
     }
 
-    public TurnHistory.Turn getCurrentTurn() {
+    private TurnHistory.Turn getCurrentTurn() {
         TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
 
         return turn;
@@ -273,6 +273,12 @@ public class GameManager implements Serializable
         board = turnToChangeTo.board;
 
         currTurn = getCurrentTurn();
+        currTurn.retiredPlayer = turnToChangeTo.retiredPlayer;
+    }
+
+    public Player getReturnedRetiredPlayer()
+    {
+        return currTurn.retiredPlayer;
     }
 
     public enum eGameMode
