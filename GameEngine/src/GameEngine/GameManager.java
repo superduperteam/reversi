@@ -14,7 +14,6 @@ public class GameManager implements Serializable
     private Board board;
     private TurnHistory.Turn currTurn;
     private boolean isGameActive;
-//    private Map<Point, Integer> PointToFlipPotential;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -26,33 +25,20 @@ public class GameManager implements Serializable
         activePlayer = playersList.get(0);
         this.board = board;
         isGameActive = false;
-        calcFlipPotential();
 //        currTurn = getCurrentTurn(); // ##
     }
 
-//    public Map<Point, Integer> getPointToFlipPotential() {
-//        return PointToFlipPotential;
-//    }
+    public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
+    {
+        if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
+            addTurnToHistory(currTurn);
+           // setActivePlayerToBeNextPlayer();
 
-    public void calcFlipPotential(){
-        Point currPoint;
-        int flipPotential;
+            discTypeToPlayer.remove(quitter.getDiscType());
+            playersList.remove(quitter);
+            activePlayer = playersList.get(activePlayerIndex % playersList.size());
 
-//        PointToFlipPotential = new HashMap<>();
-        for(int row = 0; row < board.getHeight(); ++row){
-            for(int col = 0; col < board.getWidth(); ++col){
-                currPoint = new Point(row, col);
-
-                if(board.getDisc(row, col) != null){
-                    flipPotential = 0;
-                }
-                else {
-                    flipPotential = board.checkFlipPotential(currPoint, getActivePlayer().getDiscType());
-                }
-
-                board.get(row,col).setFlipPotential(flipPotential);
-//                PointToFlipPotential.put(currPoint, flipPotential);
-            }
+            currTurn = getCurrentTurn();
         }
     }
 
@@ -137,20 +123,8 @@ public class GameManager implements Serializable
         setActivePlayerToBeNextPlayer();
 
         updateGameScore();
-        calcFlipPotential();
-        currTurn = getCurrentTurn();
-    }
 
-    public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
-    {
-        if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
-            currTurn.retiredPlayer = quitter;
-            addTurnToHistory(currTurn);
-            discTypeToPlayer.remove(quitter.getDiscType());
-            playersList.remove(quitter);
-            activePlayer = playersList.get(activePlayerIndex % playersList.size());
-            currTurn = getCurrentTurn();
-        }
+        currTurn = getCurrentTurn(); // ##
     }
 
     public Player getActivePlayer()
@@ -169,7 +143,7 @@ public class GameManager implements Serializable
         for(Player player : playersList)
         {
             discTypeToPlayer.put(discs[currentDiscIndex], player);
-            //  player.SetDiscType(discs[currentDiscIndex]);  Commented because player's disc type is given in Player c'tor
+          //  player.SetDiscType(discs[currentDiscIndex]);  Commented because player's disc type is given in Player c'tor
             currentDiscIndex++;
         }
     }
@@ -188,7 +162,7 @@ public class GameManager implements Serializable
 
         for(int i = 0; i < height; ++i) {
             for(int j = 0; j < width; ++j){
-                currDisc = board.getDisc(i,j);
+                currDisc = board.get(i,j);
 
                 if(currDisc != null)
                 {
@@ -214,15 +188,12 @@ public class GameManager implements Serializable
             private Player activePlayer;
             private Board board;
             private HashMap<eDiscType, Player> discTypeToPlayer;
-            private Player retiredPlayer = null;
-            private HashMap<Point, Integer> PointToFlipPotential;
 
             //the method clones the last turn using copy constructors.
             public Turn(Board board, Player activePlayer, List<Player> players) {
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
-                PointToFlipPotential = new HashMap<>();
 
                 for(Player player: players) {
                     Player copiedPlayer = new Player(player);
@@ -241,7 +212,7 @@ public class GameManager implements Serializable
             turnHistoryStack.push(turn);
         }
 
-        //if there are no turns in the stack: returns null
+        //is there are no turns in the stack: returns null
         public Turn getLastTurn() {
             if(turnHistoryStack.isEmpty()) {
                 return null;
@@ -251,7 +222,7 @@ public class GameManager implements Serializable
         }
     }
 
-    private TurnHistory.Turn getCurrentTurn() {
+    public TurnHistory.Turn getCurrentTurn() {
         TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
 
         return turn;
@@ -300,14 +271,8 @@ public class GameManager implements Serializable
         activePlayer = turnToChangeTo.activePlayer;
         activePlayerIndex = playersList.indexOf(activePlayer);
         board = turnToChangeTo.board;
-        currTurn = getCurrentTurn();
-        currTurn.retiredPlayer = turnToChangeTo.retiredPlayer;
-        calcFlipPotential();
-    }
 
-    public Player getReturnedRetiredPlayer()
-    {
-        return currTurn.retiredPlayer;
+        currTurn = getCurrentTurn();
     }
 
     public enum eGameMode
@@ -324,12 +289,12 @@ public class GameManager implements Serializable
         }},
         ILLEGAL_ISLAND {
             public String toString() {
-                return new String("The new disc should be adjacent to other discs on board!");
-            }},
+            return new String("The new disc should be adjacent to other discs on board!");
+        }},
         POINT_IS_NOT_IN_RANGE_OF_BOARD{
             public String toString() {
-                return new String("The coordinates are not in the board's range!");
-            }}
+            return new String("The coordinates are not in the board's range!");
+        }}
     }
 
     // call this only after all info about players is gathered.

@@ -2,7 +2,7 @@
 <GameDescriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../Desktop/Reversi.xsd">
 	<GameType>Basic</GameType>
 	<Game>
-		<Board rows="4" columns="4"/>
+		<Board rows="6" columns="5"/>
 		<Variant>Regular</Variant>
 		<InitialPositions>
 			<Participant number="1">
@@ -12,6 +12,14 @@
 			<Participant number="2">
 				<Position row="1" column="2"/>
 				<Position row="1" column="3"/>
+			</Participant>
+			<Participant number="3">
+				<Position row="3" column="2"/>
+				<Position row="3" column="3"/>
+			</Participant>
+			<Participant number="4">
+				<Position row="4" column="2"/>
+				<Position row="4" column="3"/>
 			</Participant>
 		</InitialPositions>
 	</Game>

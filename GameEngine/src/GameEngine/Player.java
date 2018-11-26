@@ -33,11 +33,6 @@ public class Player implements Serializable {
         this.id = new BigInteger(toCopy.getId().toString());
     }
 
-    public eDiscType GetDiscType()
-    {
-        return discType;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -53,6 +48,73 @@ public class Player implements Serializable {
 //        this.id = player.getId();
 //        statistics = new Statistics();
 //    }
+
+    public BigInteger getId(){
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void quitGame(GameManager gameManager)
+    {
+        gameManager.retirePlayerFromGame(this);
+    }
+
+    public eDiscType getDiscType() { return discType;}
+
+    public int getCountOfRemainingDiscs() {
+        return countOfRemainingDiscs;
+    }
+
+    public boolean getIsHuman(){
+        return isHuman;
+    }
+
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    public boolean isHuman()
+    {
+        return isHuman;
+    }
+
+    public Point getRandomMove(Board board)
+    {
+        List<Point> allPossibleMoves = board.getListOfAllPossibleMoves(this);
+
+        return pickRandomMoveFromList(allPossibleMoves);
+    }
+
+    private Point pickRandomMoveFromList(List<Point> allPossibleMoves)
+    {
+        Random random = new Random();
+        int moveIndex = random.nextInt(allPossibleMoves.size());
+
+        return allPossibleMoves.get(moveIndex);
+    }
+
+    public int getScore()
+    {
+        return statistics.score;
+    }
+
+    public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board)
+    {
+        GameManager.eMoveStatus isAbleToDoTheMove;
+
+        isAbleToDoTheMove = board.isMoveLegal(targetInsertionPoint, discType);
+
+        if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
+        {
+            statistics.totalNumOfFlips += board.updateBoard(targetInsertionPoint, discType);
+            statistics.countOfPlayedTurns++;
+        }
+
+        return isAbleToDoTheMove;
+    }
 
     public class Statistics implements  Serializable{
         private int countOfPlayedTurns;
@@ -102,75 +164,6 @@ public class Player implements Serializable {
         public int getScore() {
             return score;
         }
-    }
-
-    public BigInteger getId(){
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public eDiscType getDiscType() {
-        return discType;
-    }
-
-    public int getCountOfRemainingDiscs() {
-        return countOfRemainingDiscs;
-    }
-
-    public boolean getIsHuman(){
-        return isHuman;
-    }
-
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    public boolean isHuman()
-    {
-        return isHuman;
-    }
-
-    public Point getRandomMove(Board board)
-    {
-        List<Point> allPossibleMoves = board.getListOfAllPossibleMoves(this);
-
-        return pickRandomMoveFromList(allPossibleMoves);
-    }
-
-    public String GetName()
-    {
-        return name;
-    }
-
-    private Point pickRandomMoveFromList(List<Point> allPossibleMoves)
-    {
-        Random random = new Random();
-        int moveIndex = random.nextInt(allPossibleMoves.size());
-
-        return allPossibleMoves.get(moveIndex);
-    }
-
-    public int getScore()
-    {
-        return statistics.score;
-    }
-
-    public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board)
-    {
-        GameManager.eMoveStatus isAbleToDoTheMove;
-
-        isAbleToDoTheMove = board.isMoveLegal(targetInsertionPoint, discType);
-
-        if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
-        {
-            statistics.totalNumOfFlips += board.updateBoard(targetInsertionPoint, discType);
-            statistics.countOfPlayedTurns++;
-        }
-
-        return isAbleToDoTheMove;
     }
 
     @Override
