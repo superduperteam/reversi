@@ -6,12 +6,12 @@
 		<Variant>Regular</Variant>
 		<InitialPositions>
 			<Participant number="1">
-				<Position row="2" column="2"/>
-				<Position row="2" column="3"/>
+                <Position row="1" column="2"/>
+                <Position row="1" column="3"/>
 			</Participant>
 			<Participant number="2">
-				<Position row="1" column="2"/>
-				<Position row="1" column="3"/>
+                <Position row="2" column="2"/>
+                <Position row="2" column="3"/>
 			</Participant>
 			<Participant number="3">
 				<Position row="3" column="2"/>
@@ -36,6 +36,10 @@
 			<Name>Nachtze</Name>
 			<Type>Computer</Type>
 		</Player>
+        <Player id="789">
+            <Name>Ido</Name>
+            <Type>Computer</Type>
+        </Player>
 	</Players>
 	<DynamicPlayers game-title="sample game" total-players="3"/>
 </GameDescriptor>

@@ -193,7 +193,6 @@ public class GameManager implements Serializable
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
-                this.retiredPlayer = retiredPlayer;
 
                 for(Player player: players) {
                     Player copiedPlayer = new Player(player);
