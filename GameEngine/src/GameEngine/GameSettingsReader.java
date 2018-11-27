@@ -8,6 +8,7 @@ import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Path;
 import java.util.*;
 import java.io.InputStream;
@@ -22,27 +23,15 @@ public class GameSettingsReader {
     private final byte MIN_COLS = 4;
     private final int MIN_NUMBER_OF_PLAYERS = 2;
     private final int MAX_NUMBER_OF_PLAYERS = 4;
-    private int expectedNumberOfParticipants = 4; // ## to be removed in exercise 2
 
-    // TODO: Check path, check XML
-
-
-    public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
+    public GameManager readGameSettings(Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
-            RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException, FileIsNotXML {
-//        Scanner reader = new Scanner(System.in);
-//        String filePathString;
-//
-//        filePathString = reader.nextLine();
-//        Path filePath = Paths.get(filePathString);
-        // check path
+            RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfPlayersException, FileIsNotXML, TooManyInitialPositionsException,
+            ThereAreAtLeastTwoPlayersWithSameID {
 
         // ## REMEMBER TO CHANGE .XML !!
         File xmlFile = new File(xmlFilePath.toString());//xmlFilePath.toString());
 
-//        if(xmlFile != null) {
-//            throw new Exceptions.NoXMLFileException();
-//        }
         if(!xmlFilePath.toString().toLowerCase().endsWith(".xml"))
         {
             throw new FileIsNotXML();
@@ -51,7 +40,7 @@ public class GameSettingsReader {
             try
             {
                 InputStream inputStream = new FileInputStream(xmlFile);
-                return extractGameSettings(inputStream, playersList);
+                return extractGameSettings(inputStream);
             } catch (IOException e)
             {
                 throw new NoXMLFileException();
@@ -59,11 +48,12 @@ public class GameSettingsReader {
         }
     }
 
-    private void checkNumberOfParticipants(GameDescriptor gameDescriptor, int expectedNumberOfParticipants) throws OutOfRangeNumberOfParticipantsException
+    private void checkNumberOfPlayers(GameDescriptor gameDescriptor) throws OutOfRangeNumberOfPlayersException
     {
-        if(gameDescriptor.getGame().getInitialPositions().getParticipant().size()!= expectedNumberOfParticipants)
-        {
-            throw new OutOfRangeNumberOfParticipantsException(expectedNumberOfParticipants);
+        int numOfPlayers = gameDescriptor.getPlayers().getPlayer().size();
+
+        if(numOfPlayers < MIN_NUMBER_OF_PLAYERS || numOfPlayers > MAX_NUMBER_OF_PLAYERS) {
+            throw new OutOfRangeNumberOfPlayersException(MIN_NUMBER_OF_PLAYERS, MAX_NUMBER_OF_PLAYERS);
         }
     }
 
@@ -75,16 +65,30 @@ public class GameSettingsReader {
             throw new RowsNotInRangeException();
     }
 
-    private GameManager getGameDetails(GameDescriptor gameDescriptor, List<GameEngine.Player> playersList)
+    private GameManager getGameDetails(GameDescriptor gameDescriptor)
     {
         GameManager.eGameMode gameMode;
         GameEngine.Board board;
+        List<GameEngine.Player> playersList = createPlayersListFromGameDetails(gameDescriptor);
 
         board = createBoardFromGameDetails(gameDescriptor, playersList);
         gameMode = getEGameMode(gameDescriptor);
         GameManager gameManager = new GameManager(gameMode, playersList, board);
 
         return gameManager;
+    }
+
+    private List<GameEngine.Player> createPlayersListFromGameDetails(GameDescriptor gameDescriptor) {
+        eDiscType[] eDiscTypes = eDiscType.values();
+        List<GameEngine.Player> playersList = new ArrayList<>();
+        List<jaxb.schema.generated.Player> xmlPlayersList = gameDescriptor.getPlayers().getPlayer();
+
+        int discTypeIndex = 0;
+        for(jaxb.schema.generated.Player xmlPlayer : xmlPlayersList) {
+            playersList.add(new Player(xmlPlayer, eDiscTypes[discTypeIndex++]));
+        }
+
+        return playersList;
     }
 
     private GameEngine.Board createBoardFromGameDetails(GameDescriptor gameDescriptor,  List<GameEngine.Player> playersList) {
@@ -128,21 +132,23 @@ public class GameSettingsReader {
 //        return null; // ## throw execption
 //    }
 
-    private GameManager extractGameSettings(InputStream xmlStream, List<GameEngine.Player> playersList) throws RowsNotInRangeException,
+    private GameManager extractGameSettings(InputStream xmlStream) throws RowsNotInRangeException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, PlayersInitPositionsOverrideEachOtherException,
-            BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException
+            BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException,
+            OutOfRangeNumberOfPlayersException, TooManyInitialPositionsException, ThereAreAtLeastTwoPlayersWithSameID
     {
         try{
             GameDescriptor gamedDescriptor = deserializeFrom(xmlStream);
+            arePlayersIDsUnique(gamedDescriptor);
             areNumberOfRowsInRange(gamedDescriptor);
             areNumberOfColsInRange(gamedDescriptor);
-            checkNumberOfParticipants(gamedDescriptor, expectedNumberOfParticipants);
+            checkNumberOfPlayers(gamedDescriptor);
             doEachPlayerHasAtLeastOneInitialPoint(gamedDescriptor);
             doesBoardSizeMatchNumOfPlayers(gamedDescriptor);
             areIntialPositionsInRange(gamedDescriptor);
-            doIntialPositionsOverrideEachOther(gamedDescriptor);
-            areThereIslandsOnRegularMode(gamedDescriptor, playersList);
-            return getGameDetails(gamedDescriptor, playersList);
+            doInitialPositionsOverrideEachOther(gamedDescriptor);
+            areThereIslandsOnRegularMode(gamedDescriptor);
+            return getGameDetails(gamedDescriptor);
         } catch (JAXBException e)
         {
             e.printStackTrace();
@@ -150,14 +156,30 @@ public class GameSettingsReader {
         }
     }
 
-        private static GameDescriptor deserializeFrom(InputStream in) throws JAXBException {
+    private void arePlayersIDsUnique(GameDescriptor gamedDescriptor) throws ThereAreAtLeastTwoPlayersWithSameID{
+        List<jaxb.schema.generated.Player> xmlPlayersList = gamedDescriptor.getPlayers().getPlayer();
+        HashSet<BigInteger> idsSet = new HashSet<>();
+        BigInteger currID;
+
+        for(jaxb.schema.generated.Player xmlPlayer : xmlPlayersList){
+            currID = new BigInteger(xmlPlayer.getId().toString());
+
+            if(!idsSet.contains(currID)) {
+                idsSet.add(currID);
+            }
+            else{
+                throw new ThereAreAtLeastTwoPlayersWithSameID();
+            }
+        }
+    }
+
+    private static GameDescriptor deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
         Unmarshaller u = jc.createUnmarshaller();
         return (GameDescriptor) u.unmarshal(in);
     }
 
-    private void doIntialPositionsOverrideEachOther(GameDescriptor gameDescriptor) throws PlayersInitPositionsOverrideEachOtherException
-    {
+    private void doInitialPositionsOverrideEachOther(GameDescriptor gameDescriptor) throws PlayersInitPositionsOverrideEachOtherException {
         HashSet<Point> positionsSet = new HashSet<>();
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
         List<Position> currPlayerInitialPositions;
@@ -183,27 +205,37 @@ public class GameSettingsReader {
         }
     }
 
-    private void doEachPlayerHasAtLeastOneInitialPoint(GameDescriptor gameDescriptor) throws PlayerHasNoInitialPositionsException
+    private void doEachPlayerHasAtLeastOneInitialPoint(GameDescriptor gameDescriptor) throws PlayerHasNoInitialPositionsException, TooManyInitialPositionsException
     {
-        HashSet<Position> positionsSet = new HashSet<>();
+        List<jaxb.schema.generated.Player> playersList = gameDescriptor.getPlayers().getPlayer();
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
         List<Position> currPlayerInitialPositions;
 
-        for(Participant participant : participantsList)
+        if(playersList.size() == participantsList.size())
         {
-            currPlayerInitialPositions = participant.getPosition();
-
-            if(currPlayerInitialPositions.size() == 0)
+            for(Participant participant : participantsList)
             {
-                throw new PlayerHasNoInitialPositionsException();
+                currPlayerInitialPositions = participant.getPosition();
+
+                if(currPlayerInitialPositions.size() == 0)
+                {
+                    throw new PlayerHasNoInitialPositionsException();
+                }
             }
+        }
+        else if(playersList.size() > participantsList.size()){ // it means there is a player that doesn't have initial positions
+            throw new PlayerHasNoInitialPositionsException();
+        }
+        else {
+            throw new TooManyInitialPositionsException();
         }
     }
 
-    private void areThereIslandsOnRegularMode(GameDescriptor gameDescriptor, List<GameEngine.Player> playersList) throws IslandsOnRegularModeException {
+    private void areThereIslandsOnRegularMode(GameDescriptor gameDescriptor) throws IslandsOnRegularModeException {
         GameEngine.Board board;
-
+        List<GameEngine.Player> playersList= createPlayersListFromGameDetails(gameDescriptor);
         board = createBoardFromGameDetails(gameDescriptor, playersList);
+
         for(int row = 0; row < board.getHeight(); ++row){
             for(int col = 0; col < board.getWidth(); ++col){
                 if(board.get(row,col) != null){

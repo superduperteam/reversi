@@ -2,7 +2,6 @@ package GameUI;
 
 import Exceptions.*;
 import GameEngine.*;
-import jaxb.schema.generated.Game;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -38,7 +37,7 @@ public class GameUI
         boolean isGameLoadedInThisIteration = false;
         boolean doesUserWantToPlay = true;
         boolean didLoadPreviouslyPlayedGame = false;
-        List<Player> playersList = generateInitialPlayersList();
+        //List<Player> playersList = generateInitialPlayersList();
         List<String> menuOptions= new ArrayList<>
                 (Arrays.asList(String.valueOf(MAIN_MENU_LOAD_XML), String.valueOf(MAIN_MENU_START_GAME),
                         String.valueOf(MAIN_MENU_SHOW_GAME_DESCRIPTION), String.valueOf(MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME), String.valueOf(MAIN_MENU_EXIT)));
@@ -49,7 +48,7 @@ public class GameUI
             menuInput = getMenuInput(menuOptions);
 
             if(menuInput == MAIN_MENU_LOAD_XML) {
-                isGameLoadedInThisIteration = loadXML(playersList);
+                isGameLoadedInThisIteration = loadXML();
                 isGameLoaded = isGameLoaded || isGameLoadedInThisIteration;
             }
             else if(menuInput == MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME) {
@@ -69,12 +68,12 @@ public class GameUI
             }
             else if(menuInput == MAIN_MENU_START_GAME) {
                 if(isGameLoaded) { // You must to have gameManager here
-                    if(!gameManager.isGameActive()) {
-                        getPlayersDetailsFromUser(gameManager.getPlayersList());
-                    }
+//                    if(!gameManager.isGameActive()) {
+//                        getPlayersDetailsFromUser(gameManager.getPlayersList());
+//                    }
                     doesUserWantToPlay = gameLoop(gameManager);
                     gameManager.resetGame();
-                    playersList = generateInitialPlayersList();
+                    //playersList = generateInitialPlayersList();
                 }
                 else System.out.println("Game isn't loaded yet.");
             }
@@ -110,7 +109,7 @@ public class GameUI
         }
     }
 
-    private boolean loadXML(List<Player> playersList)
+    private boolean loadXML()
     {
         GameManager currGameManager;
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
@@ -120,7 +119,7 @@ public class GameUI
 
         if(filePath != null) {
             try {
-                currGameManager = gameSettingsReader.readGameSettings(playersList, filePath);
+                currGameManager = gameSettingsReader.readGameSettings(filePath);
                 if(currGameManager != null)
                 {
                     gameManager = currGameManager;
@@ -132,10 +131,17 @@ public class GameUI
                 //noXMLFile.printStackTrace();
                 System.out.println("Error: " + noXMLFile);
                 isGameLoaded = false;
-            } catch (OutOfRangeNumberOfParticipantsException playersInitPositionsOutOfRangeException) {
+            } catch (OutOfRangeNumberOfPlayersException playersInitPositionsOutOfRangeException) {
                 System.out.println("Error: " + playersInitPositionsOutOfRangeException);
                 isGameLoaded = false;
-            } catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
+            } catch (TooManyInitialPositionsException tooManyInitialPositionsException) {
+                System.out.println("Error: " + tooManyInitialPositionsException);
+                isGameLoaded = false;
+            } catch (ThereAreAtLeastTwoPlayersWithSameID thereAreAtLeastTwoPlayersWithSameID) {
+                System.out.println("Error: " + thereAreAtLeastTwoPlayersWithSameID);
+                isGameLoaded = false;
+            }
+            catch (PlayerHasNoInitialPositionsException playerHasNoInitialPositionsException) {
                 System.out.println("Error: " + playerHasNoInitialPositionsException);
                 isGameLoaded = false;
             } catch (PlayersInitPositionsOverrideEachOtherException playersInitPositionsOverrideEachOtherException) {
@@ -884,14 +890,14 @@ public class GameUI
         }
     }
 
-    private List<Player> generateInitialPlayersList()
-    {
-        List<Player> playersList = new ArrayList<>(2);
-        playersList.add(new Player("Player 1", true,eDiscType.BLACK, new BigInteger("1")));
-        playersList.add(new Player("Player 2", true,eDiscType.WHITE, new BigInteger("2")));
-        playersList.add(new Player("Player 3", true,eDiscType.BLUE, new BigInteger("3")));
-        playersList.add(new Player("Player 4", true,eDiscType.GREEN, new BigInteger("4")));
-
-        return playersList;
-    }
+//    private List<Player> generateInitialPlayersList()
+//    {
+//        List<Player> playersList = new ArrayList<>(2);
+//        playersList.add(new Player("Player 1", true,eDiscType.BLACK, new BigInteger("1")));
+//        playersList.add(new Player("Player 2", true,eDiscType.WHITE, new BigInteger("2")));
+//        playersList.add(new Player("Player 3", true,eDiscType.BLUE, new BigInteger("3")));
+//        playersList.add(new Player("Player 4", true,eDiscType.GREEN, new BigInteger("4")));
+//
+//        return playersList;
+//    }
 }
