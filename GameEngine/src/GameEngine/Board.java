@@ -79,7 +79,7 @@ public class Board implements Serializable
     public int updateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
         board[targetInsertionPoint.getRow()][targetInsertionPoint.getCol()] = new Disc(discTypeToBeInserted);
-        return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
+        return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted, false);
     }
 
     public GameManager.eMoveStatus isMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
@@ -121,7 +121,7 @@ public class Board implements Serializable
         int row = point.getRow(), col = point.getCol();
         Disc adjacentDisc;
         List<Direction> allDirections = generateListOfAllDirection();
-        List<Point> allPossibleAdjacentCellPoints = new ArrayList<Point>(8);
+        List<Point> allPossibleAdjacentCellPoints = new ArrayList<>(8);
         List<Point> allPossibleAdjacentCellPointsInBoardRange = new ArrayList<>(8);
 
         // We want to get a list of all adjacent points.
@@ -248,7 +248,12 @@ public class Board implements Serializable
         return true;
     }
 
-    private int flipEnemyDiscs(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
+    public int checkFlipPotential(Point targetInsertionPoint, eDiscType discTypeToBeInserted){
+        return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted, true);
+    }
+
+    private int flipEnemyDiscs(Point targetInsertionPoint, eDiscType discTypeToBeInserted,
+                               boolean isOnlyCheckingFlipPotential)
     {
         // Assuming you can flip whosoever discs but yours.
         int countOfFlippedDiscs = 0;
@@ -256,13 +261,15 @@ public class Board implements Serializable
 
         for(Direction direction : allDirections)
         {
-            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted);
+            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction,
+                    discTypeToBeInserted, isOnlyCheckingFlipPotential);
         }
 
         return countOfFlippedDiscs;
     }
 
-    private int flipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction, eDiscType discTypeToBeInserted)
+    private int flipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction,
+                                          eDiscType discTypeToBeInserted, boolean isOnlyCheckingFlipPotential)
     {
         int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int row = targetInsertionPoint.getRow() + rowDelta, col = targetInsertionPoint.getCol() + colDelta;
@@ -277,12 +284,14 @@ public class Board implements Serializable
             {
                 while (currentDisc.getType() != discTypeToBeInserted)
                 {
-                    currentDisc.setType(discTypeToBeInserted);
-                    countOfFlippedDiscs++;
+                    if(!isOnlyCheckingFlipPotential) {
+                        currentDisc.setType(discTypeToBeInserted);
 
+                    }
                     row += rowDelta;
                     col += colDelta;
                     currentDisc = board[row][col];
+                    countOfFlippedDiscs++;
                 }
             }
         }

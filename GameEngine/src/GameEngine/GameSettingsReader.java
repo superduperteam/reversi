@@ -51,6 +51,7 @@ public class GameSettingsReader {
             try
             {
                 InputStream inputStream = new FileInputStream(xmlFile);
+
                 return extractGameSettings(inputStream, playersList);
             } catch (IOException e)
             {
@@ -142,6 +143,7 @@ public class GameSettingsReader {
             areIntialPositionsInRange(gamedDescriptor);
             doIntialPositionsOverrideEachOther(gamedDescriptor);
             areThereIslandsOnRegularMode(gamedDescriptor, playersList);
+
             return getGameDetails(gamedDescriptor, playersList);
         } catch (JAXBException e)
         {

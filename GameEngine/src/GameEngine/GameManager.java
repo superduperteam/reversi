@@ -14,6 +14,7 @@ public class GameManager implements Serializable
     private Board board;
     private TurnHistory.Turn currTurn;
     private boolean isGameActive;
+    private Map<Point, Integer> PointToFlipPotential;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -25,7 +26,28 @@ public class GameManager implements Serializable
         activePlayer = playersList.get(0);
         this.board = board;
         isGameActive = false;
+        calcFlipPotential();
 //        currTurn = getCurrentTurn(); // ##
+    }
+
+    public void calcFlipPotential(){
+        PointToFlipPotential = new HashMap<>();
+        Point currPoint;
+        int flipPotential;
+
+        for(int row = 0; row < board.getHeight(); row++){
+            for(int col = 0; col < board.getWidth(); col++){
+                currPoint = new Point(row, col);
+                if(board.get(row, col) != null) {
+                    flipPotential = 0;
+                }
+                else {
+                    flipPotential = board.checkFlipPotential(currPoint, activePlayer.getDiscType());
+                }
+
+                PointToFlipPotential.put(currPoint, flipPotential);
+            }
+        }
     }
 
     public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
@@ -124,7 +146,8 @@ public class GameManager implements Serializable
 
         updateGameScore();
 
-        currTurn = getCurrentTurn(); // ##
+        currTurn = getCurrentTurn();
+        calcFlipPotential();
     }
 
     public Player getActivePlayer()
