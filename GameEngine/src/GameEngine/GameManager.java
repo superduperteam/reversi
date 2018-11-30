@@ -30,6 +30,10 @@ public class GameManager implements Serializable
 //        currTurn = getCurrentTurn(); // ##
     }
 
+    public Map<Point, Integer> getPointToFlipPotential() {
+        return PointToFlipPotential;
+    }
+
     public void calcFlipPotential(){
         Point currPoint;
         int flipPotential;
