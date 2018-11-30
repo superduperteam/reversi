@@ -14,6 +14,10 @@ public class Player implements Serializable {
     private eDiscType discType;
     private BigInteger id;
 
+    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
+        this(player.getName(), player.getType().equals("Human"), discType, player.getId());
+    }
+
     public Player(String name, boolean isHuman, eDiscType discType, BigInteger id)
     {
         this.name = name;
@@ -40,14 +44,6 @@ public class Player implements Serializable {
     public void setIsHuman(boolean isHuman) {
         this.isHuman = isHuman;
     }
-
-//    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
-//        this.name = player.getName();
-//        this.isHuman = player.getType().equals("Human");
-//        this.discType = discType;
-//        this.id = player.getId();
-//        statistics = new Statistics();
-//    }
 
     public BigInteger getId(){
         return id;
