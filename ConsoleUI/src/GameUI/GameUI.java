@@ -854,7 +854,16 @@ public class GameUI
 
                 if (discInCell == null)
                 {
-                    printSpaces(boardCellSize);
+                    if(!gameManager.getPointToFlipPotential().get(new Point(i, j)).equals(0)) {
+                        System.out.print(space);
+                        System.out.print(space);
+                        System.out.print(gameManager.getPointToFlipPotential().get(new Point(i, j)).toString());
+                        System.out.print(space);
+                        System.out.print(space);
+                    }
+                    else {
+                        printSpaces(boardCellSize);
+                    }
                 }
                 else
                 {
