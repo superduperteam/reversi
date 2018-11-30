@@ -131,9 +131,8 @@ public class GameManager implements Serializable
         setActivePlayerToBeNextPlayer();
 
         updateGameScore();
-
-        currTurn = getCurrentTurn();
         calcFlipPotential();
+        currTurn = getCurrentTurn();
     }
 
     public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
@@ -210,12 +209,15 @@ public class GameManager implements Serializable
             private Board board;
             private HashMap<eDiscType, Player> discTypeToPlayer;
             private Player retiredPlayer = null;
+            private HashMap<Point, Integer> PointToFlipPotential;
 
             //the method clones the last turn using copy constructors.
-            public Turn(Board board, Player activePlayer, List<Player> players) {
+            public Turn(Board board, Player activePlayer, List<Player> players,
+                        Map<Point,Integer> pointToFlipPotential) {
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
+                PointToFlipPotential = new HashMap<>();
 
                 for(Player player: players) {
                     Player copiedPlayer = new Player(player);
@@ -226,6 +228,16 @@ public class GameManager implements Serializable
 
                     playersList.add(copiedPlayer);
                     this.discTypeToPlayer.put(copiedPlayer.getDiscType(), copiedPlayer);
+                }
+                copyPointToFlipPotentialMap(pointToFlipPotential);
+            }
+
+            private void copyPointToFlipPotentialMap(Map<Point, Integer> pointToFlipPotential){
+                for(Point point : pointToFlipPotential.keySet()){
+                    Point pointCopy = new Point(point.getRow(), point.getCol());
+                    int flipPotentialCopy = pointToFlipPotential.get(point);
+
+                    PointToFlipPotential.put(pointCopy, flipPotentialCopy);
                 }
             }
         }
@@ -245,7 +257,7 @@ public class GameManager implements Serializable
     }
 
     private TurnHistory.Turn getCurrentTurn() {
-        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
+        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList, PointToFlipPotential);
 
         return turn;
     }
@@ -293,9 +305,9 @@ public class GameManager implements Serializable
         activePlayer = turnToChangeTo.activePlayer;
         activePlayerIndex = playersList.indexOf(activePlayer);
         board = turnToChangeTo.board;
-
         currTurn = getCurrentTurn();
         currTurn.retiredPlayer = turnToChangeTo.retiredPlayer;
+        PointToFlipPotential = turnToChangeTo.PointToFlipPotential;
     }
 
     public Player getReturnedRetiredPlayer()
