@@ -6,29 +6,29 @@ public enum eDiscType implements Serializable {
     BLACK {
         @Override
         public String toString() {
-            return "X";
+            return "Black";
         }
     },
     WHITE {
         @Override
         public String toString() {
-            return "O";
+            return "White";
         }
     },
     BLUE {
         @Override
         public String toString() {
-            return "@";
+            return "Blue";
         }
     }, GREEN {
         @Override
         public String toString() {
-            return "$";
+            return "Green";
         }
     }, RED {
         @Override
         public String toString() {
-            return "%";
+            return "Red";
         }
     }
 }
