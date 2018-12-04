@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ConsoleUI/ConsoleUI.iml" filepath="$PROJECT_DIR$/ConsoleUI/ConsoleUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaFX/JavaFX.iml" filepath="$PROJECT_DIR$/JavaFX/JavaFX.iml" />
     </modules>
   </component>
 </project>

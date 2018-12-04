@@ -1,14 +1,20 @@
 package GameEngine;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
 public class Player implements Serializable {
+
+    //private SimpleStringProperty nameUI;
+
     private Statistics statistics;
-    private int countOfRemainingDiscs;
     private String name;
     private boolean isHuman;
     private eDiscType discType;
@@ -25,16 +31,20 @@ public class Player implements Serializable {
         this.discType = discType;
         this.id = id;
         statistics = new Statistics();
+
+        //nameUI = new SimpleStringProperty(name);
     }
 
     public Player(Player toCopy) {
         this.statistics = new Statistics(toCopy.getStatistics());
-        this.countOfRemainingDiscs = toCopy.getCountOfRemainingDiscs();
         this.name = new String(toCopy.getName());
         this.isHuman = toCopy.getIsHuman();
         this.discType = toCopy.discType; //note (from ido): im assuming that playaer doesn't change his disk type.
                                         // if he does, a different logic should be implemented
         this.id = new BigInteger(toCopy.getId().toString());
+
+
+        //nameUI = new SimpleStringProperty(name);
     }
 
     public void setName(String name) {
@@ -59,10 +69,6 @@ public class Player implements Serializable {
     }
 
     public eDiscType getDiscType() { return discType;}
-
-    public int getCountOfRemainingDiscs() {
-        return countOfRemainingDiscs;
-    }
 
     public boolean getIsHuman(){
         return isHuman;
@@ -96,6 +102,15 @@ public class Player implements Serializable {
     {
         return statistics.score;
     }
+
+    public int getTurnsPlayed()
+    {
+        return statistics.countOfPlayedTurns;
+    }
+
+    public double getAverageOfFlips() { return statistics.getAverageOfFlips(); }
+
+    public String getColor() {return discType.toString();}
 
     public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board)
     {
@@ -155,10 +170,6 @@ public class Player implements Serializable {
                 avgNumOfFlips = totalNumOfFlips / countOfPlayedTurns;
             }
             return  avgNumOfFlips;
-        }
-
-        public int getScore() {
-            return score;
         }
     }
 

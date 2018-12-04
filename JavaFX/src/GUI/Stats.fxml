@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<TableView fx:id="tableView" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.StatsController">
+  <columns>
+    <TableColumn fx:id="colorColumn" prefWidth="75.0" text="Color" />
+    <TableColumn fx:id="nameColumn" prefWidth="95.0" text="Name" />
+      <TableColumn fx:id="scoreColumn" prefWidth="91.0" text="Score" />
+      <TableColumn fx:id="turnsPlayedColumn" prefWidth="89.0" text="Turns Played" />
+      <TableColumn fx:id="averageOfFlipsColumn" prefWidth="104.0" text="Average of flips" />
+  </columns>
+</TableView>

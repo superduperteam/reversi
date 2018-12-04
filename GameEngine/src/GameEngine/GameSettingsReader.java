@@ -236,11 +236,13 @@ public class GameSettingsReader {
         List<GameEngine.Player> playersList= createPlayersListFromGameDetails(gameDescriptor);
         board = createBoardFromGameDetails(gameDescriptor, playersList);
 
-        for(int row = 0; row < board.getHeight(); ++row){
-            for(int col = 0; col < board.getWidth(); ++col){
-                if(board.get(row,col) != null){
-                    if(!board.isThereDiscAdjacent(new Point(row,col))){
-                        throw new IslandsOnRegularModeException();
+        if(getEGameMode(gameDescriptor) == GameManager.eGameMode.Regular) {
+            for (int row = 0; row < board.getHeight(); ++row) {
+                for (int col = 0; col < board.getWidth(); ++col) {
+                    if (board.get(row, col) != null) {
+                        if (!board.isThereDiscAdjacent(new Point(row, col))) {
+                            throw new IslandsOnRegularModeException();
+                        }
                     }
                 }
             }
