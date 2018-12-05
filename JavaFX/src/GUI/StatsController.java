@@ -59,6 +59,6 @@ public class StatsController {
         tableView.autosize();
 
         tableView.setFixedCellSize(25);
-        tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(30));
+        tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(26));
     }
 }
