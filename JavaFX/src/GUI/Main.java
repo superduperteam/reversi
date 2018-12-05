@@ -39,9 +39,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        TableView<Player> tableView;
+        BoardGUI boardGUI;
         getGameDetails(); // extract GameManager from xml
         //tableView = createStatsComponent(gameManager.getPlayersList());
+
+        boardGUI = new BoardGUI(gameManager.getBoard().getHeight(), gameManager.getBoard().getWidth());
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource("app.fxml");
@@ -54,7 +56,20 @@ public class Main extends Application {
         //root.setTop(tableView);
         appController.initTable();
 
-        Scene scene = new Scene(root, 1000, 1000);
+        borderPane.setCenter(boardGUI);
+        BorderPane.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
+
+
+//        BorderPane.setAlignment(boardComponent, javafx.geometry.Pos.TOP_CENTER);
+//        borderPane.setCenter(boardComponent);
+//        setContent(borderPane);
+
+
+//                 <center>
+//              <fx:include fx:id="boardComponent" minHeight="-Infinity" minWidth="100.0" source="board.fxml" BorderPane.alignment="TOP_CENTER" />
+//         </center>
+
+        Scene scene = new Scene(root, 1050, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

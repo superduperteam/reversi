@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
    <content>
       <BorderPane>
          <right>
@@ -18,9 +18,6 @@
                </children>
             </HBox>
          </top>
-         <center>
-              <fx:include fx:id="boardComponent" minHeight="-Infinity" minWidth="100.0" source="board.fxml" BorderPane.alignment="TOP_LEFT" />
-         </center>
       </BorderPane>
    </content>
 </ScrollPane>
