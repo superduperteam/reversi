@@ -17,10 +17,6 @@ public class BoardGUI extends ScrollPane {
 
 
     public BoardGUI(int rowsCount, int columnsCount) {
-
-        rowsCount = 8;
-        columnsCount = 8;
-
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
         rowConstraints = new RowConstraints();
@@ -54,12 +50,11 @@ public class BoardGUI extends ScrollPane {
                 if(i!=0){ GridPane.setRowIndex(buttons[i][j], i);}
 
                 buttons[i][j].setMnemonicParsing(false);
-                buttons[i][j].setPrefHeight(100.0);
-                buttons[i][j].setPrefWidth(100.0);
+                buttons[i][j].setPrefHeight(5000.0);
+                buttons[i][j].setPrefWidth(5000.0);
                 buttons[i][j].setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
             }
         }
-
 
         for(int i=0; i<rowsCount; i++){
             for(int j=0; j< columnsCount; j++){
