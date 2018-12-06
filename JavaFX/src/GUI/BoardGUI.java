@@ -1,11 +1,15 @@
 package GUI;
 
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class BoardGUI extends ScrollPane {
@@ -14,6 +18,8 @@ public class BoardGUI extends ScrollPane {
     private final ColumnConstraints columnConstraints;
     private final RowConstraints rowConstraints;
     private Button[][] buttons;
+    private final int rowsCount;
+    private final int columnsCount;
 
 
     public BoardGUI(int rowsCount, int columnsCount) {
@@ -21,6 +27,8 @@ public class BoardGUI extends ScrollPane {
         columnConstraints = new ColumnConstraints();
         rowConstraints = new RowConstraints();
         buttons = new Button[rowsCount][columnsCount];
+        this.rowsCount = rowsCount;
+        this.columnsCount = columnsCount;
 
         setFitToHeight(true);
         setFitToWidth(true);
@@ -68,9 +76,48 @@ public class BoardGUI extends ScrollPane {
         for(int j=0; j< columnsCount; j++){
             gridPane.getColumnConstraints().add(columnConstraints);
         }
+
+
+        for(int i=0; i<rowsCount; i++){
+            for(int j=0; j< columnsCount; j++){
+//                ImageView imageView = new ImageView();
+//
+//                imageView.setNodeOrientation(javafx.geometry.NodeOrientation.INHERIT);
+//                imageView.setImage(new Image(getClass().getResource("/resources/black-disc.png").toExternalForm()));
+//                buttons[i][j].setGraphic(imageView);
+//
+//                imageView.fitHeightProperty().bind(buttons[i][j].heightProperty());
+//                imageView.fitWidthProperty().bind(buttons[i][j].widthProperty());
+
+                Circle circle = new Circle(50, 50, 40);
+                buttons[i][j].setGraphic(circle);
+                buttons[i][j].setContentDisplay(ContentDisplay.CENTER);
+
+                circle.radiusProperty().bind(buttons[i][j].heightProperty().divide(4));
+
+
+//                Image image = new Image("/resources/black-disc.png", buttons[i][j].getWidth(), buttons[i][j].getHeight(), false, true, true);
+//                BackgroundImage bImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(buttons[i][j].getWidth(), buttons[i][j].getHeight(), true, true, true, false));
+//
+//                Background backGround = new Background(bImage);
+//                buttons[i][j].setBackground(backGround);
+
+
+
+//                BackgroundImage backgroundImage = new BackgroundImage( new Image( getClass().getResource("/resources/black-disc.png").toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+//                Background background = new Background(backgroundImage);
+
+//                buttons[i][j].setBackground(background);
+
+
+            }
+        }
+
+
         setContent(gridPane);
 
         gridPane.autosize();
+
     }
 }
 
