@@ -59,7 +59,6 @@ public class Main extends Application {
         borderPane.setCenter(boardGUI);
         BorderPane.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
 
-
 //        BorderPane.setAlignment(boardComponent, javafx.geometry.Pos.TOP_CENTER);
 //        borderPane.setCenter(boardComponent);
 //        setContent(borderPane);
