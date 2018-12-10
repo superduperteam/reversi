@@ -14,7 +14,7 @@ public class GameManager implements Serializable
     private Board board;
     private TurnHistory.Turn currTurn;
     private boolean isGameActive;
-    private Map<Point, Integer> PointToFlipPotential;
+//    private Map<Point, Integer> PointToFlipPotential;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -30,18 +30,19 @@ public class GameManager implements Serializable
 //        currTurn = getCurrentTurn(); // ##
     }
 
-    public Map<Point, Integer> getPointToFlipPotential() {
-        return PointToFlipPotential;
-    }
+//    public Map<Point, Integer> getPointToFlipPotential() {
+//        return PointToFlipPotential;
+//    }
 
     public void calcFlipPotential(){
         Point currPoint;
         int flipPotential;
 
-        PointToFlipPotential = new HashMap<>();
+//        PointToFlipPotential = new HashMap<>();
         for(int row = 0; row < board.getHeight(); ++row){
             for(int col = 0; col < board.getWidth(); ++col){
                 currPoint = new Point(row, col);
+
                 if(board.getDisc(row, col) != null){
                     flipPotential = 0;
                 }
@@ -49,7 +50,8 @@ public class GameManager implements Serializable
                     flipPotential = board.checkFlipPotential(currPoint, getActivePlayer().getDiscType());
                 }
 
-                PointToFlipPotential.put(currPoint, flipPotential);
+                board.get(row,col).setFlipPotential(flipPotential);
+//                PointToFlipPotential.put(currPoint, flipPotential);
             }
         }
     }
@@ -216,8 +218,7 @@ public class GameManager implements Serializable
             private HashMap<Point, Integer> PointToFlipPotential;
 
             //the method clones the last turn using copy constructors.
-            public Turn(Board board, Player activePlayer, List<Player> players,
-                        Map<Point,Integer> pointToFlipPotential) {
+            public Turn(Board board, Player activePlayer, List<Player> players) {
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
@@ -232,16 +233,6 @@ public class GameManager implements Serializable
 
                     playersList.add(copiedPlayer);
                     this.discTypeToPlayer.put(copiedPlayer.getDiscType(), copiedPlayer);
-                }
-                copyPointToFlipPotentialMap(pointToFlipPotential);
-            }
-
-            private void copyPointToFlipPotentialMap(Map<Point, Integer> pointToFlipPotential){
-                for(Point point : pointToFlipPotential.keySet()){
-                    Point pointCopy = new Point(point.getRow(), point.getCol());
-                    int flipPotentialCopy = pointToFlipPotential.get(point);
-
-                    PointToFlipPotential.put(pointCopy, flipPotentialCopy);
                 }
             }
         }
@@ -261,7 +252,7 @@ public class GameManager implements Serializable
     }
 
     private TurnHistory.Turn getCurrentTurn() {
-        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList, PointToFlipPotential);
+        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
 
         return turn;
     }
@@ -311,7 +302,7 @@ public class GameManager implements Serializable
         board = turnToChangeTo.board;
         currTurn = getCurrentTurn();
         currTurn.retiredPlayer = turnToChangeTo.retiredPlayer;
-        PointToFlipPotential = turnToChangeTo.PointToFlipPotential;
+        calcFlipPotential();
     }
 
     public Player getReturnedRetiredPlayer()
