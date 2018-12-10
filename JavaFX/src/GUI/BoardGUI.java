@@ -1,5 +1,7 @@
 package GUI;
 
+import GameEngine.Board;
+import GameEngine.Disc;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -13,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class BoardGUI extends ScrollPane {
-
+    private BoardController boardController;
     private final GridPane gridPane;
     private final ColumnConstraints columnConstraints;
     private final RowConstraints rowConstraints;
@@ -22,13 +24,16 @@ public class BoardGUI extends ScrollPane {
     private final int columnsCount;
 
 
-    public BoardGUI(int rowsCount, int columnsCount) {
+    public BoardGUI(Board gameBoard, AppController appController) {
+        boardController = new BoardController(appController);
         gridPane = new GridPane();
         columnConstraints = new ColumnConstraints();
         rowConstraints = new RowConstraints();
+        this.rowsCount = gameBoard.getHeight();
+        this.columnsCount = gameBoard.getWidth();
         buttons = new Button[rowsCount][columnsCount];
-        this.rowsCount = rowsCount;
-        this.columnsCount = columnsCount;
+        Disc currDisc;
+        Button currButton;
 
         setFitToHeight(true);
         setFitToWidth(true);
@@ -52,15 +57,16 @@ public class BoardGUI extends ScrollPane {
         for(int i=0; i<rowsCount; i++){
             for(int j=0; j< columnsCount; j++){
                 buttons[i][j] = new Button();
+                currButton = buttons[i][j];
 
                 GridPane.setHalignment(buttons[i][j], javafx.geometry.HPos.CENTER);
                 if(j!= 0) {GridPane.setColumnIndex(buttons[i][j], j);}
                 if(i!=0){ GridPane.setRowIndex(buttons[i][j], i);}
 
-                buttons[i][j].setMnemonicParsing(false);
-                buttons[i][j].setPrefHeight(5000.0);
-                buttons[i][j].setPrefWidth(5000.0);
-                buttons[i][j].setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+                currButton.setMnemonicParsing(false);
+                currButton.setPrefHeight(5000.0);
+                currButton.setPrefWidth(5000.0);
+                currButton.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
             }
         }
 
@@ -77,7 +83,6 @@ public class BoardGUI extends ScrollPane {
             gridPane.getColumnConstraints().add(columnConstraints);
         }
 
-
         for(int i=0; i<rowsCount; i++){
             for(int j=0; j< columnsCount; j++){
 //                ImageView imageView = new ImageView();
@@ -88,14 +93,17 @@ public class BoardGUI extends ScrollPane {
 //
 //                imageView.fitHeightProperty().bind(buttons[i][j].heightProperty());
 //                imageView.fitWidthProperty().bind(buttons[i][j].widthProperty());
+                currDisc = gameBoard.get(i,j);
+                currButton = buttons[i][j];
 
-                Circle circle = new Circle(50, 50, 40);
-                buttons[i][j].setGraphic(circle);
-                buttons[i][j].setContentDisplay(ContentDisplay.CENTER);
+                if(currDisc != null){
+                    Circle circle = new Circle(50, 50, 40, boardController.discTypeToColor(currDisc.getType()));
+                    currButton.setGraphic(circle);
+                    currButton.setContentDisplay(ContentDisplay.CENTER);
 
-                circle.radiusProperty().bind(buttons[i][j].heightProperty().divide(4));
-
-
+                    circle.radiusProperty().bind(Bindings.min(currButton.heightProperty().divide(4), currButton.widthProperty().divide(4)));
+                    circle.fillProperty().bind();
+                }
 //                Image image = new Image("/resources/black-disc.png", buttons[i][j].getWidth(), buttons[i][j].getHeight(), false, true, true);
 //                BackgroundImage bImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(buttons[i][j].getWidth(), buttons[i][j].getHeight(), true, true, true, false));
 //
@@ -108,16 +116,11 @@ public class BoardGUI extends ScrollPane {
 //                Background background = new Background(backgroundImage);
 
 //                buttons[i][j].setBackground(background);
-
-
             }
         }
 
-
         setContent(gridPane);
-
         gridPane.autosize();
-
     }
 }
 
