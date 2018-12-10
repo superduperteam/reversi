@@ -160,11 +160,22 @@ public class BoardGUI extends ScrollPane {
                         currGUIDisc.setFill(boardController.discTypeToColor(currDisc.getType()));
                     }
                 }
-                else if(isTutorialMode){
-                    currButton.setText(String.valueOf(currCellBoard.getCountOfFlipsPotential()));
+
+                if(isTutorialMode){
+                    if(currCellBoard.getCountOfFlipsPotential() != 0){
+                        currButton.setText(String.valueOf(currCellBoard.getCountOfFlipsPotential()));
+                    }
+                    else{
+                        currButton.setText("");
+                    }
+                }
+                else{
+                    currButton.setText("");
                 }
             }
         }
+
+        currButton = null;
     }
 }
 
