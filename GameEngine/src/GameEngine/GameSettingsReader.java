@@ -239,7 +239,7 @@ public class GameSettingsReader {
         if(getEGameMode(gameDescriptor) == GameManager.eGameMode.Regular) {
             for (int row = 0; row < board.getHeight(); ++row) {
                 for (int col = 0; col < board.getWidth(); ++col) {
-                    if (board.get(row, col) != null) {
+                    if (board.getDisc(row, col) != null) {
                         if (!board.isThereDiscAdjacent(new Point(row, col))) {
                             throw new IslandsOnRegularModeException();
                         }

@@ -43,6 +43,7 @@ public class AppController {
 
         if(moveStatus == GameManager.eMoveStatus.OK){
             boardController.updateGIUDiscs();
+            statsComponentController.refreshTable();
             gameManager.changeTurn();
             //statsComponentController. need to highlight next player
         }
