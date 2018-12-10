@@ -133,7 +133,7 @@ public class BoardGUI extends ScrollPane {
         boardController.CellBoardButtonClicked(new Point(clickedButton.getRow(), clickedButton.getColumn()));
     }
 
-    public void updateBoard(Board gameBoard) {
+    public void updateBoard(Board gameBoard, boolean isTutorialMode) {
         Disc currDisc;
         CellBoard currCellBoard;
         CellBoardButton currButton;
@@ -159,6 +159,9 @@ public class BoardGUI extends ScrollPane {
                         currGUIDisc = (Circle) currButton.getGraphic();
                         currGUIDisc.setFill(boardController.discTypeToColor(currDisc.getType()));
                     }
+                }
+                else if(isTutorialMode){
+                    currButton.setText(String.valueOf(currCellBoard.getCountOfFlipsPotential()));
                 }
             }
         }

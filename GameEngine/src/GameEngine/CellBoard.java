@@ -2,7 +2,15 @@ package GameEngine;
 
 public class CellBoard {
     private Disc disc;
+    private int countOfFlipsPotential;
 
+    public int getCountOfFlipsPotential(){
+        return countOfFlipsPotential;
+    }
+
+    public void setCountOfFlipsPotential(int countOfFlipsPotential){
+        this.countOfFlipsPotential = countOfFlipsPotential;
+    }
 
     public Disc getDisc() {
         return disc;
