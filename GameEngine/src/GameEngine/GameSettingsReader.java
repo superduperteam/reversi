@@ -23,6 +23,7 @@ public class GameSettingsReader {
     private final byte MIN_COLS = 4;
     private final int MIN_NUMBER_OF_PLAYERS = 2;
     private final int MAX_NUMBER_OF_PLAYERS = 4;
+    private int numberOfPlayers;
 
     public GameManager readGameSettings(Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
@@ -50,9 +51,9 @@ public class GameSettingsReader {
 
     private void checkNumberOfPlayers(GameDescriptor gameDescriptor) throws OutOfRangeNumberOfPlayersException
     {
-        int numOfPlayers = gameDescriptor.getPlayers().getPlayer().size();
+        numberOfPlayers = gameDescriptor.getPlayers().getPlayer().size();
 
-        if(numOfPlayers < MIN_NUMBER_OF_PLAYERS || numOfPlayers > MAX_NUMBER_OF_PLAYERS) {
+        if(numberOfPlayers < MIN_NUMBER_OF_PLAYERS || numberOfPlayers > MAX_NUMBER_OF_PLAYERS) {
             throw new OutOfRangeNumberOfPlayersException(MIN_NUMBER_OF_PLAYERS, MAX_NUMBER_OF_PLAYERS);
         }
     }
@@ -282,9 +283,9 @@ public class GameSettingsReader {
         }
     }
 
-    private void doesBoardSizeMatchNumOfPlayers(GameDescriptor gameDescriptor) throws BoardSizeDoesntMatchNumOfPlayersException {
+    private void doesBoardSizeMatchNumOfPlayers(GameDescriptor gameDescriptor) throws BoardSizeDoesntMatchNumOfPlayersException, OutOfRangeNumberOfPlayersException {
         int boardSize, numOfEmptyCells, numOfInitPositions = 0;
-        int numOfPlayers = 2;
+
 
         //numOfPlayers = gameDescriptor.getPlayers().getPlayer().size();  THIS WILL BE IN EX 02
         boardSize = gameDescriptor.getGame().getBoard().getColumns() * gameDescriptor.getGame().getBoard().getRows();
@@ -296,7 +297,7 @@ public class GameSettingsReader {
         }
 
         numOfEmptyCells = boardSize - numOfInitPositions;
-        if(numOfEmptyCells % numOfPlayers != 0) {
+        if(numOfEmptyCells % numberOfPlayers != 0) {
             throw new BoardSizeDoesntMatchNumOfPlayersException();
         }
     }
