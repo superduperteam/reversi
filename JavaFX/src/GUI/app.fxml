@@ -14,7 +14,7 @@
          <top>
             <HBox BorderPane.alignment="CENTER">
                <children>
-                  <CheckBox mnemonicParsing="false" text="Tutorial Mode" />
+                  <CheckBox fx:id="tutorialMode" mnemonicParsing="false" text="Tutorial Mode" />
                </children>
             </HBox>
          </top>
