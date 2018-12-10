@@ -5,6 +5,7 @@ import GameEngine.Player;
 import GameEngine.eDiscType;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -33,7 +34,7 @@ public class StatsController {
     @FXML TableColumn<Player,String> nameColumn;
     @FXML TableColumn<Player,Integer> scoreColumn;
     @FXML TableColumn<Player,Integer> turnsPlayedColumn;
-    @FXML TableColumn<Player,Integer> averageOfFlipsColumn;
+    @FXML TableColumn<Player,String> averageOfFlipsColumn;
 
     @FXML public void initialize() {
         tableView.setFixedCellSize(25);
@@ -58,7 +59,15 @@ public class StatsController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
         turnsPlayedColumn.setCellValueFactory(new PropertyValueFactory<>("turnsPlayed"));
-        averageOfFlipsColumn.setCellValueFactory(new PropertyValueFactory<>("averageOfFlips"));
+        //averageOfFlipsColumn.setCellValueFactory(new PropertyValueFactory<>("averageOfFlips"));
+
+        averageOfFlipsColumn.setCellValueFactory(data -> {
+            double num = data.getValue().getAverageOfFlips()*100;
+            int roundedNum = (int)num;
+            num = (double) roundedNum;
+            num/=100;
+            return new ReadOnlyStringWrapper(String.valueOf(num));
+        });
 
         tableView.getItems().setAll(playersList);
         tableView.autosize();

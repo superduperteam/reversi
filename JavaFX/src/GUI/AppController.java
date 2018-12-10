@@ -3,12 +3,15 @@ package GUI;
 import GameEngine.GameManager;
 import GameEngine.Player;
 import GameEngine.Point;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import javax.swing.plaf.PopupMenuUI;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 
 public class AppController {
 
@@ -63,15 +66,44 @@ public class AppController {
 
         moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
 
+
         if(moveStatus == GameManager.eMoveStatus.OK){
-            boardController.updateGIUDiscs(isTutorialMode);
-            statsComponentController.refreshTable();
-            gameManager.changeTurn();
+            updateEndTurn();
+
         }
 
         if(gameManager.isGameOver()){
             onGameOver();
         }
+        else{
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    Player activePlayer = gameManager.getActivePlayer();
+
+                    while(!activePlayer.isHuman()){
+                        try{Thread.sleep(500);} catch(InterruptedException e) {e.printStackTrace();}
+
+                        activePlayer.makeMove(activePlayer.getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+                        updateEndTurn();
+
+                        activePlayer = gameManager.getActivePlayer();
+                    }
+                }
+            }); //this::playTurnsForComputers);
+        }
+    }
+
+    public void playTurnsForComputers(){
+
+    }
+
+
+    public void updateEndTurn(){
+        gameManager.changeTurn();
+        boardController.updateGIUDiscs(isTutorialMode);
+        statsComponentController.refreshTable();
     }
 
     public void onGameOver(){
