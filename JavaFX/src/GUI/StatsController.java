@@ -36,47 +36,9 @@ public class StatsController {
     @FXML TableColumn<Player,Integer> averageOfFlipsColumn;
 
     @FXML public void initialize() {
-//        List<GameEngine.Player> playersList = new ArrayList<>();
-//        playersList.add(new Player("Saar", true, eDiscType.WHITE, new BigInteger("1")));
-//        ObservableList<Player> playersData = FXCollections.observableArrayList(playersList);
-
-//        Bindings.equal(mainController.getGameManager().getActivePlayer());
-//        turnColumn.setCellValueFactory();
-
-//        turnColumn.setCellFactory(new Callback<TableColumn, TableCell>() {
-//            public TableCell call(TableColumn param) {
-//                return new TableCell<Player, String>() {
-//
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            item.
-//
-////                            this.setTextFill(Color.RED);
-////                            // Get fancy and change color based on data
-////                            if(item.contains("@"))
-////                                this.setTextFill(Color.BLUEVIOLET);
-////                            setText(item);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-
-
-
-
-
-
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(30));
 
-
-        //tableView.getColumns().addAll(colorColumn, nameColumn, scoreColumn, turnsPlayedColumn, averageOfFlipsColumn);
-
-        //table.setItems(playersData);
-//        tableView.getItems().setAll(playersList);
     }
 
     public void setMainController(AppController mainController) {
@@ -108,8 +70,4 @@ public class StatsController {
     public void refreshTable(){
         tableView.refresh();
     }
-
-//    public void highlightActivePlayer(Player activePlayer){
-//        tableView.
-//    }
 }
