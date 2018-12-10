@@ -1,9 +1,11 @@
 package GUI;
 
+import GameEngine.GameManager;
 import GameEngine.Player;
 import GameEngine.eDiscType;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,10 +20,7 @@ import javafx.util.Callback;
 
 import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class StatsController {
     private AppController mainController;
@@ -65,13 +64,10 @@ public class StatsController {
 //            }
 //        });
 
-        Player activePlayer = mainController.getGameManager().getActivePlayer();
-        turnColumn.setCellValueFactory(Bindings.equal());
-        colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
-        scoreColumn.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
-        turnsPlayedColumn.setCellValueFactory(new PropertyValueFactory<>("turnsPlayed"));
-        averageOfFlipsColumn.setCellValueFactory(new PropertyValueFactory<>("averageOfFlips"));
+
+
+
+
 
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(30));
@@ -88,6 +84,20 @@ public class StatsController {
     }
 
     public void setPlayers(List<Player> playersList){
+        turnColumn.setCellValueFactory(data -> {
+            if(data.getValue().equals(mainController.getGameManager().getActivePlayer())){
+                return new ReadOnlyStringWrapper("->");
+            }
+            else{
+                return new ReadOnlyStringWrapper("");
+            }
+        });
+        colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
+        turnsPlayedColumn.setCellValueFactory(new PropertyValueFactory<>("turnsPlayed"));
+        averageOfFlipsColumn.setCellValueFactory(new PropertyValueFactory<>("averageOfFlips"));
+
         tableView.getItems().setAll(playersList);
         tableView.autosize();
 
@@ -97,7 +107,6 @@ public class StatsController {
 
     public void refreshTable(){
         tableView.refresh();
-
     }
 
 //    public void highlightActivePlayer(Player activePlayer){
