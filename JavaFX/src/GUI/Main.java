@@ -112,7 +112,7 @@ public class Main extends Application {
         boolean isGameLoaded = true;
         System.out.println("Please enter a XML path (it should end with \".xml\")");
         //Path filePath = getFilePathFromUser();
-        Path filePath = Paths.get("C:\\Users\\Saar\\IdeaProjects\\reversi\\GameEngine\\src\\resources\\master.xml");
+        Path filePath = Paths.get("C:\\Users\\Ido\\IdeaProjects\\reversi\\GameEngine\\src\\resources\\master.xml");
 
         if(filePath != null) {
             try {
