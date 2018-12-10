@@ -65,8 +65,8 @@ public class StatsController {
 //            }
 //        });
 
-        Player activePlayer = mainController.getGameManager().getActivePlayer();
-        turnColumn.setCellValueFactory(Bindings.equal());
+        //Player activePlayer = mainController.getGameManager().getActivePlayer();
+        //turnColumn.setCellValueFactory(Bindings.equal());
         colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
