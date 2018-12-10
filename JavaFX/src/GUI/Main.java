@@ -38,12 +38,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         BoardGUI boardGUI;
         getGameDetails(); // extract GameManager from xml
         //tableView = createStatsComponent(gameManager.getPlayersList());
 
-        boardGUI = new BoardGUI(gameManager.getBoard().getHeight(), gameManager.getBoard().getWidth());
+
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL url = getClass().getResource("app.fxml");
@@ -55,6 +54,7 @@ public class Main extends Application {
         //appController.initTable();
         //root.setTop(tableView);
         appController.initTable();
+        boardGUI = new BoardGUI(gameManager.getBoard(),appController);
 
         borderPane.setCenter(boardGUI);
         BorderPane.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
