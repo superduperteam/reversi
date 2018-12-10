@@ -53,7 +53,6 @@ public class Main extends Application {
         appController.setGameManager(gameManager);
         //appController.initTable();
         //root.setTop(tableView);
-        appController.initTable();
         boardGUI = new BoardGUI(gameManager.getBoard(),appController);
 
         borderPane.setCenter(boardGUI);
@@ -67,7 +66,7 @@ public class Main extends Application {
 //                 <center>
 //              <fx:include fx:id="boardComponent" minHeight="-Infinity" minWidth="100.0" source="board.fxml" BorderPane.alignment="TOP_CENTER" />
 //         </center>
-
+        appController.initTable();
         Scene scene = new Scene(root, 1050, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
