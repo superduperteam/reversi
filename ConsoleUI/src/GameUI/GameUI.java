@@ -216,7 +216,7 @@ public class GameUI
         System.out.print("The winner is: ");
         System.out.println(winnerPlayer.getName());
         System.out.print("Score: ");
-        System.out.println(winnerPlayer.getStatistics().getScore());
+        System.out.println(winnerPlayer.getScore());
     }
 
     private void printEndOfGameMessage()
@@ -241,7 +241,7 @@ public class GameUI
                 System.out.print(player.getName());
                 System.out.println(": ");
                 System.out.print("Score: ");
-                System.out.println(player.getStatistics().getScore());
+                System.out.println(player.getScore());
             }
         }
 
@@ -393,7 +393,7 @@ public class GameUI
             System.out.printf("%.2f", player.getStatistics().getAverageOfFlips());
             System.out.println();
             System.out.print("Score: ");
-            System.out.println(player.getStatistics().getScore());
+            System.out.println(player.getScore());
         });
     }
 
@@ -850,7 +850,7 @@ public class GameUI
 
             for (int j = 0; j < board.getWidth(); j++)
             {
-                discInCell = board.get(i,j);
+                discInCell = board.getDisc(i,j);
 
                 if (discInCell == null)
                 {

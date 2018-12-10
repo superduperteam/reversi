@@ -42,7 +42,7 @@ public class GameManager implements Serializable
         for(int row = 0; row < board.getHeight(); ++row){
             for(int col = 0; col < board.getWidth(); ++col){
                 currPoint = new Point(row, col);
-                if(board.get(row, col) != null){
+                if(board.getDisc(row, col) != null){
                     flipPotential = 0;
                 }
                 else {
@@ -186,7 +186,7 @@ public class GameManager implements Serializable
 
         for(int i = 0; i < height; ++i) {
             for(int j = 0; j < width; ++j){
-                currDisc = board.get(i,j);
+                currDisc = board.getDisc(i,j);
 
                 if(currDisc != null)
                 {

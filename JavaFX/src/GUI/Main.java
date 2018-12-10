@@ -50,7 +50,7 @@ public class Main extends Application {
         ScrollPane root = fxmlLoader.load(url.openStream());
         BorderPane borderPane = (BorderPane) root.getContent();
         AppController appController = fxmlLoader.getController();
-        appController.gameManager = this.gameManager;
+        appController.setGameManager(gameManager);
         //appController.initTable();
         //root.setTop(tableView);
         appController.initTable();

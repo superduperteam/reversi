@@ -1,10 +1,9 @@
 package GUI;
 
-import GameEngine.eDiscType;
+import GameEngine.*;
 import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+
 import java.util.HashMap;
 
 public class BoardController {
@@ -12,20 +11,24 @@ public class BoardController {
     private AppController mainController;
     private BoardGUI boardComponent;
     private HashMap<eDiscType, Color> discTypeToDiscColorMap;
+    private Point cellBoardButtonClickedPoint;
 
-    @FXML
+    //@FXML
 
-    public void setBoardGUI(BoardGUI boardGUI){
+    public BoardController(AppController parentController, BoardGUI boardGUI){
         boardComponent = boardGUI;
-    }
-
-    public BoardController(AppController parentController){
         mainController = parentController;
         mapDiscTypesToColors();
     }
 
     public Color discTypeToColor(eDiscType discType){
         return discTypeToDiscColorMap.get(discType);
+    }
+
+    public void CellBoardButtonClicked(Point cellBoardButtonClickedPoint) {
+        this.cellBoardButtonClickedPoint = cellBoardButtonClickedPoint;
+
+        mainController.playTurn(cellBoardButtonClickedPoint);
     }
 
     public void mapDiscTypesToColors()
@@ -39,9 +42,8 @@ public class BoardController {
         discTypeToDiscColorMap.put(eDiscType.RED, Color.RED);
     }
 
-//    @FXML
-//    void OnMouseClicked(MouseEvent event) {
-//        event.getButton()
-//    }
-
+    public void updateGIUDiscs()
+    {
+        boardComponent.updateBoard(mainController.getGameManager().getBoard());
+    }
 }

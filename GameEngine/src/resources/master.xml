@@ -3,7 +3,7 @@
 	<GameType>Basic</GameType>
 	<Game>
 		<Board rows="6" columns="5"/>
-		<Variant>Islands</Variant>
+		<Variant>Regular</Variant>
 		<InitialPositions>
 			<Participant number="1">
                 <Position row="1" column="2"/>
@@ -19,7 +19,7 @@
 			</Participant>
 			<Participant number="4">
 				<Position row="4" column="2"/>
-				<Position row="6" column="5"/>
+				<Position row="4" column="3"/>
 			</Participant>
 		</InitialPositions>
 	</Game>
