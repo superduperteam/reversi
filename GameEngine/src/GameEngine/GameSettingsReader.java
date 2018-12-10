@@ -20,8 +20,6 @@ public class GameSettingsReader {
     private final byte MIN_ROWS = 4;
     private final byte MAX_COLS = 30; // cols in [4, 30]
     private final byte MIN_COLS = 4;
-    private final int MIN_NUMBER_OF_PLAYERS = 2;
-    private final int MAX_NUMBER_OF_PLAYERS = 2;
     private int expectedNumberOfParticipants = 2; // ## to be removed in exercise 2
 
     // TODO: Check path, check XML
@@ -30,19 +28,10 @@ public class GameSettingsReader {
     public GameManager readGameSettings(List<Player> playersList, Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
             RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfParticipantsException, FileIsNotXML {
-//        Scanner reader = new Scanner(System.in);
-//        String filePathString;
-//
-//        filePathString = reader.nextLine();
-//        Path filePath = Paths.get(filePathString);
-        // check path
 
         // ## REMEMBER TO CHANGE .XML !!
         File xmlFile = new File(xmlFilePath.toString());//xmlFilePath.toString());
 
-//        if(xmlFile != null) {
-//            throw new Exceptions.NoXMLFileException();
-//        }
         if(!xmlFilePath.toString().toLowerCase().endsWith(".xml"))
         {
             throw new FileIsNotXML();
@@ -114,19 +103,6 @@ public class GameSettingsReader {
 
         return board;
     }
-
-//    private List<Position> findIntialPositionsForPlayer(int playerIndex ,List<Participant> participantsList)
-//    {
-//        for(Participant participant : participantsList)
-//        {
-//            if(participant.getNumber() == playerIndex)
-//            {
-//                return participant.getPosition();
-//            }
-//        }
-//
-//        return null; // ## throw execption
-//    }
 
     private GameManager extractGameSettings(InputStream xmlStream, List<GameEngine.Player> playersList) throws RowsNotInRangeException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, PlayersInitPositionsOverrideEachOtherException,
@@ -204,11 +180,13 @@ public class GameSettingsReader {
         GameEngine.Board board;
 
         board = createBoardFromGameDetails(gameDescriptor, playersList);
-        for(int row = 0; row < board.getHeight(); ++row){
-            for(int col = 0; col < board.getWidth(); ++col){
-                if(board.get(row,col) != null){
-                    if(!board.isThereDiscAdjacent(new Point(row,col))){
-                        throw new IslandsOnRegularModeException();
+        if(getEGameMode(gameDescriptor) == GameManager.eGameMode.Regular) {
+            for (int row = 0; row < board.getHeight(); ++row) {
+                for (int col = 0; col < board.getWidth(); ++col) {
+                    if (board.getDisc(row, col) != null) {
+                        if (!board.isThereDiscAdjacent(new Point(row, col))) {
+                            throw new IslandsOnRegularModeException();
+                        }
                     }
                 }
             }

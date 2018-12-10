@@ -32,18 +32,16 @@ public class GameUI
 
     public void start()
     {
-        GameManager currGameManager;
         int menuInput;
         boolean isGameLoaded = false;
         boolean isGameLoadedInThisIteration = false;
         boolean doesUserWantToPlay = true;
-        boolean didLoadPreviouslyPlayedGame = false;
         List<Player> playersList = generateInitialPlayersList();
         List<String> menuOptions= new ArrayList<>
                 (Arrays.asList(String.valueOf(MAIN_MENU_LOAD_XML), String.valueOf(MAIN_MENU_START_GAME),
                         String.valueOf(MAIN_MENU_SHOW_GAME_DESCRIPTION), String.valueOf(MAIN_MENU_LOAD_PREVIOUSLY_SAVED_GAME), String.valueOf(MAIN_MENU_EXIT)));
 
-        while(/*isGameLoaded == false || */doesUserWantToPlay)
+        while(doesUserWantToPlay)
         {
             printStartMenu();
             menuInput = getMenuInput(menuOptions);
@@ -56,16 +54,9 @@ public class GameUI
                 isGameLoadedInThisIteration = loadGameManagerFromFile();
                 isGameLoaded = isGameLoaded || isGameLoadedInThisIteration;
 
-                if(!isGameLoadedInThisIteration)
-                {
+                if(!isGameLoadedInThisIteration) {
                     System.out.println("Failed to load previously saved game. Please try again");
                 }
-//                if(currGameManager != null){
-//                    gameManager = currGameManager;
-//                    isGameLoaded = true;
-//                    didLoadPreviouslyPlayedGame = true;
-//                }
-//                else{ System.out.println("Failed to load previously saved game. Please try again"); } //isGameLoaded = false;
             }
             else if(menuInput == MAIN_MENU_START_GAME) {
                 if(isGameLoaded) { // You must to have gameManager here
@@ -831,11 +822,20 @@ public class GameUI
 
             for (int j = 0; j < board.getWidth(); j++)
             {
-                discInCell = board.get(i,j);
+                discInCell = board.getDisc(i,j);
 
                 if (discInCell == null)
                 {
-                    printSpaces(boardCellSize);
+                    if(!gameManager.getPointToFlipPotential().get(new Point(i, j)).equals(0)) {
+                        System.out.print(space);
+                        System.out.print(space);
+                        System.out.print(gameManager.getPointToFlipPotential().get(new Point(i, j)).toString());
+                        System.out.print(space);
+                        System.out.print(space);
+                    }
+                    else {
+                        printSpaces(boardCellSize);
+                    }
                 }
                 else
                 {

@@ -9,11 +9,12 @@ public class GameManager implements Serializable
     private HashMap<eDiscType, Player> discTypeToPlayer;
     private TurnHistory turnHistory;
     private List<Player> playersList;
-    private  int activePlayerIndex;
+    private int activePlayerIndex;
     private Player activePlayer;
     private Board board;
     private TurnHistory.Turn currTurn;
     private boolean isGameActive;
+    private Map<Point, Integer> PointToFlipPotential;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -25,7 +26,32 @@ public class GameManager implements Serializable
         activePlayer = playersList.get(0);
         this.board = board;
         isGameActive = false;
+        calcFlipPotential();
 //        currTurn = getCurrentTurn(); // ##
+    }
+
+    public Map<Point, Integer> getPointToFlipPotential() {
+        return PointToFlipPotential;
+    }
+
+    public void calcFlipPotential(){
+        Point currPoint;
+        int flipPotential;
+
+        PointToFlipPotential = new HashMap<>();
+        for(int row = 0; row < board.getHeight(); ++row){
+            for(int col = 0; col < board.getWidth(); ++col){
+                currPoint = new Point(row, col);
+                if(board.getDisc(row, col) != null){
+                    flipPotential = 0;
+                }
+                else {
+                    flipPotential = board.checkFlipPotential(currPoint, getActivePlayer().getDiscType());
+                }
+
+                PointToFlipPotential.put(currPoint, flipPotential);
+            }
+        }
     }
 
     public boolean isGameActive() {
@@ -39,6 +65,12 @@ public class GameManager implements Serializable
 
     public eGameMode getGameMode() {
         return gameMode;
+    }
+
+    private void setActivePlayerToBeNextPlayer()
+    {
+        activePlayerIndex = (activePlayerIndex + 1)%(playersList.size());
+        activePlayer = playersList.get(activePlayerIndex);
     }
 
     public Board getInitialBoard()
@@ -76,7 +108,7 @@ public class GameManager implements Serializable
     }
 
     public boolean isGameOver(){
-        return !board.areThereAnyMovesForPlayers(playersList);
+        return !board.areThereAnyMovesForPlayers(playersList) || playersList.size() == 1;
     }
 
     public Board getBoard()
@@ -100,13 +132,23 @@ public class GameManager implements Serializable
     public void changeTurn()
     {
         addTurnToHistory(currTurn);
-
-        activePlayerIndex = (activePlayerIndex + 1)%(playersList.size());
-        activePlayer = playersList.get(activePlayerIndex);
+        setActivePlayerToBeNextPlayer();
 
         updateGameScore();
+        calcFlipPotential();
+        currTurn = getCurrentTurn();
+    }
 
-        currTurn = getCurrentTurn(); // ##
+    public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
+    {
+        if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
+            currTurn.retiredPlayer = quitter;
+            addTurnToHistory(currTurn);
+            discTypeToPlayer.remove(quitter.getDiscType());
+            playersList.remove(quitter);
+            activePlayer = playersList.get(activePlayerIndex % playersList.size());
+            currTurn = getCurrentTurn();
+        }
     }
 
     public Player getActivePlayer()
@@ -125,7 +167,7 @@ public class GameManager implements Serializable
         for(Player player : playersList)
         {
             discTypeToPlayer.put(discs[currentDiscIndex], player);
-          //  player.SetDiscType(discs[currentDiscIndex]);  Commented because player's disc type is given in Player c'tor
+            //  player.SetDiscType(discs[currentDiscIndex]);  Commented because player's disc type is given in Player c'tor
             currentDiscIndex++;
         }
     }
@@ -144,12 +186,15 @@ public class GameManager implements Serializable
 
         for(int i = 0; i < height; ++i) {
             for(int j = 0; j < width; ++j){
-                currDisc = board.get(i,j);
+                currDisc = board.getDisc(i,j);
 
                 if(currDisc != null)
                 {
-                    playerToAddScoreTo = discTypeToPlayer.get(currDisc.getType());
-                    playerToAddScoreTo.getStatistics().incScore();
+                    if(discTypeToPlayer.containsKey(currDisc.getType()))
+                    {
+                        playerToAddScoreTo = discTypeToPlayer.get(currDisc.getType());
+                        playerToAddScoreTo.getStatistics().incScore();
+                    }
                 }
             }
         }
@@ -167,12 +212,16 @@ public class GameManager implements Serializable
             private Player activePlayer;
             private Board board;
             private HashMap<eDiscType, Player> discTypeToPlayer;
+            private Player retiredPlayer = null;
+            private HashMap<Point, Integer> PointToFlipPotential;
 
             //the method clones the last turn using copy constructors.
-            public Turn(Board board, Player activePlayer, List<Player> players) {
+            public Turn(Board board, Player activePlayer, List<Player> players,
+                        Map<Point,Integer> pointToFlipPotential) {
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
+                PointToFlipPotential = new HashMap<>();
 
                 for(Player player: players) {
                     Player copiedPlayer = new Player(player);
@@ -184,6 +233,16 @@ public class GameManager implements Serializable
                     playersList.add(copiedPlayer);
                     this.discTypeToPlayer.put(copiedPlayer.getDiscType(), copiedPlayer);
                 }
+                copyPointToFlipPotentialMap(pointToFlipPotential);
+            }
+
+            private void copyPointToFlipPotentialMap(Map<Point, Integer> pointToFlipPotential){
+                for(Point point : pointToFlipPotential.keySet()){
+                    Point pointCopy = new Point(point.getRow(), point.getCol());
+                    int flipPotentialCopy = pointToFlipPotential.get(point);
+
+                    PointToFlipPotential.put(pointCopy, flipPotentialCopy);
+                }
             }
         }
 
@@ -191,7 +250,7 @@ public class GameManager implements Serializable
             turnHistoryStack.push(turn);
         }
 
-        //is there are no turns in the stack: returns null
+        //if there are no turns in the stack: returns null
         public Turn getLastTurn() {
             if(turnHistoryStack.isEmpty()) {
                 return null;
@@ -201,8 +260,8 @@ public class GameManager implements Serializable
         }
     }
 
-    public TurnHistory.Turn getCurrentTurn() {
-        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
+    private TurnHistory.Turn getCurrentTurn() {
+        TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList, PointToFlipPotential);
 
         return turn;
     }
@@ -250,8 +309,14 @@ public class GameManager implements Serializable
         activePlayer = turnToChangeTo.activePlayer;
         activePlayerIndex = playersList.indexOf(activePlayer);
         board = turnToChangeTo.board;
-
         currTurn = getCurrentTurn();
+        currTurn.retiredPlayer = turnToChangeTo.retiredPlayer;
+        PointToFlipPotential = turnToChangeTo.PointToFlipPotential;
+    }
+
+    public Player getReturnedRetiredPlayer()
+    {
+        return currTurn.retiredPlayer;
     }
 
     public enum eGameMode
@@ -268,12 +333,12 @@ public class GameManager implements Serializable
         }},
         ILLEGAL_ISLAND {
             public String toString() {
-            return new String("The new disc should be adjacent to other discs on board!");
-        }},
+                return new String("The new disc should be adjacent to other discs on board!");
+            }},
         POINT_IS_NOT_IN_RANGE_OF_BOARD{
             public String toString() {
-            return new String("The coordinates are not in the board's range!");
-        }}
+                return new String("The coordinates are not in the board's range!");
+            }}
     }
 
     // call this only after all info about players is gathered.

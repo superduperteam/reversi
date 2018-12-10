@@ -10,7 +10,7 @@ public class Board implements Serializable
     private int height;
     private int width;
     private GameManager.eGameMode gameMode;
-    private Disc board[][];
+    private CellBoard board[][];
     private HashMap<Player, List<Point>> initialDiscPointsOfPlayers;
 
     public Board(jaxb.schema.generated.Board board, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
@@ -22,7 +22,7 @@ public class Board implements Serializable
     {
         this.height = height;
         this.width = width;
-        this.board = new Disc[height][width];
+        this.board = new CellBoard[height][width];
         this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
         initializeBoard(this.initialDiscPointsOfPlayers);
         this.gameMode = gameMode;
@@ -34,20 +34,26 @@ public class Board implements Serializable
     }
 
     public Board(Board toCopy){
+//        createBoardCells();
         height = toCopy.height;
         width = toCopy.width;
-        this.board = new Disc[height][width];
+        this.board = new CellBoard[height][width];
+        //this.board = new Disc[height][width];
         gameMode = toCopy.gameMode; //note(ido): i assume game mode won't change during the game.
                                     // if it can change , I need to change the logic here.
         copyInitialDiscPoints(toCopy.initialDiscPointsOfPlayers);
 
         for(int row = 0; row < height; ++row){
             for(int col = 0; col < width; ++col){
-                if(toCopy.board[row][col] != null) {
-                    this.board[row][col] = new Disc(toCopy.board[row][col]);
-                }
+              //  if(toCopy.board[row][col] != null) {
+                   // this.board[row][col] = new Disc(toCopy.board[row][col]);
+                this.board[row][col] = new CellBoard(toCopy.board[row][col]);
             }
         }
+    }
+
+    public int checkFlipPotential(Point targetInsertionPoint, eDiscType discTypeToBeInserted){
+        return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted, true);
     }
 
     private void copyInitialDiscPoints(HashMap<Player, List<Point>> initialDiscPointsOfPlayerToCopy)
@@ -78,8 +84,9 @@ public class Board implements Serializable
     // Returns the number of flipped discs that were flipped due to the given move.
     public int updateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
     {
-        board[targetInsertionPoint.getRow()][targetInsertionPoint.getCol()] = new Disc(discTypeToBeInserted);
-        return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted);
+        //board[targetInsertionPoint.getRow()][targetInsertionPoint.getCol()] = new Disc(discTypeToBeInserted);
+        board[targetInsertionPoint.getRow()][targetInsertionPoint.getCol()].setDisc(new Disc(discTypeToBeInserted));
+        return flipEnemyDiscs(targetInsertionPoint, discTypeToBeInserted, false);
     }
 
     public GameManager.eMoveStatus isMoveLegal(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
@@ -106,7 +113,7 @@ public class Board implements Serializable
 
     private boolean isCellEmpty(Point point)
     {
-        if(board[point.getRow()][point.getCol()] == null)
+        if(board[point.getRow()][point.getCol()].getDisc() == null)
         {
             return true;
         }
@@ -141,7 +148,7 @@ public class Board implements Serializable
 
         for(Point adjacentCellPoint : allPossibleAdjacentCellPointsInBoardRange)
         {
-            adjacentDisc = board[adjacentCellPoint.getRow()][adjacentCellPoint.getCol()];
+            adjacentDisc = board[adjacentCellPoint.getRow()][adjacentCellPoint.getCol()].getDisc();
 
             if(adjacentDisc != null)
             {
@@ -224,7 +231,7 @@ public class Board implements Serializable
         {
             if(isCellPointInRange(row,col))
             {
-                currentDisc = board[row][col];
+                currentDisc = board[row][col].getDisc();
                 if (currentDisc != null) {
                     if (currentDisc.getType() != discTypeToBeInserted) {
                         countOfSequenceFlippableDiscs++;
@@ -248,7 +255,7 @@ public class Board implements Serializable
         return true;
     }
 
-    private int flipEnemyDiscs(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
+    private int flipEnemyDiscs(Point targetInsertionPoint, eDiscType discTypeToBeInserted, boolean isOnlyCheckingFlipPotential)
     {
         // Assuming you can flip whosoever discs but yours.
         int countOfFlippedDiscs = 0;
@@ -256,13 +263,15 @@ public class Board implements Serializable
 
         for(Direction direction : allDirections)
         {
-            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted);
+            countOfFlippedDiscs += flipEnemyDiscsInDirection(targetInsertionPoint, direction,
+                    discTypeToBeInserted, isOnlyCheckingFlipPotential);
         }
 
         return countOfFlippedDiscs;
     }
 
-    private int flipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction, eDiscType discTypeToBeInserted)
+    private int flipEnemyDiscsInDirection(Point targetInsertionPoint, Direction direction,
+                                          eDiscType discTypeToBeInserted, boolean isOnlyCheckingFlipPotential)
     {
         int rowDelta = direction.getDirectionY(), colDelta = direction.getDirectionX();
         int row = targetInsertionPoint.getRow() + rowDelta, col = targetInsertionPoint.getCol() + colDelta;
@@ -271,28 +280,30 @@ public class Board implements Serializable
 
         if(isCellPointInRange(row, col))
         {
-            currentDisc = board[row][col];
+            currentDisc = board[row][col].getDisc();
 
             if (canFlipEnemyDiscsInDirection(targetInsertionPoint, direction, discTypeToBeInserted))
             {
                 while (currentDisc.getType() != discTypeToBeInserted)
                 {
-                    currentDisc.setType(discTypeToBeInserted);
-                    countOfFlippedDiscs++;
+                    if(!isOnlyCheckingFlipPotential) {
+                        currentDisc.setType(discTypeToBeInserted);
 
+                    }
                     row += rowDelta;
                     col += colDelta;
-                    currentDisc = board[row][col];
+                    currentDisc = board[row][col].getDisc();
+                    countOfFlippedDiscs++;
                 }
             }
         }
         return countOfFlippedDiscs;
     }
 
-    public Disc get(int row, int col)
+    public Disc getDisc(int row, int col)
     {
         // if not in range?
-        return board[row][col];
+        return board[row][col].getDisc();
     }
 
     public GameManager.eGameMode getGameMode() {
@@ -309,7 +320,7 @@ public class Board implements Serializable
 
     private void initializeBoard(HashMap<Player, List<Point>> initialDiscsPointsOfPlayers)
     {
-        nullifyBoardCells();
+        createBoardCells();
         List<Point> currentPlayerInitialDiscs;
         Set<Player> playersSet = initialDiscsPointsOfPlayers.keySet();
 
@@ -319,18 +330,20 @@ public class Board implements Serializable
 
             for(Point point : currentPlayerInitialDiscs)
             {
-                board[point.getRow()][point.getCol()] = new Disc(player.GetDiscType());
+                board[point.getRow()][point.getCol()].setDisc(new Disc(player.GetDiscType()));
             }
         }
     }
 
-    public void nullifyBoardCells()
+    public void createBoardCells()
     {
+        Disc disc = null;
+
         for (int row = 0; row < height; row++)
         {
             for (int col = 0; col < width; col++)
             {
-                board[row][col] = null;
+                board[row][col] = new CellBoard(disc);
             }
         }
     }
