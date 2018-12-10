@@ -3,11 +3,13 @@ package GUI;
 import GameEngine.Player;
 import GameEngine.eDiscType;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -20,6 +22,7 @@ import java.util.ResourceBundle;
 
 public class StatsController {
     private AppController mainController;
+    private HashMap<Player, TableRow<Player>> playerStatsToRowNumber = new HashMap();
 
     @FXML private TableView<Player> tableView;
 
@@ -28,9 +31,8 @@ public class StatsController {
     @FXML TableColumn<Player,Integer> scoreColumn;
     @FXML TableColumn<Player,Integer> turnsPlayedColumn;
     @FXML TableColumn<Player,Integer> averageOfFlipsColumn;
-    @FXML
 
-    public void initialize() {
+    @FXML public void initialize() {
 //        List<GameEngine.Player> playersList = new ArrayList<>();
 //        playersList.add(new Player("Saar", true, eDiscType.WHITE, new BigInteger("1")));
 //        ObservableList<Player> playersData = FXCollections.observableArrayList(playersList);
@@ -43,6 +45,7 @@ public class StatsController {
 
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(30));
+
 
         //tableView.getColumns().addAll(colorColumn, nameColumn, scoreColumn, turnsPlayedColumn, averageOfFlipsColumn);
 
@@ -61,4 +64,8 @@ public class StatsController {
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(26));
     }
+
+//    public void highlightActivePlayer(Player activePlayer){
+//        tableView.
+//    }
 }
