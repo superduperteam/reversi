@@ -8,6 +8,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javax.swing.plaf.PopupMenuUI;
+
 public class AppController {
 
     private GameManager gameManager;
@@ -66,5 +68,23 @@ public class AppController {
             statsComponentController.refreshTable();
             gameManager.changeTurn();
         }
+
+        if(gameManager.isGameOver()){
+            onGameOver();
+        }
+    }
+
+    public void onGameOver(){
+        StringBuilder winMessageBuilder = new StringBuilder();
+
+        winMessageBuilder.append("Game Over.\n");
+
+        if(gameManager.getHighestScoringPlayers().size() == 1) {
+            winMessageBuilder.append(gameManager.getHighestScoringPlayers().get(0).getName())
+                    .append(" is the winner!");
+        } else {
+            winMessageBuilder.append("It's a tie!");
+        }
+        PopupFactory.showPopup(winMessageBuilder.toString());
     }
 }

@@ -51,7 +51,6 @@ public class Main extends Application {
         BorderPane borderPane = (BorderPane) root.getContent();
         AppController appController = fxmlLoader.getController();
         appController.setGameManager(gameManager);
-        appController.setPrimaryStage(primaryStage);
         //appController.initTable();
         //root.setTop(tableView);
         boardGUI = new BoardGUI(gameManager.getBoard(),appController);
