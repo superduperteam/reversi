@@ -96,6 +96,7 @@ public class AppController {
         moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
 
         if (moveStatus == GameManager.eMoveStatus.OK) {
+            gameManager.changeTurn();
             updateEndTurn();
         }
 
@@ -181,19 +182,25 @@ public class AppController {
         Task computerMove = new Task() {
             @Override
             protected Object call() throws Exception {
-                while(!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()){
-                    gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-                    gameManager.changeTurn();
-                    Thread.sleep(1000);
-                    Platform.runLater(()->{updateGUI();});
+                while(!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
+                    Thread computerSingleMoveThread = new Thread(()-> {
+                        gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+                        gameManager.changeTurn();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Platform.runLater(() -> updateGUI());
+                    });
+                    computerSingleMoveThread.start();
+                    computerSingleMoveThread.join();
                 }
-
                 return null;
             }
         };
-
-        Thread thread = new Thread(computerMove);
-        thread.start();
+            Thread thread = new Thread(computerMove);
+            thread.start();
     }
 
 //    public void playTurnsForComputers(){
