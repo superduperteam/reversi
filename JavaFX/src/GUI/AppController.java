@@ -179,37 +179,10 @@ public class AppController {
 //    }
 
     private void simulateComputerTurns() {
-//        Task computerMove = new Task() {
-//            @Override
-//            protected Object call() throws Exception {
-//                Thread computerSingleMoveThread = new Thread(() -> {
-//
-//                    gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-//                    gameManager.changeTurn();
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                    Platform.runLater(() -> {
-//                        updateGUI();
-//                    });
-//                });
-//
-//                computerSingleMoveThread.start();
-//                computerSingleMoveThread.join();
-//                return null;
-//            }
-//        };
-
-
             Thread thread = new Thread(new ComputerMoveTask(gameManager, this));
             thread.start();
     }
 
-//    public void playTurnsForComputers(){
-//
-//    }
 
 
     public void updateEndTurn(){
@@ -223,6 +196,7 @@ public class AppController {
 //    }
 
     public void onGameOver(){
+        System.out.println("Test");
         StringBuilder winMessageBuilder = new StringBuilder();
 
         winMessageBuilder.append("Game Over.\n");
