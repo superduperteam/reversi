@@ -18,6 +18,10 @@ public class Informer implements Runnable {
         if (!gameManager.getActivePlayer().isHuman()) {
             Thread thread = new Thread(new ComputerMoveTask(gameManager, appController));
             thread.start();
+
+            if(gameManager.isGameOver()){
+                appController.onGameOver();
+            }
         }
     }
 }
