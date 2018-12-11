@@ -18,7 +18,7 @@ public class ComputerMoveTask extends Task<Boolean> {
     @Override
     protected Boolean call() throws Exception {
         gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-        Thread.sleep(1000);
+        Thread.sleep(500);
         gameManager.changeTurn();
         Platform.runLater(new Informer(gameManager, appController));
 

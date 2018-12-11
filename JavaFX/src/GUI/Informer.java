@@ -15,13 +15,12 @@ public class Informer implements Runnable {
     @Override
     public void run() {
         appController.updateGUI();
-        if (!gameManager.getActivePlayer().isHuman()) {
+        if (!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
             Thread thread = new Thread(new ComputerMoveTask(gameManager, appController));
             thread.start();
-
-            if(gameManager.isGameOver()){
-                appController.onGameOver();
-            }
+        }
+        else if(gameManager.isGameOver()){
+            appController.onGameOver();
         }
     }
 }
