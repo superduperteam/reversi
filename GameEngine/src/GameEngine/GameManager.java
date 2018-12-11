@@ -268,6 +268,10 @@ public class GameManager implements Serializable
         else{
             canUndoProperty.set(false);
         }
+
+        if(isGameOver()){
+            canUndoProperty.set(false);
+        }
     }
 
     private TurnHistory.Turn getCurrentTurn() {
