@@ -148,7 +148,6 @@ public class BoardGUI extends ScrollPane {
                 // boardController.discTypeToColor(currDisc.getType())
 
                 if (currDisc != null) {
-
                     if (currButton.getGraphic() == null) {
                         currGUIDisc = new Circle(50, 50, 40, boardController.discTypeToColor(currDisc.getType()));
                         currButton.setGraphic(currGUIDisc);
@@ -158,6 +157,11 @@ public class BoardGUI extends ScrollPane {
                     else { // the circle already there, just changing it's color..
                         currGUIDisc = (Circle) currButton.getGraphic();
                         currGUIDisc.setFill(boardController.discTypeToColor(currDisc.getType()));
+                    }
+                }
+                else{
+                    if(currButton.getGraphic() != null){ // need to remove the circle disc.
+                        currButton.setGraphic(null);
                     }
                 }
 

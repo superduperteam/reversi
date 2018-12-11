@@ -3,13 +3,24 @@ package GUI;
 import GameEngine.GameManager;
 import GameEngine.Player;
 import GameEngine.Point;
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
 
 import javax.swing.plaf.PopupMenuUI;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 
@@ -21,10 +32,7 @@ public class AppController {
     private boolean isTutorialMode = false;
     @FXML private StatsController statsComponentController;
     @FXML private CheckBox tutorialMode;
-
-    public void func(){
-
-    }
+    @FXML private Button undoLastMoveButton;
 
     public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
@@ -36,6 +44,7 @@ public class AppController {
 
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
+        lateInitialize();
     }
 
     @FXML
@@ -56,54 +65,94 @@ public class AppController {
         });
     }
 
+    // call this after gameManager is given.
+    private void lateInitialize(){
+        undoLastMoveButton.setOnMouseClicked(event -> { undoLastMove(); });
+        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty()));
+    }
+
+    private void updateGUI(){
+        boardController.updateGIUDiscs(isTutorialMode);
+        statsComponentController.refreshTable();
+    }
+
+    private void undoLastMove() {
+        gameManager.undo();
+        updateGUI();
+
+        if(!gameManager.getActivePlayer().isHuman()){
+            simulateComputerTurns();
+        }
+    }
+
     public void initTable() {
         statsComponentController.setPlayers(gameManager.getPlayersList());
     }
 
-    public void playTurn(Point clickedCellBoardPoint){
+    public void playTurn(Point clickedCellBoardPoint) {
         Player activePlayer = gameManager.getActivePlayer();
         GameManager.eMoveStatus moveStatus;
 
         moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
 
-
-        if(moveStatus == GameManager.eMoveStatus.OK){
+        if (moveStatus == GameManager.eMoveStatus.OK) {
             updateEndTurn();
-
         }
 
-        if(gameManager.isGameOver()){
+        if(!gameManager.getActivePlayer().isHuman()){
+            simulateComputerTurns();
+        }
+
+        if (gameManager.isGameOver()) {
             onGameOver();
         }
-        else{
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    Player activePlayer = gameManager.getActivePlayer();
+//                Task<Boolean> AITurnThread = new Task<Boolean>() {
+//                    @Override
+//                    protected Boolean call() {
+//                        try { Thread.sleep(1000); } catch (InterruptedException ex) {}
+//                        gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+//                        Platform.runLater(() ->  updateEndTurn());
+//                        return true;
+//                    }
+//                };
+//                AITurnThread.getOnSucceeded();
+//            AITurnThread.run();
+//            }
 
-                    while(!activePlayer.isHuman()){
-                        try{Thread.sleep(500);} catch(InterruptedException e) {e.printStackTrace();}
+//                Thread thread = new Thread(() -> {
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException ex) {
+//                    }
+//                    Platform.runLater(() -> {
+//                        System.out.println("start");
+//                        gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+//                        updateEndTurn();
+//                    });
+//                });
+//
+//
+//                //            while (!gameManager.getActivePlayer().isHuman()) {}
+//                thread.start();
 
-                        activePlayer.makeMove(activePlayer.getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-                        updateEndTurn();
+    }
 
-                        activePlayer = gameManager.getActivePlayer();
-                    }
-                }
-            }); //this::playTurnsForComputers);
+    private void simulateComputerTurns() {
+        while (!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
+            gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()),
+                    gameManager.getBoard());
+            updateEndTurn();
         }
     }
 
-    public void playTurnsForComputers(){
-
-    }
-
+//    public void playTurnsForComputers(){
+//
+//    }
 
     public void updateEndTurn(){
         gameManager.changeTurn();
-        boardController.updateGIUDiscs(isTutorialMode);
-        statsComponentController.refreshTable();
+        updateGUI();
     }
 
     public void onGameOver(){

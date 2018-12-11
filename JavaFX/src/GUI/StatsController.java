@@ -55,6 +55,7 @@ public class StatsController {
                 return new ReadOnlyStringWrapper("");
             }
         });
+
         colorColumn.setCellValueFactory(new PropertyValueFactory<>("color"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
