@@ -1,10 +1,14 @@
 package GameEngine;
 
+import javafx.beans.property.SimpleBooleanProperty;
+
 import java.io.Serializable;
 import java.util.*;
 
 public class GameManager implements Serializable
 {
+    public SimpleBooleanProperty canUndoProperty = new SimpleBooleanProperty();
+
     private eGameMode gameMode;
     private HashMap<eDiscType, Player> discTypeToPlayer;
     private TurnHistory turnHistory;
@@ -131,6 +135,8 @@ public class GameManager implements Serializable
         updateGameScore();
         calcFlipPotential();
         currTurn = getCurrentTurn();
+
+        updateCanUndo();
     }
 
     public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
@@ -194,10 +200,10 @@ public class GameManager implements Serializable
         }
     }
 
-    public static class TurnHistory implements  Serializable {
+    private static class TurnHistory implements  Serializable {
         private Stack<Turn> turnHistoryStack;
 
-        public TurnHistory(){
+        private TurnHistory(){
             turnHistoryStack = new Stack<>();
         }
 
@@ -209,7 +215,7 @@ public class GameManager implements Serializable
             private Player retiredPlayer = null;
 
             //the method clones the last turn using copy constructors.
-            public Turn(Board board, Player activePlayer, List<Player> players) {
+            private Turn(Board board, Player activePlayer, List<Player> players) {
                 playersList = new LinkedList<>();
                 this.board = new Board(board);
                 this.discTypeToPlayer = new HashMap<>();
@@ -227,17 +233,40 @@ public class GameManager implements Serializable
             }
         }
 
-        public void addHistoryEntry(Turn turn) {
+        private void addHistoryEntry(Turn turn) {
             turnHistoryStack.push(turn);
         }
 
         //if there are no turns in the stack: returns null
-        public Turn getLastTurn() {
+        private Turn getLastTurn() {
             if(turnHistoryStack.isEmpty()) {
                 return null;
             }
 
             return turnHistoryStack.pop();
+        }
+
+        private int getCountOfArchivedTurns(){
+            if(turnHistoryStack == null){
+                return 0;
+            }
+            else{
+                return turnHistoryStack.size();
+            }
+
+        }
+    }
+
+    public SimpleBooleanProperty canUndoProperty(){
+        return canUndoProperty;
+    }
+
+    private void updateCanUndo() {
+        if(turnHistory.getCountOfArchivedTurns() >= 1){
+            canUndoProperty.set(true);
+        }
+        else{
+            canUndoProperty.set(false);
         }
     }
 
@@ -279,6 +308,7 @@ public class GameManager implements Serializable
             goBackToTurn(lastTurn);
         }
 
+        updateCanUndo();
         return didUndoFailed;
     }
 
@@ -325,6 +355,7 @@ public class GameManager implements Serializable
     // call this only after all info about players is gathered.
     public void activateGame()
     {
+        updateCanUndo(); // ##
         isGameActive = true;
         currTurn = getCurrentTurn(); // ##
         updateGameScore();
