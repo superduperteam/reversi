@@ -158,8 +158,6 @@ public class AppController {
     public void onGameOver(){
         StringBuilder winMessageBuilder = new StringBuilder();
 
-        undoLastMoveButton.setDisable(true);
-
         winMessageBuilder.append("Game Over.\n");
 
         if(gameManager.getHighestScoringPlayers().size() == 1) {
