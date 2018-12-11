@@ -71,7 +71,7 @@ public class AppController {
         undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty()));
     }
 
-    private void updateGUI(){
+    public void updateGUI(){
         boardController.updateGIUDiscs(isTutorialMode);
         statsComponentController.refreshTable();
     }
@@ -179,27 +179,31 @@ public class AppController {
 //    }
 
     private void simulateComputerTurns() {
-        Task computerMove = new Task() {
-            @Override
-            protected Object call() throws Exception {
-                while(!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
-                    Thread computerSingleMoveThread = new Thread(()-> {
-                        gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-                        gameManager.changeTurn();
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        Platform.runLater(() -> updateGUI());
-                    });
-                    computerSingleMoveThread.start();
-                    computerSingleMoveThread.join();
-                }
-                return null;
-            }
-        };
-            Thread thread = new Thread(computerMove);
+//        Task computerMove = new Task() {
+//            @Override
+//            protected Object call() throws Exception {
+//                Thread computerSingleMoveThread = new Thread(() -> {
+//
+//                    gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+//                    gameManager.changeTurn();
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Platform.runLater(() -> {
+//                        updateGUI();
+//                    });
+//                });
+//
+//                computerSingleMoveThread.start();
+//                computerSingleMoveThread.join();
+//                return null;
+//            }
+//        };
+
+
+            Thread thread = new Thread(new ComputerMoveTask(gameManager, this));
             thread.start();
     }
 
