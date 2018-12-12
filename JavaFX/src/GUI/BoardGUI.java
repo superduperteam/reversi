@@ -1,10 +1,8 @@
 package GUI;
 
-import GameEngine.Board;
-import GameEngine.CellBoard;
-import GameEngine.Disc;
-import GameEngine.Point;
+import GameEngine.*;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -16,10 +14,13 @@ public class BoardGUI extends ScrollPane {
     private final ColumnConstraints columnConstraints;
     private final RowConstraints rowConstraints;
     private CellBoardButton[][] cellBoardButtons;
-    private final int rowsCount;
-    private final int columnsCount;
+    private int rowsCount;
+    private int columnsCount;
+
+    private SimpleBooleanProperty isGameActive;
 
     public BoardGUI(Board gameBoard, AppController appController) {
+        isGameActive = new SimpleBooleanProperty(false);
         boardController = new BoardController(appController, this);
         appController.setBoardController(boardController);
         gridPane = new GridPane();
@@ -50,6 +51,99 @@ public class BoardGUI extends ScrollPane {
         rowConstraints.setMinHeight(20.0);
         rowConstraints.setPrefHeight(30.0);
         rowConstraints.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
+
+
+        for (int i = 0; i < rowsCount; i++) {
+            for (int j = 0; j < columnsCount; j++) {
+                cellBoardButtons[i][j] = new CellBoardButton(i, j);
+                currCellBoardButton = cellBoardButtons[i][j];
+                currCellBoardButton.disableProperty().bind(isGameActive.not());
+                // cellBoardButtons[i][j].setDisable();
+                GridPane.setHalignment(currCellBoardButton, javafx.geometry.HPos.CENTER);
+                if (j != 0) {
+                    GridPane.setColumnIndex(currCellBoardButton, j);
+                }
+                if (i != 0) {
+                    GridPane.setRowIndex(currCellBoardButton, i);
+                }
+
+                currCellBoardButton.setMnemonicParsing(false);
+                currCellBoardButton.setPrefHeight(5000.0);
+                currCellBoardButton.setPrefWidth(5000.0);
+                currCellBoardButton.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+
+                currCellBoardButton.setOnMouseClicked((event) -> {
+                    informCellBoardButtonsClicked((CellBoardButton) event.getSource());
+                });
+            }
+        }
+
+        for (int i = 0; i < rowsCount; i++) {
+            for (int j = 0; j < columnsCount; j++) {
+                gridPane.getChildren().add(cellBoardButtons[i][j]);
+            }
+        }
+
+        for (int i = 0; i < rowsCount; i++) {
+            gridPane.getRowConstraints().add(rowConstraints);
+        }
+        for (int j = 0; j < columnsCount; j++) {
+            gridPane.getColumnConstraints().add(columnConstraints);
+        }
+
+        for (int i = 0; i < rowsCount; i++) {
+            for (int j = 0; j < columnsCount; j++) {
+//                ImageView imageView = new ImageView();
+//
+//                imageView.setNodeOrientation(javafx.geometry.NodeOrientation.INHERIT);
+//                imageView.setImage(new Image(getClass().getResource("/resources/black-disc.png").toExternalForm()));
+//                buttons[i][j].setGraphic(imageView);
+//
+//                imageView.fitHeightProperty().bind(buttons[i][j].heightProperty());
+//                imageView.fitWidthProperty().bind(buttons[i][j].widthProperty());
+                currDisc = gameBoard.getDisc(i, j);
+                currCellBoardButton = cellBoardButtons[i][j];
+                currCellBoard = gameBoard.get(i, j);
+
+                // boardController.discTypeToColor(currDisc.getType())
+
+                if (currDisc != null) {
+                    Circle circle = new Circle(50, 50, 40, boardController.discTypeToColor(currDisc.getType()));
+                    currCellBoardButton.setGraphic(circle);
+                    currCellBoardButton.setContentDisplay(ContentDisplay.CENTER);
+
+                    circle.radiusProperty().bind(Bindings.min(currCellBoardButton.heightProperty().divide(4), currCellBoardButton.widthProperty().divide(4)));
+                }
+//                Image image = new Image("/resources/black-disc.png", buttons[i][j].getWidth(), buttons[i][j].getHeight(), false, true, true);
+//                BackgroundImage bImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(buttons[i][j].getWidth(), buttons[i][j].getHeight(), true, true, true, false));
+//
+//                Background backGround = new Background(bImage);
+//                buttons[i][j].setBackground(backGround);
+
+
+//                BackgroundImage backgroundImage = new BackgroundImage( new Image( getClass().getResource("/resources/black-disc.png").toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+//                Background background = new Background(backgroundImage);
+
+//                buttons[i][j].setBackground(background);
+            }
+        }
+
+        setContent(gridPane);
+        gridPane.autosize();
+    }
+
+    public void setIsGameActive(boolean _isGameActive){
+        isGameActive.set(_isGameActive);
+    }
+
+    public void initBoardButtons(Board gameBoard){
+        Disc currDisc;
+        CellBoard currCellBoard;
+        CellBoardButton currCellBoardButton;
+
+        this.rowsCount = gameBoard.getHeight();
+        this.columnsCount = gameBoard.getWidth();
+        cellBoardButtons = new CellBoardButton[rowsCount][columnsCount];
 
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; j++) {
@@ -124,7 +218,6 @@ public class BoardGUI extends ScrollPane {
 //                buttons[i][j].setBackground(background);
             }
         }
-
         setContent(gridPane);
         gridPane.autosize();
     }
@@ -180,6 +273,19 @@ public class BoardGUI extends ScrollPane {
         }
 
         currButton = null;
+    }
+
+    public void setRowsCount(int rows) {
+        rowsCount = rows;
+    }
+
+
+    public void setColumnsCount(int columns) {
+        columnsCount = columns;
+    }
+
+    public void setCellBoardButtons(CellBoardButton[][] _cellBoardButtons) {
+        cellBoardButtons = _cellBoardButtons;
     }
 }
 

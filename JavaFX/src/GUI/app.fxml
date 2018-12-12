@@ -3,13 +3,14 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="750.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
    <content>
       <BorderPane>
          <right>
@@ -44,12 +45,29 @@
                         </Button>
                      </children>
                   </AnchorPane>
+                  <Button fx:id="loadFileButton" mnemonicParsing="false" text="Load XML Game">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="startGameButton" mnemonicParsing="false" text="Start Game">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Button>
                </children>
                <padding>
                   <Insets bottom="10.0" />
                </padding>
             </HBox>
          </top>
+         <bottom>
+            <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="taskMessageLabel" text="Label" />
+               </children>
+            </HBox>
+         </bottom>
       </BorderPane>
    </content>
 </ScrollPane>

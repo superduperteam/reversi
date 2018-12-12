@@ -50,13 +50,15 @@ public class Main extends Application {
         ScrollPane root = fxmlLoader.load(url.openStream());
         BorderPane borderPane = (BorderPane) root.getContent();
         AppController appController = fxmlLoader.getController();
-        appController.setGameManager(gameManager);
+        appController.setBoardParent(borderPane);
+        appController.setPrimaryStage(primaryStage);
+        ////appController.setGameManager(gameManager);
         //appController.initTable();
         //root.setTop(tableView);
-        boardGUI = new BoardGUI(gameManager.getBoard(),appController);
+        //boardGUI = new BoardGUI(null,appController);
 
-        borderPane.setCenter(boardGUI);
-        BorderPane.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
+        ////borderPane.setCenter(boardGUI);
+        ////BorderPane.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
 
 //        BorderPane.setAlignment(boardComponent, javafx.geometry.Pos.TOP_CENTER);
 //        borderPane.setCenter(boardComponent);
@@ -66,7 +68,7 @@ public class Main extends Application {
 //                 <center>
 //              <fx:include fx:id="boardComponent" minHeight="-Infinity" minWidth="100.0" source="board.fxml" BorderPane.alignment="TOP_CENTER" />
 //         </center>
-        appController.initTable();
+        ////appController.initTable();
         Scene scene = new Scene(root, 1050, 800);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -99,12 +101,12 @@ public class Main extends Application {
 //        return table;
 //    }
 
-    //private void getGameDetails()
-    //{
-        //while(!loadXML());
-        //gameManager.activateGame();
-    //}
-
+//    private void getGameDetails()
+//    {
+//        while(!loadXML());
+//        gameManager.activateGame();
+//    }
+//
 //    private boolean loadXML()
 //    {
 //        GameManager currGameManager;

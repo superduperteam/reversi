@@ -8,9 +8,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class LoadFileTask extends Task<Boolean> {
@@ -20,14 +18,21 @@ public class LoadFileTask extends Task<Boolean> {
     private Stage primaryStage;
     private GameManager gameManager;
 
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public LoadFileTask(Stage _primaryStage){
+        this.primaryStage = _primaryStage;
+    }
+
     @Override
-    protected Boolean call() throws Exception {
+    protected Boolean call() {
         FileChooser fileChooser = new FileChooser();
-        String[] extensions = {".xml", ".xmL", ".xMl", ".Xml", ".xML", ".XmL", ".XMl", ".XML"};
         boolean didLoadSuccessfully;
 
         fileChooser.setTitle("Select XML game file");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML files", extensions));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Documents", "*.XML"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null) {
             return Boolean.FALSE;
