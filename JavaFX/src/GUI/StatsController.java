@@ -45,10 +45,10 @@ public class StatsController {
         this.appController = mainController;
     }
 
-    public void setPlayers(List<Player> playersList){
+    public void setPlayers(List<Player> playersList, Player activePlayer){
         turnColumn.setCellValueFactory(data -> {
             GameManager gameManager = appController.getGameManager();
-            if(data.getValue().equals(gameManager.getActivePlayer())&&!gameManager.isGameOver()){
+            if(data.getValue().equals(activePlayer)&&(!gameManager.isGameOver()||appController.isInReplayMode())){
                 return new ReadOnlyStringWrapper("->");
             }
             else{
@@ -77,8 +77,8 @@ public class StatsController {
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(26));
     }
 
-    public void refreshTable(){
-        setPlayers(appController.getGameManager().getPlayersList());
+    public void refreshTable(List<Player> playersList, Player activePlayer){
+        setPlayers(playersList, activePlayer);
         tableView.refresh();
     }
 }

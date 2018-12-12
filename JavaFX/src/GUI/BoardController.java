@@ -42,8 +42,8 @@ public class BoardController {
         discTypeToDiscColorMap.put(eDiscType.RED, Color.RED);
     }
 
-    public void updateGIUDiscs(boolean isTutorialMode)
+    public void updateGIUDiscs(Board gameBoard, boolean isTutorialMode)
     {
-        boardComponent.updateBoard(mainController.getGameManager().getBoard(), isTutorialMode);
+        boardComponent.updateBoard(gameBoard, isTutorialMode);
     }
 }
