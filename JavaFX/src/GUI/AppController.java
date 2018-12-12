@@ -93,15 +93,17 @@ public class AppController {
         Player activePlayer = gameManager.getActivePlayer();
         GameManager.eMoveStatus moveStatus;
 
-        moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
+        if(gameManager.getActivePlayer().isHuman()){
+            moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
 
-        if (moveStatus == GameManager.eMoveStatus.OK) {
-            gameManager.changeTurn();
-            updateEndTurn();
-        }
+            if (moveStatus == GameManager.eMoveStatus.OK) {
+                gameManager.changeTurn();
+                updateEndTurn();
+            }
 
-        if(!gameManager.getActivePlayer().isHuman()){
-            simulateComputerTurns();
+            if(!gameManager.getActivePlayer().isHuman()){
+                simulateComputerTurns();
+            }
         }
 
         if (gameManager.isGameOver()) {
