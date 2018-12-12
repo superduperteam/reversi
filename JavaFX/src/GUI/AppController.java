@@ -72,7 +72,9 @@ public class AppController {
     }
 
     public void updateGUI(){
-        boardController.updateGIUDiscs(isTutorialMode);
+        boolean showHintsForPlayer = isTutorialMode && gameManager.getActivePlayer().isHuman();
+
+        boardController.updateGIUDiscs(showHintsForPlayer);
         statsComponentController.refreshTable();
     }
 
