@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.*;
 
 public class StatsController {
-    private AppController mainController;
+    private AppController appController;
     private HashMap<Player, TableRow<Player>> playerStatsToRowNumber = new HashMap();
 
     @FXML private TableView<Player> tableView;
@@ -42,12 +42,12 @@ public class StatsController {
     }
 
     public void setMainController(AppController mainController) {
-        this.mainController = mainController;
+        this.appController = mainController;
     }
 
     public void setPlayers(List<Player> playersList){
         turnColumn.setCellValueFactory(data -> {
-            GameManager gameManager = mainController.getGameManager();
+            GameManager gameManager = appController.getGameManager();
             if(data.getValue().equals(gameManager.getActivePlayer())&&!gameManager.isGameOver()){
                 return new ReadOnlyStringWrapper("->");
             }
@@ -78,7 +78,7 @@ public class StatsController {
     }
 
     public void refreshTable(){
-        setPlayers(mainController.getGameManager().getPlayersList());
+        setPlayers(appController.getGameManager().getPlayersList());
         tableView.refresh();
     }
 }

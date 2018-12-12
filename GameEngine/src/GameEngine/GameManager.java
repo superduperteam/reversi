@@ -30,7 +30,6 @@ public class GameManager implements Serializable
         this.board = board;
         isGameActive = false;
         calcFlipPotential();
-//        currTurn = getCurrentTurn(); // ##
     }
 
     public void calcFlipPotential(){
