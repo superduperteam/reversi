@@ -97,7 +97,6 @@ public class AppController {
             moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
 
             if (moveStatus == GameManager.eMoveStatus.OK) {
-                gameManager.changeTurn();
                 updateEndTurn();
             }
 
@@ -109,93 +108,17 @@ public class AppController {
         if (gameManager.isGameOver()) {
             onGameOver();
         }
-
-//                Task<Boolean> AITurnThread = new Task<Boolean>() {
-//                    @Override
-//                    protected Boolean call() {
-//                        try { Thread.sleep(1000); } catch (InterruptedException ex) {}
-//                        gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-//                        Platform.runLater(() ->  updateEndTurn());
-//                        return true;
-//                    }
-//                };
-//                AITurnThread.getOnSucceeded();
-//            AITurnThread.run();
-//            }
-
-//                Thread thread = new Thread(() -> {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException ex) {
-//                    }
-//                    Platform.runLater(() -> {
-//                        System.out.println("start");
-//                        gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-//                        updateEndTurn();
-//                    });
-//                });
-//
-//
-//                //            while (!gameManager.getActivePlayer().isHuman()) {}
-//                thread.start();
-
     }
-
-//    public void playTurn(Point clickedCellBoardPoint) {
-//        Player activePlayer = gameManager.getActivePlayer();
-//        GameManager.eMoveStatus moveStatus;
-//
-//        moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
-//
-//
-//        if (moveStatus == GameManager.eMoveStatus.OK) {
-//            gameManager.changeTurn();
-//            updateEndTurn();
-//
-//        }
-//
-//        if (gameManager.isGameOver()) {
-//            onGameOver();
-//        } else {
-//
-//            Player currActivePlayer = gameManager.getActivePlayer();
-//
-//            while (!currActivePlayer.isHuman()) {
-//                currActivePlayer.makeMove(currActivePlayer.getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-//                PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
-//
-//                pauseTransition.setOnFinished(event -> updateEndTurn());
-//                pauseTransition.play();
-//                gameManager.changeTurn();
-//                currActivePlayer = gameManager.getActivePlayer();
-//            }
-//        }
-//    }
-
-//    private void simulateComputerTurns() {
-//        while (!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
-//            gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()),
-//                    gameManager.getBoard());
-//            updateEndTurn();
-//        }
-//    }
 
     private void simulateComputerTurns() {
             Thread thread = new Thread(new ComputerMoveTask(gameManager, this));
             thread.start();
     }
 
-
-
     public void updateEndTurn(){
-        boardController.updateGIUDiscs(isTutorialMode);
-        statsComponentController.refreshTable();
+        gameManager.changeTurn();
+        updateGUI();
     }
-
-//    public void updateEndTurn(){
-//        gameManager.changeTurn();
-//        updateGUI();
-//    }
 
     public void onGameOver(){
         System.out.println("Test");

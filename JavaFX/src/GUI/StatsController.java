@@ -28,13 +28,12 @@ public class StatsController {
     private HashMap<Player, TableRow<Player>> playerStatsToRowNumber = new HashMap();
 
     @FXML private TableView<Player> tableView;
-
-    @FXML TableColumn<Player,String> turnColumn;
-    @FXML TableColumn<Player,String> colorColumn;
-    @FXML TableColumn<Player,String> nameColumn;
-    @FXML TableColumn<Player,Integer> scoreColumn;
-    @FXML TableColumn<Player,Integer> turnsPlayedColumn;
-    @FXML TableColumn<Player,String> averageOfFlipsColumn;
+    @FXML private TableColumn<Player,String> turnColumn;
+    @FXML private TableColumn<Player,String> colorColumn;
+    @FXML private TableColumn<Player,String> nameColumn;
+    @FXML private TableColumn<Player,Integer> scoreColumn;
+    @FXML private TableColumn<Player,Integer> turnsPlayedColumn;
+    @FXML private TableColumn<Player,String> averageOfFlipsColumn;
 
     @FXML public void initialize() {
         tableView.setFixedCellSize(25);
@@ -79,6 +78,7 @@ public class StatsController {
     }
 
     public void refreshTable(){
+        setPlayers(mainController.getGameManager().getPlayersList());
         tableView.refresh();
     }
 }
