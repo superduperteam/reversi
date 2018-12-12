@@ -44,10 +44,10 @@ public class BoardGUI extends ScrollPane {
         gridPane.setStyle("-fx-background-color: WHITE;");
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
-        columnConstraints.setMinWidth(10.0);
+        columnConstraints.setMinWidth(20.0);
         columnConstraints.setPrefWidth(30.0);
 
-        rowConstraints.setMinHeight(10.0);
+        rowConstraints.setMinHeight(20.0);
         rowConstraints.setPrefHeight(30.0);
         rowConstraints.setVgrow(javafx.scene.layout.Priority.SOMETIMES);
 
