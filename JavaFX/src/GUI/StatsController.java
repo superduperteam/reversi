@@ -48,7 +48,8 @@ public class StatsController {
 
     public void setPlayers(List<Player> playersList){
         turnColumn.setCellValueFactory(data -> {
-            if(data.getValue().equals(mainController.getGameManager().getActivePlayer())){
+            GameManager gameManager = mainController.getGameManager();
+            if(data.getValue().equals(gameManager.getActivePlayer())&&!gameManager.isGameOver()){
                 return new ReadOnlyStringWrapper("->");
             }
             else{
