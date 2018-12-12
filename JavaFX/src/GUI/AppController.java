@@ -202,7 +202,6 @@ public class AppController {
     }
 
     public void onGameOver(){
-        System.out.println("Test");
         StringBuilder winMessageBuilder = new StringBuilder();
 
         winMessageBuilder.append("Game Over.\n");
