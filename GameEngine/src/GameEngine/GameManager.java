@@ -7,7 +7,7 @@ import java.util.*;
 
 public class GameManager implements Serializable
 {
-    public SimpleBooleanProperty canUndoProperty = new SimpleBooleanProperty();
+    private SimpleBooleanProperty canUndoProperty = new SimpleBooleanProperty();
 
     private eGameMode gameMode;
     private HashMap<eDiscType, Player> discTypeToPlayer;
@@ -199,7 +199,7 @@ public class GameManager implements Serializable
         }
     }
 
-    private static class TurnHistory implements  Serializable {
+    public static class TurnHistory implements  Serializable {
         private Stack<Turn> turnHistoryStack;
 
         private TurnHistory(){
@@ -212,6 +212,18 @@ public class GameManager implements Serializable
             private Board board;
             private HashMap<eDiscType, Player> discTypeToPlayer;
             private Player retiredPlayer = null;
+
+            public List<Player> getPlayersList() {
+                return playersList;
+            }
+
+            public Player getActivePlayer() {
+                return activePlayer;
+            }
+
+            public Board getBoard() {
+                return board;
+            }
 
             //the method clones the last turn using copy constructors.
             private Turn(Board board, Player activePlayer, List<Player> players) {
@@ -276,6 +288,10 @@ public class GameManager implements Serializable
     private TurnHistory.Turn getCurrentTurn() {
         TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
 
+        if(isGameOver()){
+            turn.activePlayer = null;
+        }
+
         return turn;
     }
 
@@ -292,6 +308,16 @@ public class GameManager implements Serializable
         boardsList.add(board);
 
         return boardsList;
+    }
+
+    public List<TurnHistory.Turn> getHistoryOfTurns()
+    {
+        List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
+
+        currTurn = getCurrentTurn();
+
+        turnsList.add(getCurrentTurn());
+        return turnsList;
     }
 
     private void addTurnToHistory(TurnHistory.Turn turnToAdd){
