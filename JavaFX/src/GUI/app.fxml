@@ -19,7 +19,7 @@
          <top>
             <HBox prefHeight="68.0" prefWidth="748.0" spacing="40.0" BorderPane.alignment="CENTER">
                <children>
-                  <CheckBox fx:id="tutorialMode" mnemonicParsing="false" text="Tutorial Mode">
+                  <CheckBox fx:id="tutorialModeCheckBox" mnemonicParsing="false" text="Tutorial Mode">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font></CheckBox>
