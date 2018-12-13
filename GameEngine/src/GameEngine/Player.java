@@ -31,8 +31,6 @@ public class Player implements Serializable {
         this.discType = discType;
         this.id = id;
         statistics = new Statistics();
-
-        //nameUI = new SimpleStringProperty(name);
     }
 
     public Player(Player toCopy) {
