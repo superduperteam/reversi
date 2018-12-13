@@ -64,7 +64,11 @@
          <bottom>
             <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="taskMessageLabel" text="Label" />
+                  <Label fx:id="taskMessageLabel" text="">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
                </children>
             </HBox>
          </bottom>

@@ -25,11 +25,11 @@ import java.util.*;
 
 public class StatsController {
     private AppController appController;
-    private HashMap<Player, TableRow<Player>> playerStatsToRowNumber = new HashMap();
 
     @FXML private TableView<Player> tableView;
     @FXML private TableColumn<Player,String> turnColumn;
     @FXML private TableColumn<Player,String> colorColumn;
+    @FXML private TableColumn<Player,String> isHumanColumn;
     @FXML private TableColumn<Player,String> nameColumn;
     @FXML private TableColumn<Player,Integer> scoreColumn;
     @FXML private TableColumn<Player,Integer> turnsPlayedColumn;
@@ -53,6 +53,15 @@ public class StatsController {
             }
             else{
                 return new ReadOnlyStringWrapper("");
+            }
+        });
+
+        isHumanColumn.setCellValueFactory(data -> {
+            if(data.getValue().isHuman()){
+                return new ReadOnlyStringWrapper("Human");
+            }
+            else{
+                return new ReadOnlyStringWrapper("Computer");
             }
         });
 
