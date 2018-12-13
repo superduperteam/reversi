@@ -18,6 +18,7 @@ public class BoardGUI extends ScrollPane {
     private int columnsCount;
 
     private SimpleBooleanProperty isGameActive;
+    private SimpleBooleanProperty isGameInReplayMode;
 
     public BoardGUI(Board gameBoard, AppController appController) {
         isGameActive = appController.getGameManager().isGameActiveProperty();
@@ -57,8 +58,9 @@ public class BoardGUI extends ScrollPane {
             for (int j = 0; j < columnsCount; j++) {
                 cellBoardButtons[i][j] = new CellBoardButton(i, j);
                 currCellBoardButton = cellBoardButtons[i][j];
-                currCellBoardButton.disableProperty().bind(isGameActive.not());
-                // cellBoardButtons[i][j].setDisable();
+                currCellBoardButton.disableProperty().bind(Bindings.and(isGameActive.not(), appController.isGameInReplayModeProperty().not()));
+//                currCellBoardButton.disableProperty().bind(isGameActive.not());
+//                 cellBoardButtons[i][j].setDisable();
                 GridPane.setHalignment(currCellBoardButton, javafx.geometry.HPos.CENTER);
                 if (j != 0) {
                     GridPane.setColumnIndex(currCellBoardButton, j);

@@ -3,6 +3,7 @@ package GUI;
 import Exceptions.*;
 import GameEngine.GameManager;
 import GameEngine.GameSettingsReader;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -12,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 public class LoadFileTask extends Task<Boolean> {
-
+    private static final int SLEEP_TIME = 500;
     private Consumer<Runnable> onCancel;
     private Stage primaryStage;
     private GameManager gameManager;
@@ -41,8 +42,14 @@ public class LoadFileTask extends Task<Boolean> {
         messageBuilder.append("Successfully fetched file\n");
         updateMessage(messageBuilder.toString());
         String absolutePath = selectedFile.getAbsolutePath();
+
+        try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
+
         messageBuilder.append("Loading XML file...\n");
         updateMessage(messageBuilder.toString());
+
+        try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
+
         didLoadSuccessfully = loadXML(absolutePath);
         if(didLoadSuccessfully){
             messageBuilder.append("Successfully loaded XML file!\n");

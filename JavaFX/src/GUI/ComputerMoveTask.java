@@ -9,7 +9,6 @@ public class ComputerMoveTask extends Task<Boolean> {
 
     private GameManager gameManager;
     private AppController appController;
-    public boolean isDone;
 
     public ComputerMoveTask(GameManager gameManager, AppController appController){
         this.gameManager = gameManager;
@@ -30,8 +29,9 @@ public class ComputerMoveTask extends Task<Boolean> {
 
         @Override
         protected Boolean call() throws Exception {
+        appController.setIsComputerMoveInProgress(true);
         gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-        Thread.sleep(500);
+        Thread.sleep(400);
         gameManager.changeTurn();
         Platform.runLater(new Informer(gameManager, appController));
 

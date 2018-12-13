@@ -25,7 +25,6 @@ public class AppController {
 
     private BoardGUI boardGUI;
     private Stage primaryStage;
-    private boolean isInReplayMode;
     private ListIterator<GameManager.TurnHistory.Turn> replayTurnIterator;
     private BoardController boardController;
     private boolean isTutorialMode = false;
@@ -43,6 +42,90 @@ public class AppController {
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
 
+    private SimpleBooleanProperty isComputerMoveInProgress;
+
+    private void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
+        if(gameManager != null) {
+            lateInitialize();
+        }
+    }
+
+    @FXML
+    public void initialize() {
+        isComputerMoveInProgress = new SimpleBooleanProperty(false);
+        isGameInReplayMode = new SimpleBooleanProperty(false);
+        didLoadXmlFile = new SimpleBooleanProperty(false);
+        didStartGame = new SimpleBooleanProperty(false);
+        if (statsComponentController != null) {
+            statsComponentController.setMainController(this);
+        }
+
+        loadFileButton.setOnMouseClicked((event) -> onLoadFileClick());
+        startGameButton.setOnMouseClicked((event)-> onStartGameClick());
+        startGameButton.disableProperty().bind(didLoadXmlFile.not());
+        loadFileButton.disableProperty().bind(didStartGame);
+
+        undoLastMoveButton.setDisable(true);
+        tutorialMode.setDisable(true);
+        replayModeButton.setDisable(true);
+        replayModePrevButton.setDisable(true);
+        replayModeNextButton.setDisable(true);
+    }
+
+    private void onStartGameClick(){
+        gameManager.activateGame();
+        initTable();
+        didStartGame.set(true);
+        boardGUI.setIsGameActive(true);
+    }
+
+    private void onLoadFileClick(){
+        LoadFileTask loadFileTask = new LoadFileTask(primaryStage);
+        bindTaskToUIComponents(loadFileTask, ()->{});
+        new Thread(loadFileTask).run();
+
+        setGameManager(loadFileTask.getGameManager());
+        if(gameManager != null) {
+//            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
+            startGameButton.disableProperty().bind(gameManager.isGameActiveProperty());
+            boardGUI = new BoardGUI(gameManager.getBoard(), this);
+            boardParent.setCenter(boardGUI);
+            boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
+            didLoadXmlFile.set(true);
+        }
+    }
+
+    private void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
+        // task message
+        taskMessageLabel.textProperty().bind(aTask.messageProperty());
+
+        // task cleanup upon finish
+        aTask.valueProperty().addListener((observable, oldValue, newValue) -> {
+            onTaskFinished(Optional.ofNullable(onFinish));
+        });
+    }
+
+    private void onTaskFinished(Optional<Runnable> onFinish) {
+        taskMessageLabel.textProperty().unbind();
+        onFinish.ifPresent(Runnable::run);
+    }
+
+
+    public SimpleBooleanProperty isGameInReplayModeProperty() {
+        return isGameInReplayMode;
+    }
+
+    public SimpleBooleanProperty isComputerMoveInProgressProperty() {
+        return isComputerMoveInProgress;
+    }
+
+    public void setIsComputerMoveInProgress(boolean isComputerMoveInProgress) {
+        this.isComputerMoveInProgress.set(isComputerMoveInProgress);
+    }
+
+    private SimpleBooleanProperty isGameInReplayMode;
+
     public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
     }
@@ -55,83 +138,15 @@ public class AppController {
         return gameManager;
     }
 
-    public void setGameManager(GameManager gameManager) {
-        this.gameManager = gameManager;
-        if(gameManager != null) {
-            lateInitialize();
-        }
-    }
-
-    @FXML
-    public void initialize() {
-        didLoadXmlFile = new SimpleBooleanProperty(false);
-        didStartGame = new SimpleBooleanProperty(false);
-        if (statsComponentController != null) {
-            statsComponentController.setMainController(this);
-        }
-
-        tutorialMode.setOnMouseClicked((event) -> {
-            if(tutorialMode.isSelected()){
-                isTutorialMode = true;
-            }
-            else{
-                isTutorialMode = false;
-            }
-
-            boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode);
-        });
-
-        loadFileButton.setOnMouseClicked((event) -> onLoadFileClick());
-        startGameButton.setOnMouseClicked((event)-> onStartGameClick());
-        startGameButton.disableProperty().bind(didLoadXmlFile.not());
-        loadFileButton.disableProperty().bind(didStartGame);
-    }
-
-    public void onStartGameClick(){
-        gameManager.activateGame();
-        initTable();
-        didStartGame.set(true);
-        boardGUI.setIsGameActive(true);
-    }
-
-    public void onLoadFileClick(){
-        LoadFileTask loadFileTask = new LoadFileTask(primaryStage);
-        bindTaskToUIComponents(loadFileTask, ()->{});
-        new Thread(loadFileTask).run();
-
-        setGameManager(loadFileTask.getGameManager());
-        if(gameManager != null) {
-            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
-            boardGUI = new BoardGUI(gameManager.getBoard(), this);
-            boardParent.setCenter(boardGUI);
-            boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
-            didLoadXmlFile.set(true);
-        }
-    }
-
-    public void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
-        // task message
-        taskMessageLabel.textProperty().bind(aTask.messageProperty());
-
-        // task cleanup upon finish
-        aTask.valueProperty().addListener((observable, oldValue, newValue) -> {
-            onTaskFinished(Optional.ofNullable(onFinish));
-        });
-    }
-
-    public void onTaskFinished(Optional<Runnable> onFinish) {
-        taskMessageLabel.textProperty().unbind();
-        onFinish.ifPresent(Runnable::run);
-    }
-
 
         // call this after gameManager is set.
     private void lateInitialize(){
         undoLastMoveButton.setOnMouseClicked(event -> { undoLastMove(); });
-        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty()));
+//        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty()));
+        undoLastMoveButton.disableProperty().bind(Bindings.or(gameManager.canUndoProperty().not(),isComputerMoveInProgress));
 
         replayModeButton.setOnMouseClicked(event -> {
-            isInReplayMode = true;
+            isGameInReplayMode.setValue(true);
             showReplayMode();
         });
         replayModeButton.setDisable(true);
@@ -141,7 +156,11 @@ public class AppController {
 
         replayModeNextButton.setOnMouseClicked(event -> { showNextTurn(); });
         replayModeNextButton.setDisable(true);
-        isInReplayMode = false;
+
+        tutorialMode.setOnMouseClicked((event) -> {
+            isTutorialMode = tutorialMode.isSelected();
+            boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode);
+        });
     }
 
     private void showReplayMode() {
@@ -191,9 +210,6 @@ public class AppController {
         }
     }
 
-
-
-
     private void showTurnInGIU(Turn turnToShow){
         List<Player> turnPlayerList = turnToShow.getPlayersList();
 
@@ -218,7 +234,7 @@ public class AppController {
         }
     }
 
-    public void initTable() {
+    private void initTable() {
         statsComponentController.setPlayers(gameManager.getPlayersList(), gameManager.getActivePlayer());
     }
 
@@ -273,7 +289,7 @@ public class AppController {
     }
 
     public boolean isInReplayMode() {
-        return isInReplayMode;
+        return isGameInReplayMode.getValue();
     }
 
     public void setBoardParent(BorderPane _borderPane) {
