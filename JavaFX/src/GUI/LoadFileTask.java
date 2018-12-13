@@ -13,7 +13,6 @@ import java.util.function.Consumer;
 
 public class LoadFileTask extends Task<Boolean> {
 
-    private String fileName;
     private Consumer<Runnable> onCancel;
     private Stage primaryStage;
     private GameManager gameManager;
@@ -30,6 +29,7 @@ public class LoadFileTask extends Task<Boolean> {
     protected Boolean call() {
         FileChooser fileChooser = new FileChooser();
         boolean didLoadSuccessfully;
+        StringBuilder messageBuilder = new StringBuilder();
 
         fileChooser.setTitle("Select XML game file");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Documents", "*.XML"));
@@ -38,12 +38,15 @@ public class LoadFileTask extends Task<Boolean> {
             return Boolean.FALSE;
         }
 
-        updateMessage("Successfully fetched file");
+        messageBuilder.append("Successfully fetched file\n");
+        updateMessage(messageBuilder.toString());
         String absolutePath = selectedFile.getAbsolutePath();
-        updateMessage("Loading XML file...");
+        messageBuilder.append("Loading XML file...\n");
+        updateMessage(messageBuilder.toString());
         didLoadSuccessfully = loadXML(absolutePath);
         if(didLoadSuccessfully){
-            updateMessage("Successfully loaded XML file!");
+            messageBuilder.append("Successfully loaded XML file!\n");
+            updateMessage(messageBuilder.toString());
         }
 
         return Boolean.TRUE;
@@ -53,9 +56,6 @@ public class LoadFileTask extends Task<Boolean> {
         GameManager currGameManager;
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
         boolean isGameLoaded = true;
-        //System.out.println("Please enter a XML path (it should end with \".xml\")");
-        //Path filePath = getFilePathFromUser();
-        //Path filePath = Paths.get("C:\\Users\\Ido\\IdeaProjects\\reversi\\GameEngine\\src\\resources\\master.xml");
 
         if(filePath != null) {
             try {

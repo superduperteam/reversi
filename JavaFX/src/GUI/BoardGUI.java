@@ -20,7 +20,7 @@ public class BoardGUI extends ScrollPane {
     private SimpleBooleanProperty isGameActive;
 
     public BoardGUI(Board gameBoard, AppController appController) {
-        isGameActive = new SimpleBooleanProperty(false);
+        isGameActive = appController.getGameManager().isGameActiveProperty();
         boardController = new BoardController(appController, this);
         appController.setBoardController(boardController);
         gridPane = new GridPane();

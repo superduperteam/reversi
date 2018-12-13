@@ -1,5 +1,6 @@
 package GameEngine;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import java.util.*;
 public class GameManager implements Serializable
 {
     private SimpleBooleanProperty canUndoProperty = new SimpleBooleanProperty();
+    private SimpleBooleanProperty isGameActive;
 
     private eGameMode gameMode;
     private HashMap<eDiscType, Player> discTypeToPlayer;
@@ -17,7 +19,6 @@ public class GameManager implements Serializable
     private Player activePlayer;
     private Board board;
     private TurnHistory.Turn currTurn;
-    private boolean isGameActive;
 
     public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
     {
@@ -28,7 +29,7 @@ public class GameManager implements Serializable
         this.gameMode = gameMode;
         activePlayer = playersList.get(0);
         this.board = board;
-        isGameActive = false;
+        isGameActive = new SimpleBooleanProperty(false);
         calcFlipPotential();
     }
 
@@ -52,7 +53,11 @@ public class GameManager implements Serializable
     }
 
     public boolean isGameActive() {
-        return isGameActive;
+        return isGameActive.get();
+    }
+
+    public void setIsGameActive(boolean _isGameActive){
+        isGameActive.set(_isGameActive);
     }
 
     public List<Player> getPlayersList()
@@ -120,7 +125,7 @@ public class GameManager implements Serializable
             List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
             goBackToTurn(turnsList.get(0));
             turnHistory.turnHistoryStack.clear();
-            isGameActive = false;
+            isGameActive.set(false);
         }
 
         playersList.forEach(player -> player.getStatistics().resetStatistics());
@@ -268,6 +273,10 @@ public class GameManager implements Serializable
         }
     }
 
+    public SimpleBooleanProperty isGameActiveProperty() {
+        return isGameActive;
+    }
+
     public SimpleBooleanProperty canUndoProperty(){
         return canUndoProperty;
     }
@@ -385,7 +394,7 @@ public class GameManager implements Serializable
     public void activateGame()
     {
         updateCanUndo(); // ##
-        isGameActive = true;
+        isGameActive.set(true);
         currTurn = getCurrentTurn(); // ##
         updateGameScore();
     }
