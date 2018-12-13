@@ -30,7 +30,7 @@ public class AppController {
     private boolean isTutorialMode = false;
     private BorderPane boardParent;
     @FXML private StatsController statsComponentController;
-    @FXML private CheckBox tutorialMode;
+    @FXML private CheckBox tutorialModeCheckBox;
     @FXML private Button undoLastMoveButton;
     @FXML private Button replayModeButton;
     @FXML private Button replayModePrevButton;
@@ -67,7 +67,7 @@ public class AppController {
         loadFileButton.disableProperty().bind(didStartGame);
 
         undoLastMoveButton.setDisable(true);
-        tutorialMode.setDisable(true);
+        tutorialModeCheckBox.setDisable(true);
         replayModeButton.setDisable(true);
         replayModePrevButton.setDisable(true);
         replayModeNextButton.setDisable(true);
@@ -138,11 +138,10 @@ public class AppController {
         return gameManager;
     }
 
-
-        // call this after gameManager is set.
+    // call this after gameManager is set.
     private void lateInitialize(){
         undoLastMoveButton.setOnMouseClicked(event -> { undoLastMove(); });
-//        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty()));
+//        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty())); // not good
         undoLastMoveButton.disableProperty().bind(Bindings.or(gameManager.canUndoProperty().not(),isComputerMoveInProgress));
 
         replayModeButton.setOnMouseClicked(event -> {
@@ -157,8 +156,9 @@ public class AppController {
         replayModeNextButton.setOnMouseClicked(event -> { showNextTurn(); });
         replayModeNextButton.setDisable(true);
 
-        tutorialMode.setOnMouseClicked((event) -> {
-            isTutorialMode = tutorialMode.isSelected();
+        tutorialModeCheckBox.disableProperty().bind(gameManager.isGameActiveProperty().not());
+        tutorialModeCheckBox.setOnMouseClicked((event) -> {
+            isTutorialMode = tutorialModeCheckBox.isSelected();
             boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode);
         });
     }
