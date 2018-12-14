@@ -94,7 +94,6 @@ public class AppController {
         }
 
         gameManager.activateGame();
-        initTable();
         didStartGame.set(true);
         //boardGUI.setIsGameActive(true);
     }
@@ -125,6 +124,7 @@ public class AppController {
             boardParent.setCenter(boardGUI);
             boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
             didLoadXmlFile.set(true);
+            initTable();
         }
     }
 

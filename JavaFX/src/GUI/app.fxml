@@ -96,6 +96,9 @@
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
                   </Label>
                </children>
             </HBox>

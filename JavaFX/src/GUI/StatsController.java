@@ -31,6 +31,7 @@ public class StatsController {
     @FXML private TableColumn<Player,String> colorColumn;
     @FXML private TableColumn<Player,String> isHumanColumn;
     @FXML private TableColumn<Player,String> nameColumn;
+    @FXML private TableColumn<Player,String> idColumn;
     @FXML private TableColumn<Player,Integer> scoreColumn;
     @FXML private TableColumn<Player,Integer> turnsPlayedColumn;
     @FXML private TableColumn<Player,String> averageOfFlipsColumn;
@@ -69,6 +70,7 @@ public class StatsController {
         nameColumn.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
         turnsPlayedColumn.setCellValueFactory(new PropertyValueFactory<>("turnsPlayed"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("Id"));
         //averageOfFlipsColumn.setCellValueFactory(new PropertyValueFactory<>("averageOfFlips"));
 
         averageOfFlipsColumn.setCellValueFactory(data -> {
