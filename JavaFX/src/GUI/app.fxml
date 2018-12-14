@@ -26,7 +26,7 @@
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="stopGameButton" layoutY="39.0" mnemonicParsing="false" text="Stop Game">
+                        <Button fx:id="endGameButton" layoutY="39.0" mnemonicParsing="false" text="End Game">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
