@@ -23,7 +23,8 @@ public class AppController {
 
     private GameManager gameManager;
 
-    private BoardGUI boardGUI;
+    // it's better if appController wouldn't have this member. (boardController should be his referent)
+    //private BoardGUI boardGUI;
     private Stage primaryStage;
     private ListIterator<GameManager.TurnHistory.Turn> replayTurnIterator;
     private BoardController boardController;
@@ -35,13 +36,15 @@ public class AppController {
     @FXML private Button replayModeButton;
     @FXML private Button replayModePrevButton;
     @FXML private Button replayModeNextButton;
+    @FXML private Button stopReplayButton;
     @FXML private Label taskMessageLabel;
     @FXML private Button loadFileButton;
     @FXML private Button startGameButton;
+    @FXML private Button stopGameButton;
 
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
-
+    private SimpleBooleanProperty isGameInReplayMode;
     private SimpleBooleanProperty isComputerMoveInProgress;
 
     private void setGameManager(GameManager gameManager) {
@@ -63,24 +66,50 @@ public class AppController {
 
         loadFileButton.setOnMouseClicked((event) -> onLoadFileClick());
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
-        startGameButton.disableProperty().bind(didLoadXmlFile.not());
-        loadFileButton.disableProperty().bind(didStartGame);
+        stopGameButton.setOnMouseClicked(event ->  OnStopGameClick());
+        // startGameButton.disableProperty().bind(didLoadXmlFile.not()); // not good
+        startGameButton.disableProperty().bind(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode));
+        stopGameButton.setDisable(true);
+        //loadFileButton.disableProperty().bind(didStartGame); // not good
+        loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
 
         undoLastMoveButton.setDisable(true);
         tutorialModeCheckBox.setDisable(true);
         replayModeButton.setDisable(true);
         replayModePrevButton.setDisable(true);
         replayModeNextButton.setDisable(true);
+        stopReplayButton.setDisable(true);
     }
 
     private void onStartGameClick(){
+        if(gameManager.isGameOver()){
+            resetGame();
+        }
+        if(isGameInReplayMode.get()){
+            stopReplayMode();
+            replayModeButton.setDisable(true);
+            stopReplayButton.setDisable(true);
+        }
+
         gameManager.activateGame();
         initTable();
         didStartGame.set(true);
-        boardGUI.setIsGameActive(true);
+        //boardGUI.setIsGameActive(true);
+    }
+
+    private void resetGame(){
+        gameManager.resetGame();
+        updateGUI();
+        //boardGUI.setIsGameActive(false);
     }
 
     private void onLoadFileClick(){
+        if(isGameInReplayMode.get()){
+            stopReplayMode();
+            replayModeButton.setDisable(true);
+            stopReplayButton.setDisable(true);
+        }
+
         LoadFileTask loadFileTask = new LoadFileTask(primaryStage);
         bindTaskToUIComponents(loadFileTask, ()->{});
         new Thread(loadFileTask).run();
@@ -88,12 +117,17 @@ public class AppController {
         setGameManager(loadFileTask.getGameManager());
         if(gameManager != null) {
 //            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
-            startGameButton.disableProperty().bind(gameManager.isGameActiveProperty());
-            boardGUI = new BoardGUI(gameManager.getBoard(), this);
+            startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
+            stopGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
+            BoardGUI boardGUI = new BoardGUI(gameManager.getBoard(), this);
             boardParent.setCenter(boardGUI);
             boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
             didLoadXmlFile.set(true);
         }
+    }
+
+    private void OnStopGameClick() {
+        resetGame();
     }
 
     private void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
@@ -124,8 +158,6 @@ public class AppController {
         this.isComputerMoveInProgress.set(isComputerMoveInProgress);
     }
 
-    private SimpleBooleanProperty isGameInReplayMode;
-
     public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
     }
@@ -150,6 +182,11 @@ public class AppController {
         });
         replayModeButton.setDisable(true);
 
+        stopReplayButton.setOnMouseClicked(event -> {
+            isGameInReplayMode.setValue(false);
+            stopReplayMode();
+        });
+
         replayModePrevButton.setOnMouseClicked(event -> { showPrevTurn(); });
         replayModePrevButton.setDisable(true);
 
@@ -163,9 +200,19 @@ public class AppController {
         });
     }
 
+    private void stopReplayMode(){
+        replayModePrevButton.setDisable(true);
+        replayModeNextButton.setDisable(true);
+        replayModeButton.setDisable(false);
+        stopReplayButton.setDisable(true);
+
+        updateGUI();
+    }
+
     private void showReplayMode() {
         replayModeButton.setDisable(true);
         replayModePrevButton.setDisable(false);
+        stopReplayButton.setDisable(false);
 
         List<Turn> turnsList = gameManager.getHistoryOfTurns();
         replayTurnIterator = turnsList.listIterator(turnsList.size() - 1);
@@ -296,3 +343,5 @@ public class AppController {
         boardParent = _borderPane;
     }
 }
+
+

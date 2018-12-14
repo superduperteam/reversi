@@ -7,6 +7,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 
 public class BoardGUI extends ScrollPane {
     private BoardController boardController;
@@ -17,11 +18,10 @@ public class BoardGUI extends ScrollPane {
     private int rowsCount;
     private int columnsCount;
 
-    private SimpleBooleanProperty isGameActive;
-    private SimpleBooleanProperty isGameInReplayMode;
+
 
     public BoardGUI(Board gameBoard, AppController appController) {
-        isGameActive = appController.getGameManager().isGameActiveProperty();
+        //isGameActive = appController.getGameManager().isGameActiveProperty();
         boardController = new BoardController(appController, this);
         appController.setBoardController(boardController);
         gridPane = new GridPane();
@@ -58,7 +58,9 @@ public class BoardGUI extends ScrollPane {
             for (int j = 0; j < columnsCount; j++) {
                 cellBoardButtons[i][j] = new CellBoardButton(i, j);
                 currCellBoardButton = cellBoardButtons[i][j];
-                currCellBoardButton.disableProperty().bind(Bindings.and(isGameActive.not(), appController.isGameInReplayModeProperty().not()));
+                //currCellBoardButton.disableProperty().bind(Bindings.and(isGameActive.not(), appController.isGameInReplayModeProperty().not()));
+                currCellBoardButton.disableProperty().bind(Bindings.and(appController.getGameManager().isGameActiveProperty().not(),
+                        appController.isGameInReplayModeProperty().not()));
 //                currCellBoardButton.disableProperty().bind(isGameActive.not());
 //                 cellBoardButtons[i][j].setDisable();
                 GridPane.setHalignment(currCellBoardButton, javafx.geometry.HPos.CENTER);
@@ -134,9 +136,7 @@ public class BoardGUI extends ScrollPane {
         gridPane.autosize();
     }
 
-    public void setIsGameActive(boolean _isGameActive){
-        isGameActive.set(_isGameActive);
-    }
+
 
     public void initBoardButtons(Board gameBoard){
         Disc currDisc;
