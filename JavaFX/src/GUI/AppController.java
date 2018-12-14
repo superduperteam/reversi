@@ -40,7 +40,7 @@ public class AppController {
     @FXML private Label taskMessageLabel;
     @FXML private Button loadFileButton;
     @FXML private Button startGameButton;
-    @FXML private Button stopGameButton;
+    @FXML private Button endGameButton;
     @FXML private Button playerRetireButton;
 
     private BooleanProperty didLoadXmlFile;
@@ -67,10 +67,10 @@ public class AppController {
 
         loadFileButton.setOnMouseClicked((event) -> onLoadFileClick());
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
-        stopGameButton.setOnMouseClicked(event ->  OnStopGameClick());
+        endGameButton.setOnMouseClicked(event ->  OnStopGameClick());
         // startGameButton.disableProperty().bind(didLoadXmlFile.not()); // not good
         startGameButton.disableProperty().bind(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode));
-        stopGameButton.setDisable(true);
+        endGameButton.setDisable(true);
         //loadFileButton.disableProperty().bind(didStartGame); // not good
         loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
 
@@ -120,7 +120,7 @@ public class AppController {
         if(gameManager != null) {
 //            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
             startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
-            stopGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
+            endGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
             BoardGUI boardGUI = new BoardGUI(gameManager.getBoard(), this);
             boardParent.setCenter(boardGUI);
             boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
