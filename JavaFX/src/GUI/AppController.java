@@ -130,11 +130,10 @@ public class AppController {
 
     private void OnStopGameClick() {
         resetGame();
-        replayModeButton.setDisable(true);
 
         StringBuilder winMessageBuilder = new StringBuilder();
 
-        winMessageBuilder.append("Game was stopped!.\n");
+        winMessageBuilder.append("Game has ended!\n");
         PopupFactory.showPopup(winMessageBuilder.toString());
     }
 
@@ -281,9 +280,15 @@ public class AppController {
             gameManager.getActivePlayer().quitGame(gameManager);
             updateGUI();
 
-            if(!gameManager.getActivePlayer().isHuman()){
-                simulateComputerTurns();
+            if(gameManager.isGameOver()){
+                onGameOver();
             }
+            else{
+                if(!gameManager.getActivePlayer().isHuman()){
+                    simulateComputerTurns();
+                }
+            }
+
         }
     }
 
