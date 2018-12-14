@@ -69,7 +69,7 @@ public class Main extends Application {
 //              <fx:include fx:id="boardComponent" minHeight="-Infinity" minWidth="100.0" source="board.fxml" BorderPane.alignment="TOP_CENTER" />
 //         </center>
         ////appController.initTable();
-        Scene scene = new Scene(root, 1050, 800);
+        Scene scene = new Scene(root, 1090, 850);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

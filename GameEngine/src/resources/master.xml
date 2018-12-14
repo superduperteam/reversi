@@ -34,11 +34,11 @@
 		</Player>
 		<Player id="456">
 			<Name>Nachtze</Name>
-			<Type>Human</Type>
+			<Type>Computer</Type>
 		</Player>
         <Player id="789">
             <Name>Ido</Name>
-            <Type>Human</Type>
+            <Type>Computer</Type>
         </Player>
 	</Players>
 	<DynamicPlayers game-title="sample game" total-players="3"/>
