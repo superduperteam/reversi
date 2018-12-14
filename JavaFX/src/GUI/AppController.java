@@ -174,7 +174,8 @@ public class AppController {
     private void lateInitialize(){
         undoLastMoveButton.setOnMouseClicked(event -> { undoLastMove(); });
 //        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty())); // not good
-        undoLastMoveButton.disableProperty().bind(Bindings.or(gameManager.canUndoProperty().not(),isComputerMoveInProgress));
+        undoLastMoveButton.disableProperty().bind(Bindings.or(Bindings.or(gameManager.canUndoProperty().not(),
+                gameManager.isGameActiveProperty().not()), isComputerMoveInProgress));
 
         replayModeButton.setOnMouseClicked(event -> {
             isGameInReplayMode.setValue(true);
