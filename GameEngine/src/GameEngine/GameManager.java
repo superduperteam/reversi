@@ -125,10 +125,10 @@ public class GameManager implements Serializable
             List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
             goBackToTurn(turnsList.get(0));
             turnHistory.turnHistoryStack.clear();
-            isGameActive.set(false);
         }
 
         playersList.forEach(player -> player.getStatistics().resetStatistics());
+        isGameActive.set(false);
     }
 
     public void changeTurn()

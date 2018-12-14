@@ -1,6 +1,7 @@
 package GUI;
 
 import GameEngine.*;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 
@@ -8,17 +9,24 @@ import java.util.HashMap;
 
 public class BoardController {
 
-    private AppController mainController;
+    private AppController appController;
     private BoardGUI boardComponent;
     private HashMap<eDiscType, Color> discTypeToDiscColorMap;
-    private Point cellBoardButtonClickedPoint;
+//    private Point cellBoardButtonClickedPoint;
+
+//    private SimpleBooleanProperty isGameActive;
+
+//    public void setIsGameActive(boolean _isGameActive){
+//        isGameActive.set(_isGameActive);
+//    }
 
     //@FXML
 
     public BoardController(AppController parentController, BoardGUI boardGUI){
         boardComponent = boardGUI;
-        mainController = parentController;
+        appController = parentController;
         mapDiscTypesToColors();
+//        isGameActive = appController.getGameManager().isGameActiveProperty();
     }
 
     public Color discTypeToColor(eDiscType discType){
@@ -26,9 +34,9 @@ public class BoardController {
     }
 
     public void CellBoardButtonClicked(Point cellBoardButtonClickedPoint) {
-        this.cellBoardButtonClickedPoint = cellBoardButtonClickedPoint;
+//        this.cellBoardButtonClickedPoint = cellBoardButtonClickedPoint;
 
-        mainController.playTurn(cellBoardButtonClickedPoint);
+        appController.playTurn(cellBoardButtonClickedPoint);
     }
 
     public void mapDiscTypesToColors()
