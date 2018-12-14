@@ -130,6 +130,12 @@ public class AppController {
 
     private void OnStopGameClick() {
         resetGame();
+        replayModeButton.setDisable(true);
+
+        StringBuilder winMessageBuilder = new StringBuilder();
+
+        winMessageBuilder.append("Game was stopped!.\n");
+        PopupFactory.showPopup(winMessageBuilder.toString());
     }
 
     private void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
@@ -199,10 +205,17 @@ public class AppController {
         replayModeNextButton.setOnMouseClicked(event -> { showNextTurn(); });
         replayModeNextButton.setDisable(true);
 
-        tutorialModeCheckBox.disableProperty().bind(gameManager.isGameActiveProperty().not());
+        tutorialModeCheckBox.disableProperty().bind(Bindings.and(gameManager.isGameActiveProperty().not(), isGameInReplayMode.not()));
         tutorialModeCheckBox.setOnMouseClicked((event) -> {
             isTutorialMode = tutorialModeCheckBox.isSelected();
-            boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode);
+
+            if(isGameInReplayMode.get()){
+                boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(), isTutorialMode);
+                replayTurnIterator.previous();
+            }
+            else{
+                boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode);
+            }
         });
     }
 
@@ -277,7 +290,7 @@ public class AppController {
     private void showTurnInGIU(Turn turnToShow){
         List<Player> turnPlayerList = turnToShow.getPlayersList();
 
-        boardController.updateGIUDiscs(turnToShow.getBoard(), false);
+        boardController.updateGIUDiscs(turnToShow.getBoard(), isTutorialMode);
         statsComponentController.refreshTable(turnPlayerList,  turnToShow.getActivePlayer());
     }
 
