@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="603.0" prefWidth="787.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="603.0" prefWidth="787.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
    <content>
       <BorderPane prefHeight="601.0" prefWidth="801.0">
          <right>
@@ -19,17 +19,21 @@
          <top>
             <HBox prefHeight="97.0" prefWidth="748.0" spacing="30.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="startGameButton" mnemonicParsing="false" text="Start Game">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                  </Button>
+                  <AnchorPane>
+                     <children>
+                        <Button fx:id="startGameButton" mnemonicParsing="false" text="Start Game">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="stopGameButton" layoutY="39.0" mnemonicParsing="false" text="Stop Game">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
                   <Button fx:id="loadFileButton" mnemonicParsing="false" text="Load XML Game">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="stopGameButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Stop Game">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -41,10 +45,20 @@
                      <padding>
                         <Insets top="5.0" />
                      </padding></CheckBox>
-                  <Button fx:id="undoLastMoveButton" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="Undo Last Move">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font></Button>
+                  <AnchorPane>
+                     <children>
+                        <Button fx:id="undoLastMoveButton" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="Undo Last Move">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="playerRetireButton" layoutX="4.0" layoutY="38.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Player Retire">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
                   <AnchorPane prefHeight="59.0" prefWidth="110.0">
                      <children>
                         <Button fx:id="replayModeNextButton" layoutX="61.0" layoutY="33.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="49.0" text="Next">

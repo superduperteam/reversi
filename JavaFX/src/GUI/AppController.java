@@ -41,6 +41,7 @@ public class AppController {
     @FXML private Button loadFileButton;
     @FXML private Button startGameButton;
     @FXML private Button stopGameButton;
+    @FXML private Button playerRetireButton;
 
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
@@ -74,6 +75,7 @@ public class AppController {
         loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
 
         undoLastMoveButton.setDisable(true);
+        playerRetireButton.setDisable(true);
         tutorialModeCheckBox.setDisable(true);
         replayModeButton.setDisable(true);
         replayModePrevButton.setDisable(true);
@@ -172,10 +174,13 @@ public class AppController {
 
     // call this after gameManager is set.
     private void lateInitialize(){
-        undoLastMoveButton.setOnMouseClicked(event -> { undoLastMove(); });
+        undoLastMoveButton.setOnMouseClicked(event -> { onUndoClick(); });
 //        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty())); // not good
         undoLastMoveButton.disableProperty().bind(Bindings.or(Bindings.or(gameManager.canUndoProperty().not(),
                 gameManager.isGameActiveProperty().not()), isComputerMoveInProgress));
+
+        playerRetireButton.setOnMouseClicked(event -> {onPlayerRetireClick();});
+        playerRetireButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isComputerMoveInProgress));
 
         replayModeButton.setOnMouseClicked(event -> {
             isGameInReplayMode.setValue(true);
@@ -258,6 +263,17 @@ public class AppController {
         }
     }
 
+    private void onPlayerRetireClick(){
+        if(gameManager.getActivePlayer().isHuman()){
+            gameManager.getActivePlayer().quitGame(gameManager);
+            updateGUI();
+
+            if(!gameManager.getActivePlayer().isHuman()){
+                simulateComputerTurns();
+            }
+        }
+    }
+
     private void showTurnInGIU(Turn turnToShow){
         List<Player> turnPlayerList = turnToShow.getPlayersList();
 
@@ -273,7 +289,7 @@ public class AppController {
         statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
     }
 
-    private void undoLastMove() {
+    private void onUndoClick() {
         gameManager.undo();
         updateGUI();
 
