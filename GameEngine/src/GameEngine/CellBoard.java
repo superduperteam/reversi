@@ -27,6 +27,8 @@ public class CellBoard {
         else{
             this.disc = null;
         }
+
+        this.countOfFlipsPotential = toCopy.getCountOfFlipsPotential();
     }
 
     public CellBoard(Disc disc){
