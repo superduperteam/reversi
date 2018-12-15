@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class BoardController {
 
@@ -50,8 +51,12 @@ public class BoardController {
         discTypeToDiscColorMap.put(eDiscType.RED, Color.RED);
     }
 
-    public void updateGIUDiscs(Board gameBoard, boolean isTutorialMode)
+    public void updateGIUDiscs(Board gameBoard, boolean isTutorialMode, boolean isAnimationsEnabled)
     {
-        boardComponent.updateBoard(gameBoard, isTutorialMode);
+        boardComponent.updateBoard(gameBoard, isTutorialMode, isAnimationsEnabled);
+    }
+
+    public void highlightDiscsOfType(Board gameboard, eDiscType discType){
+        boardComponent.highlightDiscs(gameboard, discType);
     }
 }

@@ -47,13 +47,26 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <CheckBox fx:id="tutorialModeCheckBox" mnemonicParsing="false" text="Tutorial Mode">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                     <padding>
-                        <Insets top="5.0" />
-                     </padding></CheckBox>
+                  <AnchorPane>
+                     <children>
+                        <CheckBox fx:id="tutorialModeCheckBox" mnemonicParsing="false" text="Tutorial Mode">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                        </CheckBox>
+                        <CheckBox fx:id="animationsCheckBox" layoutY="34.0" mnemonicParsing="false" text="Animations">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <padding>
+                              <Insets top="5.0" />
+                           </padding>
+                        </CheckBox>
+                     </children>
+                  </AnchorPane>
                   <AnchorPane>
                      <children>
                         <Button fx:id="undoLastMoveButton" mnemonicParsing="false" prefHeight="29.0" prefWidth="118.0" text="Undo Last Move">
