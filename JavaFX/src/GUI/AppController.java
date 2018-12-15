@@ -42,6 +42,7 @@ public class AppController {
     @FXML private Button startGameButton;
     @FXML private Button endGameButton;
     @FXML private Button playerRetireButton;
+    @FXML private Label gameModeLabel;
 
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
@@ -117,6 +118,7 @@ public class AppController {
 
         setGameManager(loadFileTask.getGameManager());
         if(gameManager != null) {
+            updateGameModeLabel();
 //            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
             startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
             endGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
@@ -127,6 +129,16 @@ public class AppController {
             initTable();
         }
     }
+
+    private void updateGameModeLabel(){
+        if(gameManager.getGameMode().equals(GameManager.eGameMode.Islands)){
+            gameModeLabel.setText("Mode: Islands");
+        }
+        else{
+            gameModeLabel.setText("Mode: Regular");
+        }
+    }
+
 
     private void OnStopGameClick() {
         resetGame();
