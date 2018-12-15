@@ -33,11 +33,20 @@
                         </Button>
                      </children>
                   </AnchorPane>
-                  <Button fx:id="loadFileButton" mnemonicParsing="false" text="Load XML Game">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                  </Button>
+                  <AnchorPane>
+                     <children>
+                        <Button fx:id="loadFileButton" mnemonicParsing="false" text="Load XML Game">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Button>
+                        <Label fx:id="gameModeLabel" layoutX="14.0" layoutY="39.0" prefHeight="27.0" prefWidth="90.0" >
+                           <font>
+                            <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
                   <CheckBox fx:id="tutorialModeCheckBox" mnemonicParsing="false" text="Tutorial Mode">
                      <font>
                         <Font name="System Bold" size="13.0" />
