@@ -373,21 +373,29 @@ public class GameManager implements Serializable
         Regular, Islands
     }
 
-    public enum eMoveStatus
-    {
-        OK,
-        CELL_IS_ALREADY_TAKEN {            @Override
-        public String toString() {
-            return new String("Cell is already taken!");
-        }},
+    public enum eMoveStatus {
+        OK {
+            @Override
+            public String toString() {
+                return "";
+            }
+        },
+        CELL_IS_ALREADY_TAKEN {
+            @Override
+            public String toString() {
+                return "Cell is already taken!";
+            }
+        },
         ILLEGAL_ISLAND {
             public String toString() {
-            return new String("The new disc should be adjacent to other discs on board!");
-        }},
-        POINT_IS_NOT_IN_RANGE_OF_BOARD{
+                return "The new disc should be adjacent to other discs on board!";
+            }
+        },
+        POINT_IS_NOT_IN_RANGE_OF_BOARD {
             public String toString() {
-            return new String("The coordinates are not in the board's range!");
-        }}
+                return "The coordinates are not in the board's range!";
+            }
+        }
     }
 
     // call this only after all info about players is gathered.

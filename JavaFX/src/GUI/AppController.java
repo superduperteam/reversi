@@ -43,6 +43,7 @@ public class AppController {
     @FXML private Button endGameButton;
     @FXML private Button playerRetireButton;
     @FXML private Label gameModeLabel;
+    @FXML private Label hintContentLabel;
 
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
@@ -313,9 +314,9 @@ public class AppController {
 
 
     public void updateGUI(){
-        boolean showHintsForPlayer = isTutorialMode && gameManager.getActivePlayer().isHuman();
+        boolean showPotentialFlipsForPlayer = isTutorialMode && gameManager.getActivePlayer().isHuman();
 
-        boardController.updateGIUDiscs(gameManager.getBoard(), showHintsForPlayer);
+        boardController.updateGIUDiscs(gameManager.getBoard(), showPotentialFlipsForPlayer);
         statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
     }
 
@@ -338,12 +339,14 @@ public class AppController {
 
         if(gameManager.getActivePlayer().isHuman()){
             moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
+            updateHintContentLabel(moveStatus);
 
             if (moveStatus == GameManager.eMoveStatus.OK) {
                 updateEndTurn();
             }
 
             if(!gameManager.getActivePlayer().isHuman()){
+                hintContentLabel.setText("");
                 simulateComputerTurns();
             }
         }
@@ -352,6 +355,17 @@ public class AppController {
             onGameOver();
         }
     }
+
+    private void updateHintContentLabel(GameManager.eMoveStatus moveAttemptStatus){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if(moveAttemptStatus != GameManager.eMoveStatus.OK){
+            stringBuilder.append("Hint:\n");
+            stringBuilder.append(moveAttemptStatus.toString());
+            hintContentLabel.setText(stringBuilder.toString());
+        }
+    }
+
 
     private void simulateComputerTurns() {
         Thread thread = new Thread(new ComputerMoveTask(gameManager, this));
