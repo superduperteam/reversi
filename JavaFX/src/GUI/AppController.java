@@ -32,6 +32,7 @@ public class AppController {
     private BorderPane boardParent;
     @FXML private StatsController statsComponentController;
     @FXML private CheckBox tutorialModeCheckBox;
+    @FXML private CheckBox animationsCheckBox;
     @FXML private Button undoLastMoveButton;
     @FXML private Button replayModeButton;
     @FXML private Button replayModePrevButton;
@@ -45,6 +46,15 @@ public class AppController {
     @FXML private Label gameModeLabel;
     @FXML private Label hintContentLabel;
 
+    public BooleanProperty getDidStartGameProperty() {
+        return didStartGame;
+    }
+
+    public BooleanProperty isGameInProgressProperty() {
+        return isGameInProgress;
+    }
+
+    private BooleanProperty isGameInProgress;
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
     private SimpleBooleanProperty isGameInReplayMode;
@@ -66,6 +76,7 @@ public class AppController {
         if (statsComponentController != null) {
             statsComponentController.setMainController(this);
         }
+        isGameInProgress = new SimpleBooleanProperty(false);
 
         loadFileButton.setOnMouseClicked((event) -> onLoadFileClick());
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
@@ -76,9 +87,14 @@ public class AppController {
         //loadFileButton.disableProperty().bind(didStartGame); // not good
         loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
 
+        disableButtonsAndCheckBoxesOPreStart();
+    }
+
+    private void disableButtonsAndCheckBoxesOPreStart(){
         undoLastMoveButton.setDisable(true);
         playerRetireButton.setDisable(true);
         tutorialModeCheckBox.setDisable(true);
+        animationsCheckBox.setDisable(true);
         replayModeButton.setDisable(true);
         replayModePrevButton.setDisable(true);
         replayModeNextButton.setDisable(true);
@@ -97,13 +113,18 @@ public class AppController {
 
         gameManager.activateGame();
         didStartGame.set(true);
+        isGameInProgress.setValue(true);
+        updateGUI();
         //boardGUI.setIsGameActive(true);
     }
 
     private void resetGame(){
         gameManager.resetGame();
-        updateGUI();
+        boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode, false);
+        statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
         //boardGUI.setIsGameActive(false);
+        isGameInProgress.setValue(false);
+        hintContentLabel.setText("");
     }
 
     private void onLoadFileClick(){
@@ -127,6 +148,7 @@ public class AppController {
             boardParent.setCenter(boardGUI);
             boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
             didLoadXmlFile.set(true);
+            isGameInProgress.setValue(false);
             initTable();
         }
     }
@@ -222,13 +244,18 @@ public class AppController {
             isTutorialMode = tutorialModeCheckBox.isSelected();
 
             if(isGameInReplayMode.get()){
-                boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(), isTutorialMode);
+                boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(), isTutorialMode, animationsCheckBox.isSelected());
                 replayTurnIterator.previous();
             }
             else{
-                boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode);
+                boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode, animationsCheckBox.isSelected());
             }
         });
+
+        animationsCheckBox.disableProperty().bind(Bindings.and(gameManager.isGameActiveProperty().not(), isGameInReplayMode.not()));
+//        animationsCheckBox.setOnMouseClicked(event -> {
+//            animationsCheckBox.isSelected();
+//        });
     }
 
     private void stopReplayMode(){
@@ -308,7 +335,7 @@ public class AppController {
     private void showTurnInGIU(Turn turnToShow){
         List<Player> turnPlayerList = turnToShow.getPlayersList();
 
-        boardController.updateGIUDiscs(turnToShow.getBoard(), isTutorialMode);
+        boardController.updateGIUDiscs(turnToShow.getBoard(), isTutorialMode, animationsCheckBox.isSelected());
         statsComponentController.refreshTable(turnPlayerList,  turnToShow.getActivePlayer());
     }
 
@@ -316,7 +343,7 @@ public class AppController {
     public void updateGUI(){
         boolean showPotentialFlipsForPlayer = isTutorialMode && gameManager.getActivePlayer().isHuman();
 
-        boardController.updateGIUDiscs(gameManager.getBoard(), showPotentialFlipsForPlayer);
+        boardController.updateGIUDiscs(gameManager.getBoard(), showPotentialFlipsForPlayer, animationsCheckBox.isSelected());
         statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
     }
 
@@ -337,26 +364,31 @@ public class AppController {
         Player activePlayer = gameManager.getActivePlayer();
         GameManager.eMoveStatus moveStatus = null;
 
-        if(gameManager.getActivePlayer().isHuman()){
-            moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
-            updateHintContentLabel(moveStatus, true);
+        if(isGameInProgress.get()){
+            if(gameManager.getActivePlayer().isHuman()){
+                moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
+                updateHintContentLabel(moveStatus, true);
 
-            if (moveStatus == GameManager.eMoveStatus.OK) {
-                updateEndTurn();
+                if (moveStatus == GameManager.eMoveStatus.OK) {
+                    updateEndTurn();
+                }
+
+                if(!gameManager.getActivePlayer().isHuman()){
+                    hintContentLabel.setText("");
+                    simulateComputerTurns();
+                }
+            }
+            else{
+                updateHintContentLabel(moveStatus, false);
             }
 
-            if(!gameManager.getActivePlayer().isHuman()){
+            if (gameManager.isGameOver()) {
+                onGameOver();
+                isGameInProgress.setValue(false);
                 hintContentLabel.setText("");
-                simulateComputerTurns();
             }
         }
-        else{
-            updateHintContentLabel(moveStatus, false);
-        }
 
-        if (gameManager.isGameOver()) {
-            onGameOver();
-        }
     }
 
     private void updateHintContentLabel(GameManager.eMoveStatus moveAttemptStatus, boolean isUserTurn){
@@ -380,6 +412,7 @@ public class AppController {
     private void simulateComputerTurns() {
         Thread thread = new Thread(new ComputerMoveTask(gameManager, this));
         thread.start();
+//        try{thread.join();} catch (InterruptedException e) { e.printStackTrace(); }
     }
 
     public void updateEndTurn(){
@@ -388,23 +421,39 @@ public class AppController {
     }
 
     public void onGameOver(){
-        StringBuilder winMessageBuilder = new StringBuilder();
-
-        winMessageBuilder.append("Game Over.\n");
+        Player winner = null;
 
         if(gameManager.getHighestScoringPlayers().size() == 1) {
-            winMessageBuilder.append(gameManager.getHighestScoringPlayers().get(0).getName())
-                    .append(" is the winner!");
-        } else {
-            winMessageBuilder.append("It's a tie!");
+            winner = gameManager.getHighestScoringPlayers().get(0);
+
+            if(animationsCheckBox.isSelected()){
+                boardController.highlightDiscsOfType(gameManager.getBoard(), winner.getDiscType());
+            }
         }
-        PopupFactory.showPopup(winMessageBuilder.toString());
+
+        showEndOfGamePopupMessage(winner);
 
         replayModeButton.setDisable(false);
         gameManager.setIsGameActive(false);
         didLoadXmlFile.set(false);
-        didStartGame.set(false);
+        //didStartGame.set(false);
     }
+
+    private void showEndOfGamePopupMessage(Player winner){
+        StringBuilder winMessageBuilder = new StringBuilder();
+
+        winMessageBuilder.append("Game Over.\n");
+
+        if(winner != null) {
+            winMessageBuilder.append(winner.getName())
+                    .append(" is the winner!");
+        }
+        else {
+            winMessageBuilder.append("It's a tie!");
+        }
+        PopupFactory.showPopup(winMessageBuilder.toString());
+    }
+
 
     public boolean isInReplayMode() {
         return isGameInReplayMode.getValue();

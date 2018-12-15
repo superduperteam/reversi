@@ -1,13 +1,19 @@
 package GUI;
 
 import GameEngine.*;
+import javafx.animation.FillTransition;
+import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class BoardGUI extends ScrollPane {
     private BoardController boardController;
@@ -17,8 +23,6 @@ public class BoardGUI extends ScrollPane {
     private CellBoardButton[][] cellBoardButtons;
     private int rowsCount;
     private int columnsCount;
-
-
 
     public BoardGUI(Board gameBoard, AppController appController) {
         //isGameActive = appController.getGameManager().isGameActiveProperty();
@@ -59,8 +63,9 @@ public class BoardGUI extends ScrollPane {
                 cellBoardButtons[i][j] = new CellBoardButton(i, j);
                 currCellBoardButton = cellBoardButtons[i][j];
                 //currCellBoardButton.disableProperty().bind(Bindings.and(isGameActive.not(), appController.isGameInReplayModeProperty().not()));
-                currCellBoardButton.disableProperty().bind(Bindings.and(appController.getGameManager().isGameActiveProperty().not(),
-                        appController.isGameInReplayModeProperty().not()));
+//                currCellBoardButton.disableProperty().bind(Bindings.and(appController.getGameManager().isGameActiveProperty().not(),
+//                        appController.isGameInReplayModeProperty().not()));
+                currCellBoardButton.disableProperty().bind(appController.isGameInProgressProperty().not());
 //                currCellBoardButton.disableProperty().bind(isGameActive.not());
 //                 cellBoardButtons[i][j].setDisable();
                 GridPane.setHalignment(currCellBoardButton, javafx.geometry.HPos.CENTER);
@@ -228,11 +233,40 @@ public class BoardGUI extends ScrollPane {
         boardController.CellBoardButtonClicked(new Point(clickedButton.getRow(), clickedButton.getColumn()));
     }
 
-    public void updateBoard(Board gameBoard, boolean isTutorialMode) {
+    public void highlightDiscs(Board gameBoard, eDiscType discType){
+        Disc currDisc;
+        CellBoardButton currButton;
+        Circle currGUIDisc;
+
+        for (int i = 0; i < rowsCount; i++) {
+            for (int j = 0; j < columnsCount; j++) {
+                currButton = cellBoardButtons[i][j];
+                currDisc = gameBoard.getDisc(i, j);
+                currGUIDisc = (Circle)currButton.getGraphic();
+
+                if(currDisc != null && currGUIDisc != null){
+                    if(currDisc.getType() == discType){
+//                        currGUIDisc.setEffect(new Glow(1.2));
+                        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(1.65), currGUIDisc);
+                        scaleTransition.setFromX(1.7);
+                        scaleTransition.setToX(1);
+                        scaleTransition.setFromY(1.7);
+                        scaleTransition.setToY(1);
+                        scaleTransition.setAutoReverse(true);
+                        scaleTransition.setCycleCount(3);
+                        scaleTransition.play();
+                    }
+                }
+            }
+        }
+    }
+
+    public void updateBoard(Board gameBoard, boolean isTutorialMode, boolean isAnimationsEnabled) {
         Disc currDisc;
         CellBoard currCellBoard;
         CellBoardButton currButton;
         Circle currGUIDisc;
+        Color oldColor, newColor;
 
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; j++) {
@@ -250,8 +284,17 @@ public class BoardGUI extends ScrollPane {
                         currGUIDisc.radiusProperty().bind(Bindings.min(currButton.heightProperty().divide(4), currButton.widthProperty().divide(4)));
                     }
                     else { // the circle already there, just changing it's color..
+                        newColor = boardController.discTypeToColor(currDisc.getType());
                         currGUIDisc = (Circle) currButton.getGraphic();
-                        currGUIDisc.setFill(boardController.discTypeToColor(currDisc.getType()));
+
+                        if(isAnimationsEnabled){
+                            oldColor = (Color)currGUIDisc.getFill();
+                            FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
+                            ft.play();
+                        }
+                        else{
+                            currGUIDisc.setFill(newColor);
+                        }
                     }
                 }
                 else{
@@ -273,8 +316,6 @@ public class BoardGUI extends ScrollPane {
                 }
             }
         }
-
-        currButton = null;
     }
 
     public void setRowsCount(int rows) {

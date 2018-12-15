@@ -14,14 +14,17 @@ public class Informer implements Runnable {
 
     @Override
     public void run() {
-        appController.setIsComputerMoveInProgress(false);
-        appController.updateGUI();
-        if (!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
-            Thread thread = new Thread(new ComputerMoveTask(gameManager, appController));
-            thread.start();
-        }
-        else if(gameManager.isGameOver()){
-            appController.onGameOver();
+        if(appController.isGameInProgressProperty().get()){
+            appController.setIsComputerMoveInProgress(false);
+            gameManager.changeTurn();
+            appController.updateGUI();
+            if (!gameManager.getActivePlayer().isHuman() && !gameManager.isGameOver()) {
+                Thread thread = new Thread(new ComputerMoveTask(gameManager, appController));
+                thread.start();
+            }
+            else if(gameManager.isGameOver()){
+                appController.onGameOver();
+            }
         }
     }
 }
