@@ -335,11 +335,11 @@ public class AppController {
 
     public void playTurn(Point clickedCellBoardPoint) {
         Player activePlayer = gameManager.getActivePlayer();
-        GameManager.eMoveStatus moveStatus;
+        GameManager.eMoveStatus moveStatus = null;
 
         if(gameManager.getActivePlayer().isHuman()){
             moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
-            updateHintContentLabel(moveStatus);
+            updateHintContentLabel(moveStatus, true);
 
             if (moveStatus == GameManager.eMoveStatus.OK) {
                 updateEndTurn();
@@ -350,20 +350,30 @@ public class AppController {
                 simulateComputerTurns();
             }
         }
+        else{
+            updateHintContentLabel(moveStatus, false);
+        }
 
         if (gameManager.isGameOver()) {
             onGameOver();
         }
     }
 
-    private void updateHintContentLabel(GameManager.eMoveStatus moveAttemptStatus){
+    private void updateHintContentLabel(GameManager.eMoveStatus moveAttemptStatus, boolean isUserTurn){
         StringBuilder stringBuilder = new StringBuilder();
 
-        if(moveAttemptStatus != GameManager.eMoveStatus.OK){
-            stringBuilder.append("Hint:\n");
-            stringBuilder.append(moveAttemptStatus.toString());
-            hintContentLabel.setText(stringBuilder.toString());
+        if(isUserTurn){
+            if(moveAttemptStatus != GameManager.eMoveStatus.OK){
+                stringBuilder.append("Hint:\n");
+                stringBuilder.append(moveAttemptStatus.toString());
+            }
         }
+        else{
+            stringBuilder.append("Hint:\n");
+            stringBuilder.append("Please wait for your turn");
+        }
+
+        hintContentLabel.setText(stringBuilder.toString());
     }
 
 
