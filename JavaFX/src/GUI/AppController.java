@@ -7,13 +7,14 @@ import GameEngine.Point;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -45,6 +46,7 @@ public class AppController {
     @FXML private Button playerRetireButton;
     @FXML private Label gameModeLabel;
     @FXML private Label hintContentLabel;
+    @FXML private ComboBox skinComboBox;
 
     public BooleanProperty getDidStartGameProperty() {
         return didStartGame;
@@ -86,6 +88,19 @@ public class AppController {
         endGameButton.setDisable(true);
         //loadFileButton.disableProperty().bind(didStartGame); // not good
         loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
+        skinComboBox.getItems().addAll("DefaultSkin", "NormalSkin", "BeautifulSkin");
+        skinComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
+            if(newValue.equals("DefaultSkin")) {
+                primaryStage.getScene().getStylesheets().setAll("/resources/caspian.css");
+            }
+            else if(newValue.equals("NormalSkin")){
+                primaryStage.getScene().getStylesheets().setAll("/resources/NormalSkin.css");
+            }
+            else{
+                primaryStage.getScene().getStylesheets().setAll("/resources/BeautifulSkin.css");
+            }
+
+        });
 
         disableButtonsAndCheckBoxesOPreStart();
     }

@@ -1,0 +1,25 @@
+.root{
+    -fx-base: #daa886;
+    -fx-background: #19afa3;
+    -fx-focus-color: #f1e4ea;
+}
+.button{
+	-fx-background-color: #3ffaac;
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-color: rgb(49, 89, 23);
+}
+.label{
+	-fx-font-size: 12;
+	-fx-font-family: "monospace";
+}
+.borders{
+    -fx-border-style: dotted;
+    -fx-border-width: 1.5;
+    -fx-border-color: rgb(103, 100, 78);
+}
+
+.combo-box{
+    -fx-background-color: #7afaac;
+    -fx-border-color: rgb(49, 89, 23);
+}
