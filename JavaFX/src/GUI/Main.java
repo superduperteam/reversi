@@ -1,29 +1,14 @@
 package GUI;
 
-import Exceptions.*;
 import GameEngine.GameManager;
-import GameEngine.GameSettingsReader;
-import GameEngine.Player;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 //import static examples.advance.nested.subcomponents.app.CommonResourcesPaths.APP_FXML_INCLUDE_RESOURCE;
 //import static examples.advance.nested.subcomponents.app.CommonResourcesPaths.APP_FXML_LIGHT_RESOURCE;
@@ -70,6 +55,8 @@ public class Main extends Application {
 //         </center>
         ////appController.initTable();
         Scene scene = new Scene(root, 1090, 850);
+        scene.getStylesheets().addAll("/resources/caspian.css");
+        //scene.getStylesheets().set(2, "resources/caspian.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
