@@ -11,11 +11,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="603.0" prefWidth="787.0" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="603.0" prefWidth="787.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.AppController">
    <content>
       <BorderPane prefHeight="601.0" prefWidth="801.0">
          <right>
-              <fx:include fx:id="statsComponent" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="130.0" source="Stats.fxml" BorderPane.alignment="TOP_LEFT" />
+              <fx:include fx:id="statsComponent" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="100.0" source="Stats.fxml" BorderPane.alignment="TOP_LEFT" />
          </right>
          <top>
             <HBox prefHeight="97.0" prefWidth="748.0" spacing="30.0" BorderPane.alignment="CENTER">
@@ -116,14 +116,6 @@
          <bottom>
             <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="taskMessageLabel" text="">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                     <padding>
-                        <Insets top="5.0" />
-                     </padding>
-                  </Label>
                   <Label fx:id="hintContentLabel">
                      <HBox.margin>
                         <Insets left="50.0" top="5.0" />
@@ -131,6 +123,14 @@
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
+                  </Label>
+                  <Label fx:id="taskMessageLabel" text="">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <padding>
+                        <Insets top="5.0" />
+                     </padding>
                   </Label>
                </children>
             </HBox>
