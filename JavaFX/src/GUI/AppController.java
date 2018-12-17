@@ -84,8 +84,9 @@ public class AppController {
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
         endGameButton.setOnMouseClicked(event ->  OnStopGameClick());
         // startGameButton.disableProperty().bind(didLoadXmlFile.not()); // not good
-        startGameButton.disableProperty().bind(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode));
+        //startGameButton.disableProperty().bind(Bindings.and(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()));
         endGameButton.setDisable(true);
+        startGameButton.setDisable(true);
         //loadFileButton.disableProperty().bind(didStartGame); // not good
         loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
         skinComboBox.getItems().addAll("DefaultSkin", "NormalSkin", "BeautifulSkin");
@@ -117,9 +118,12 @@ public class AppController {
     }
 
     private void onStartGameClick(){
-        if(gameManager.isGameOver()){
-            resetGame();
-        }
+//        if(gameManager.isGameOver()){
+//            resetGame();
+//        }
+
+        resetGame();
+
         if(isGameInReplayMode.get()){
             stopReplayMode();
             replayModeButton.setDisable(true);
@@ -157,7 +161,7 @@ public class AppController {
         if(gameManager != null) {
             updateGameModeLabel();
 //            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
-            startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
+            //startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
             endGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
             BoardGUI boardGUI = new BoardGUI(gameManager.getBoard(), this);
             boardParent.setCenter(boardGUI);
@@ -179,7 +183,8 @@ public class AppController {
 
 
     private void OnStopGameClick() {
-        resetGame();
+        replayModeButton.setDisable(false);
+        gameManager.setIsGameActive(false);
 
         StringBuilder winMessageBuilder = new StringBuilder();
 
@@ -229,6 +234,9 @@ public class AppController {
 
     // call this after gameManager is set.
     private void lateInitialize(){
+        startGameButton.disableProperty().bind(Bindings.or(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()));
+
+
         undoLastMoveButton.setOnMouseClicked(event -> { onUndoClick(); });
 //        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty())); // not good
         undoLastMoveButton.disableProperty().bind(Bindings.or(Bindings.or(gameManager.canUndoProperty().not(),
@@ -259,7 +267,8 @@ public class AppController {
             isTutorialMode = tutorialModeCheckBox.isSelected();
 
             if(isGameInReplayMode.get()){
-                boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(), isTutorialMode, animationsCheckBox.isSelected());
+                boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(),
+                        isTutorialMode && gameManager.getActivePlayer().isHuman(), animationsCheckBox.isSelected());
                 replayTurnIterator.previous();
             }
             else{
@@ -379,10 +388,10 @@ public class AppController {
         Player activePlayer = gameManager.getActivePlayer();
         GameManager.eMoveStatus moveStatus = null;
 
-        if(isGameInProgress.get()){
+        if(isGameInProgress.get()&&gameManager.isGameActiveProperty().get()){
             if(gameManager.getActivePlayer().isHuman()){
                 moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
-                updateHintContentLabel(moveStatus, true);
+                updateHintContentLabel(moveStatus, true, true);
 
                 if (moveStatus == GameManager.eMoveStatus.OK) {
                     updateEndTurn();
@@ -394,7 +403,7 @@ public class AppController {
                 }
             }
             else{
-                updateHintContentLabel(moveStatus, false);
+                updateHintContentLabel(moveStatus, false, true);
             }
 
             if (gameManager.isGameOver()) {
@@ -403,25 +412,34 @@ public class AppController {
                 hintContentLabel.setText("");
             }
         }
+        else if(!gameManager.isGameActiveProperty().get()){
+            updateHintContentLabel(moveStatus, false, false);
+        }
 
     }
 
-    private void updateHintContentLabel(GameManager.eMoveStatus moveAttemptStatus, boolean isUserTurn){
+    private void updateHintContentLabel(GameManager.eMoveStatus moveAttemptStatus, boolean isUserTurn, boolean isGameActive) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        if(isUserTurn){
-            if(moveAttemptStatus != GameManager.eMoveStatus.OK){
+        if (isGameActive) {
+            if (isUserTurn) {
+                if (moveAttemptStatus != GameManager.eMoveStatus.OK) {
+                    stringBuilder.append("Hint:\n");
+                    stringBuilder.append(moveAttemptStatus.toString());
+                }
+            } else {
                 stringBuilder.append("Hint:\n");
-                stringBuilder.append(moveAttemptStatus.toString());
+                stringBuilder.append("Please wait for your turn");
             }
         }
         else{
             stringBuilder.append("Hint:\n");
-            stringBuilder.append("Please wait for your turn");
+            stringBuilder.append("Game is no longer active.. Start a new game");
         }
 
         hintContentLabel.setText(stringBuilder.toString());
     }
+
 
 
     private void simulateComputerTurns() {

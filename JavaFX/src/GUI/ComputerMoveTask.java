@@ -30,7 +30,7 @@ public class ComputerMoveTask extends Task<Boolean> {
 
         @Override
         protected Boolean call() throws Exception {
-        if(appController.isGameInProgressProperty().get()){
+        if(appController.isGameInProgressProperty().get() && gameManager.isGameActiveProperty().get() && !gameManager.isGameOver()){
             appController.setIsComputerMoveInProgress(true);
             gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
             Thread.sleep(SLEEP_TIME);
