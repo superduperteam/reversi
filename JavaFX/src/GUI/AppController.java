@@ -159,11 +159,10 @@ public class AppController {
         bindTaskToUIComponents(loadFileTask, ()->{});
         new Thread(loadFileTask).run();
 
-        setGameManager(loadFileTask.getGameManager());
-        if(gameManager != null) {
+        if(loadFileTask.getGameManager() != null) {
+            setGameManager(loadFileTask.getGameManager());
             updateGameModeLabel();
-//            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
-            //startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
+
             endGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
             BoardGUI boardGUI = new BoardGUI(gameManager.getBoard(), this);
             boardParent.setCenter(boardGUI);
@@ -172,6 +171,19 @@ public class AppController {
             isGameInProgress.setValue(false);
             initTable();
         }
+//        setGameManager(loadFileTask.getGameManager());
+//        if(gameManager != null) {
+//            updateGameModeLabel();
+////            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
+//            //startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
+//            endGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
+//            BoardGUI boardGUI = new BoardGUI(gameManager.getBoard(), this);
+//            boardParent.setCenter(boardGUI);
+//            boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
+//            didLoadXmlFile.set(true);
+//            isGameInProgress.setValue(false);
+//            initTable();
+//
     }
 
     private void updateGameModeLabel(){
