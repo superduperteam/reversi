@@ -122,6 +122,7 @@ public class AppController {
 //        if(gameManager.isGameOver()){
 //            resetGame();
 //        }
+        taskMessageLabel.setText("");
         loadFileButton.setDisable(true); // new here
         resetGame();
 
@@ -197,6 +198,7 @@ public class AppController {
 
     private void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
         // task message
+        taskMessageLabel.textProperty().bind(aTask.messageProperty());
 
         // task cleanup upon finish
         aTask.valueProperty().addListener((observable, oldValue, newValue) -> {
