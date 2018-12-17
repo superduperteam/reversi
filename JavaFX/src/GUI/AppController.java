@@ -88,7 +88,8 @@ public class AppController {
         endGameButton.setDisable(true);
         startGameButton.setDisable(true);
         //loadFileButton.disableProperty().bind(didStartGame); // not good
-        loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode));
+        //loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode)); //not good: what happens when game stops?
+        loadFileButton.setDisable(false);
         skinComboBox.getItems().addAll("DefaultSkin", "NormalSkin", "BeautifulSkin");
         skinComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
             if(newValue.equals("DefaultSkin")) {
@@ -121,7 +122,7 @@ public class AppController {
 //        if(gameManager.isGameOver()){
 //            resetGame();
 //        }
-
+        loadFileButton.setDisable(true); // new here
         resetGame();
 
         if(isGameInReplayMode.get()){
@@ -183,6 +184,8 @@ public class AppController {
 
 
     private void OnStopGameClick() {
+        loadFileButton.setDisable(false); // new here
+
         replayModeButton.setDisable(false);
         gameManager.setIsGameActive(false);
 
@@ -194,7 +197,6 @@ public class AppController {
 
     private void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
         // task message
-        taskMessageLabel.textProperty().bind(aTask.messageProperty());
 
         // task cleanup upon finish
         aTask.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -283,6 +285,8 @@ public class AppController {
     }
 
     private void stopReplayMode(){
+        loadFileButton.setDisable(false); // new here
+
         replayModePrevButton.setDisable(true);
         replayModeNextButton.setDisable(true);
         replayModeButton.setDisable(false);
@@ -292,6 +296,8 @@ public class AppController {
     }
 
     private void showReplayMode() {
+        loadFileButton.setDisable(true); // new here
+
         replayModeButton.setDisable(true);
         replayModePrevButton.setDisable(false);
         stopReplayButton.setDisable(false);
@@ -454,6 +460,7 @@ public class AppController {
     }
 
     public void onGameOver(){
+        loadFileButton.setDisable(false);
         Player winner = null;
 
         if(gameManager.getHighestScoringPlayers().size() == 1) {

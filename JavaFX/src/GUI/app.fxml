@@ -15,7 +15,7 @@
    <content>
       <BorderPane prefHeight="601.0" prefWidth="801.0">
          <right>
-              <fx:include fx:id="statsComponent" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="100.0" source="Stats.fxml" BorderPane.alignment="TOP_LEFT" />
+              <fx:include fx:id="statsComponent" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="130.0" source="Stats.fxml" BorderPane.alignment="TOP_LEFT" />
          </right>
          <top>
             <HBox prefHeight="97.0" prefWidth="748.0" spacing="30.0" BorderPane.alignment="CENTER">
