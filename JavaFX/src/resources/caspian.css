@@ -502,6 +502,10 @@
     -fx-border-style: none;
 }
 
+#tableView .table-cell{
+    -fx-alignment: CENTER;
+}
+
 .button:focused {
     -fx-color: -fx-focused-base;
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;

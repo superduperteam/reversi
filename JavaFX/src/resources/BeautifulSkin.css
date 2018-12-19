@@ -9,6 +9,11 @@
     -fx-border-radius: 25;
     -fx-border-color: rgb(49, 89, 23);
 }
+
+#tableView .table-cell{
+    -fx-alignment: CENTER;
+}
+
 .label{
     -fx-font-size: 12;
     -fx-font-family: "monospace";
