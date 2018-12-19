@@ -47,6 +47,7 @@ public class AppController {
     @FXML private Label gameModeLabel;
     @FXML private Label hintContentLabel;
     @FXML private ComboBox skinComboBox;
+    @FXML private ProgressBar loadProgressBar;
 
     public BooleanProperty getDidStartGameProperty() {
         return didStartGame;
@@ -71,6 +72,8 @@ public class AppController {
 
     @FXML
     public void initialize() {
+        loadProgressBar.setProgress(0);
+
         isComputerMoveInProgress = new SimpleBooleanProperty(false);
         isGameInReplayMode = new SimpleBooleanProperty(false);
         didLoadXmlFile = new SimpleBooleanProperty(false);
@@ -80,7 +83,9 @@ public class AppController {
         }
         isGameInProgress = new SimpleBooleanProperty(false);
 
-        loadFileButton.setOnMouseClicked((event) -> onLoadFileClick());
+        loadFileButton.setOnMouseClicked((event) -> {
+            onLoadFileClick();
+        });
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
         endGameButton.setOnMouseClicked(event ->  OnStopGameClick());
         // startGameButton.disableProperty().bind(didLoadXmlFile.not()); // not good
@@ -90,12 +95,12 @@ public class AppController {
         //loadFileButton.disableProperty().bind(didStartGame); // not good
         //loadFileButton.disableProperty().bind(Bindings.or(didStartGame, isGameInReplayMode)); //not good: what happens when game stops?
         loadFileButton.setDisable(false);
-        skinComboBox.getItems().addAll("DefaultSkin", "NormalSkin", "BeautifulSkin");
+        skinComboBox.getItems().addAll("Default Skin", "Normal Skin", "Beautiful Skin");
         skinComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
-            if(newValue.equals("DefaultSkin")) {
+            if(newValue.equals("Default Skin")) {
                 primaryStage.getScene().getStylesheets().setAll("/resources/caspian.css");
             }
-            else if(newValue.equals("NormalSkin")){
+            else if(newValue.equals("Normal Skin")){
                 primaryStage.getScene().getStylesheets().setAll("/resources/NormalSkin.css");
             }
             else{
@@ -122,6 +127,7 @@ public class AppController {
 //        if(gameManager.isGameOver()){
 //            resetGame();
 //        }
+        loadProgressBar.setProgress(0);
         taskMessageLabel.setText("");
         loadFileButton.setDisable(true); // new here
         resetGame();
@@ -171,6 +177,7 @@ public class AppController {
             isGameInProgress.setValue(false);
             initTable();
         }
+
 //        setGameManager(loadFileTask.getGameManager());
 //        if(gameManager != null) {
 //            updateGameModeLabel();
@@ -208,19 +215,25 @@ public class AppController {
         PopupFactory.showPopup(winMessageBuilder.toString());
     }
 
-    private void bindTaskToUIComponents(Task<Boolean> aTask, Runnable onFinish) {
+    private void bindTaskToUIComponents(LoadFileTask aTask, Runnable onFinish) {
         // task message
         taskMessageLabel.textProperty().bind(aTask.messageProperty());
 
+        loadProgressBar.progressProperty().bind(aTask.progressProperty());
+
         // task cleanup upon finish
         aTask.valueProperty().addListener((observable, oldValue, newValue) -> {
-            onTaskFinished(Optional.ofNullable(onFinish));
+            onTaskFinished(Optional.ofNullable(onFinish), aTask);
         });
     }
 
-    private void onTaskFinished(Optional<Runnable> onFinish) {
+    private void onTaskFinished(Optional<Runnable> onFinish, LoadFileTask aTask) {
         taskMessageLabel.textProperty().unbind();
+        loadProgressBar.progressProperty().unbind();
         onFinish.ifPresent(Runnable::run);
+        if(!aTask.IsChooseFile()){
+            loadProgressBar.setProgress(0);
+        }
     }
 
 
@@ -489,7 +502,7 @@ public class AppController {
 
         replayModeButton.setDisable(false);
         gameManager.setIsGameActive(false);
-        didLoadXmlFile.set(false);
+        //didLoadXmlFile.set(false);
         //didStartGame.set(false);
     }
 

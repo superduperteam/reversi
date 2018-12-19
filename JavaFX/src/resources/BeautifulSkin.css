@@ -4,14 +4,14 @@
     -fx-focus-color: #f1e4ea;
 }
 .button{
-	-fx-background-color: #3ffaac;
+    -fx-background-color: #3ffaac;
     -fx-background-radius: 25;
     -fx-border-radius: 25;
     -fx-border-color: rgb(49, 89, 23);
 }
 .label{
-	-fx-font-size: 12;
-	-fx-font-family: "monospace";
+    -fx-font-size: 12;
+    -fx-font-family: "monospace";
 }
 .borders{
     -fx-border-style: dotted;

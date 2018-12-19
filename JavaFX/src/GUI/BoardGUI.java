@@ -76,6 +76,7 @@ public class BoardGUI extends ScrollPane {
                     GridPane.setRowIndex(currCellBoardButton, i);
                 }
 
+                currCellBoardButton.setFont(Font.font("System Bold"));
                 currCellBoardButton.setMnemonicParsing(false);
                 currCellBoardButton.setPrefHeight(5000.0);
                 currCellBoardButton.setPrefWidth(5000.0);
@@ -85,6 +86,8 @@ public class BoardGUI extends ScrollPane {
                     informCellBoardButtonsClicked((CellBoardButton) event.getSource());
                 });
             }
+
+            gridPane.setMinSize(300,300); //new line
         }
 
         for (int i = 0; i < rowsCount; i++) {
@@ -102,14 +105,7 @@ public class BoardGUI extends ScrollPane {
 
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; j++) {
-//                ImageView imageView = new ImageView();
-//
-//                imageView.setNodeOrientation(javafx.geometry.NodeOrientation.INHERIT);
-//                imageView.setImage(new Image(getClass().getResource("/resources/black-disc.png").toExternalForm()));
-//                buttons[i][j].setGraphic(imageView);
-//
-//                imageView.fitHeightProperty().bind(buttons[i][j].heightProperty());
-//                imageView.fitWidthProperty().bind(buttons[i][j].widthProperty());
+
                 currDisc = gameBoard.getDisc(i, j);
                 currCellBoardButton = cellBoardButtons[i][j];
                 currCellBoard = gameBoard.get(i, j);
@@ -123,17 +119,6 @@ public class BoardGUI extends ScrollPane {
 
                     circle.radiusProperty().bind(Bindings.min(currCellBoardButton.heightProperty().divide(4), currCellBoardButton.widthProperty().divide(4)));
                 }
-//                Image image = new Image("/resources/black-disc.png", buttons[i][j].getWidth(), buttons[i][j].getHeight(), false, true, true);
-//                BackgroundImage bImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(buttons[i][j].getWidth(), buttons[i][j].getHeight(), true, true, true, false));
-//
-//                Background backGround = new Background(bImage);
-//                buttons[i][j].setBackground(backGround);
-
-
-//                BackgroundImage backgroundImage = new BackgroundImage( new Image( getClass().getResource("/resources/black-disc.png").toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
-//                Background background = new Background(backgroundImage);
-
-//                buttons[i][j].setBackground(background);
             }
         }
 
@@ -166,6 +151,7 @@ public class BoardGUI extends ScrollPane {
                 }
 
                 currCellBoardButton.setMnemonicParsing(false);
+                currCellBoardButton.setMinSize(25,25); //new line
                 currCellBoardButton.setPrefHeight(5000.0);
                 currCellBoardButton.setPrefWidth(5000.0);
                 currCellBoardButton.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
