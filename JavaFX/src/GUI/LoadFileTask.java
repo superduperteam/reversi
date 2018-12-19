@@ -4,6 +4,7 @@ import Exceptions.*;
 import GameEngine.GameManager;
 import GameEngine.GameSettingsReader;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 public class LoadFileTask extends Task<Boolean> {
+    private boolean isChooseFile;
     private static final int SLEEP_TIME = 500;
     private Consumer<Runnable> onCancel;
     private Stage primaryStage;
@@ -36,27 +38,48 @@ public class LoadFileTask extends Task<Boolean> {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Documents", "*.XML"));
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile == null) {
+            isChooseFile = false;
             return Boolean.FALSE;
+        }
+        else{
+            isChooseFile = true;
         }
 
         messageBuilder.append("Successfully fetched file\n");
         updateMessage(messageBuilder.toString());
         String absolutePath = selectedFile.getAbsolutePath();
 
-        try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
+        //try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
+
 
         messageBuilder.append("Loading XML file...\n");
         updateMessage(messageBuilder.toString());
 
-        try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
+       // try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
 
         didLoadSuccessfully = loadXML(absolutePath);
         if(didLoadSuccessfully){
+
             messageBuilder.append("Successfully loaded XML file!\n");
             updateMessage(messageBuilder.toString());
         }
 
-        return Boolean.TRUE;
+       // simulateProgress();
+        updateProgress(10,10);
+//        return Boolean.TRUE;
+        return didLoadSuccessfully;
+    }
+
+    private void simulateProgress(){
+        for (int i = 0; i < 100; i++) {
+            updateProgress(i + 1, 100);
+            // sleep is used to simulate doing some work which takes some time....
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean loadXML(String filePath){
@@ -121,5 +144,9 @@ public class LoadFileTask extends Task<Boolean> {
             isGameLoaded  = false;
         }
         return isGameLoaded;
+    }
+
+    public boolean IsChooseFile() {
+        return isChooseFile;
     }
 }
