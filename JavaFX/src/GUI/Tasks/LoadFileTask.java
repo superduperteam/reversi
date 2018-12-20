@@ -1,4 +1,4 @@
-package GUI;
+package GUI.Tasks;
 
 import Exceptions.*;
 import GameEngine.GameManager;

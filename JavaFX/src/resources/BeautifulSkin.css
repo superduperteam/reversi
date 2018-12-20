@@ -3,10 +3,15 @@
     -fx-background: #19afa3;
     -fx-focus-color: #f1e4ea;
 }
+#closeButton:armed, #closeButton:focused,
+#minimizeButton:armed, #minimizeButton:focused,
+#maximizeButton:armed, #maximizeButton:focused {
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+}
 .button{
     -fx-background-color: #3ffaac;
-    -fx-background-radius: 25;
-    -fx-border-radius: 25;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
     -fx-border-color: rgb(49, 89, 23);
 }
 

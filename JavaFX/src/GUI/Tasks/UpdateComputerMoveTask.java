@@ -1,13 +1,14 @@
-package GUI;
+package GUI.Tasks;
 
+import GUI.Controllers.AppController;
+import GUI.Tasks.ComputerMoveTask;
 import GameEngine.GameManager;
-import javafx.application.Platform;
 
-public class Informer implements Runnable {
+public class UpdateComputerMoveTask implements Runnable {
     private AppController appController;
     private GameManager gameManager;
 
-    public Informer(GameManager gameManager, AppController appController){
+    public UpdateComputerMoveTask(GameManager gameManager, AppController appController){
         this.appController = appController;
         this.gameManager = gameManager;
     }
