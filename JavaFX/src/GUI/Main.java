@@ -35,7 +35,7 @@ public class Main extends Application {
         fxmlLoader.setLocation(url);
         ScrollPane root = fxmlLoader.load(url.openStream());
         //root.setMinSize(500,400);
-
+        //fdssd
         BorderPane borderPane = (BorderPane) root.getContent();
         //borderPane.setMinSize(500,500);
 
