@@ -2,14 +2,23 @@ package GUI.Controllers;
 
 import GameEngine.GameManager;
 import GameEngine.Player;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 public class StatsController {
     private AppController appController;
@@ -27,7 +36,6 @@ public class StatsController {
     @FXML public void initialize() {
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(30));
-
     }
 
     public void setMainController(AppController mainController) {
@@ -69,15 +77,47 @@ public class StatsController {
             return new ReadOnlyStringWrapper(String.valueOf(num));
         });
 
+
         tableView.getItems().setAll(playersList);
         tableView.autosize();
+        autoFitTable(tableView);
 
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(27));
+        //autoResizeColumns(tableView);
     }
+
+
 
     public void refreshTable(List<Player> playersList, Player activePlayer){
         setPlayers(playersList, activePlayer);
         tableView.refresh();
+
+    }
+
+    private static Method columnToFitMethod;
+
+    static {
+        try {
+            columnToFitMethod = TableViewSkin.class.getDeclaredMethod("resizeColumnToFitContent", TableColumn.class, int.class);
+            columnToFitMethod.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void autoFitTable(TableView tableView) {
+        tableView.getItems().addListener(new ListChangeListener<Object>() {
+            @Override
+            public void onChanged(Change<?> c) {
+                for (Object column : tableView.getColumns()) {
+                    try {
+                        columnToFitMethod.invoke(tableView.getSkin(), column, -1);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }

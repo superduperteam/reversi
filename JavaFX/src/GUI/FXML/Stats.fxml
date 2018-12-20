@@ -4,17 +4,17 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controllers.StatsController">
+<ScrollPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controllers.StatsController">
    <content>
       <TableView fx:id="tableView">
         <columns>
-          <TableColumn fx:id="turnColumn" minWidth="-1.0" prefWidth="42.0" text="Turn" />
+          <TableColumn fx:id="turnColumn" minWidth="-1.0" prefWidth="50.0" text="Turn" />
           <TableColumn fx:id="colorColumn" minWidth="-1.0" prefWidth="50.0" text="Color" />
-          <TableColumn fx:id="isHumanColumn" minWidth="-1.0" prefWidth="63.0" text="Human?" />
+          <TableColumn fx:id="isHumanColumn" minWidth="-1.0" prefWidth="72.0" text="Human?" />
           <TableColumn fx:id="nameColumn" minWidth="-1.0" text="Name" />
           <TableColumn fx:id="idColumn" minWidth="-1.0" prefWidth="35.0" text="ID" />
-          <TableColumn fx:id="scoreColumn" minWidth="-1.0" prefWidth="44.0" text="Score" />
-          <TableColumn fx:id="turnsPlayedColumn" minWidth="-1.0" prefWidth="95.0" text="Turns Played" />
+          <TableColumn fx:id="scoreColumn" minWidth="-1.0" prefWidth="55.0" text="Score" />
+          <TableColumn fx:id="turnsPlayedColumn" minWidth="-1.0" prefWidth="50.0" text="Turns Played" />
           <TableColumn fx:id="averageOfFlipsColumn" minWidth="-1.0" prefWidth="88.0" text="Avg. Flips" />
         </columns>
       </TableView>
