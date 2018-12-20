@@ -98,13 +98,21 @@ public class AppController {
         skinComboBox.getItems().addAll("Default Skin", "Normal Skin", "Beautiful Skin");
         skinComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->{
             if(newValue.equals("Default Skin")) {
-                primaryStage.getScene().getStylesheets().setAll("/resources/caspian.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/BeautifulSkin.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/NormalSkin.css");
+                primaryStage.getScene().getStylesheets().add("/resources/caspian.css");
             }
             else if(newValue.equals("Normal Skin")){
-                primaryStage.getScene().getStylesheets().setAll("/resources/NormalSkin.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/BeautifulSkin.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/caspian.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/NormalSkin.css");
+                primaryStage.getScene().getStylesheets().add("/resources/NormalSkin.css");
             }
             else{
-                primaryStage.getScene().getStylesheets().setAll("/resources/BeautifulSkin.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/NormalSkin.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/caspian.css");
+                primaryStage.getScene().getStylesheets().remove("/resources/BeautifulSkin.css");
+                primaryStage.getScene().getStylesheets().add("/resources/BeautifulSkin.css");
             }
 
         });

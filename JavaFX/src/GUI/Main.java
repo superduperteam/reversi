@@ -34,7 +34,11 @@ public class Main extends Application {
         URL url = getClass().getResource("FXML/app.fxml");
         fxmlLoader.setLocation(url);
         ScrollPane root = fxmlLoader.load(url.openStream());
+        //root.setMinSize(500,400);
+
         BorderPane borderPane = (BorderPane) root.getContent();
+        //borderPane.setMinSize(500,500);
+
         AppController appController = fxmlLoader.getController();
         appController.setBoardParent(borderPane);
         appController.setPrimaryStage(primaryStage);
@@ -56,9 +60,10 @@ public class Main extends Application {
 //         </center>
         ////appController.initTable();
         Scene scene = new Scene(root, 1090, 850);
-        scene.getStylesheets().addAll("/resources/caspian.css");
+        //scene.getStylesheets().addAll("/resources/caspian.css");
         //scene.getStylesheets().set(2, "resources/caspian.css");
         primaryStage.setScene(scene);
+
         primaryStage.show();
     }
 
