@@ -1,5 +1,9 @@
-package GUI;
+package GUI.Controllers;
 
+import GUI.BoardGUI;
+import GUI.Tasks.ComputerMoveTask;
+import GUI.Tasks.LoadFileTask;
+import GUI.PopupFactory;
 import GameEngine.GameManager;
 import GameEngine.GameManager.TurnHistory.Turn;
 import GameEngine.Player;
@@ -7,14 +11,10 @@ import GameEngine.Point;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -295,9 +295,14 @@ public class AppController {
         tutorialModeCheckBox.setOnMouseClicked((event) -> {
             isTutorialMode = tutorialModeCheckBox.isSelected();
 
+//            if(isGameInReplayMode.get()){
+//                boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(),
+//                        isTutorialMode && gameManager.getActivePlayer().isHuman(), animationsCheckBox.isSelected());
+//                replayTurnIterator.previous();
+//            }
             if(isGameInReplayMode.get()){
                 boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(),
-                        isTutorialMode && gameManager.getActivePlayer().isHuman(), animationsCheckBox.isSelected());
+                        isTutorialMode, animationsCheckBox.isSelected());
                 replayTurnIterator.previous();
             }
             else{
@@ -398,7 +403,8 @@ public class AppController {
 
 
     public void updateGUI(){
-        boolean showPotentialFlipsForPlayer = isTutorialMode && gameManager.getActivePlayer().isHuman();
+//        boolean showPotentialFlipsForPlayer = isTutorialMode && gameManager.getActivePlayer().isHuman();
+        boolean showPotentialFlipsForPlayer = isTutorialMode;
 
         boardController.updateGIUDiscs(gameManager.getBoard(), showPotentialFlipsForPlayer, animationsCheckBox.isSelected());
         statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());

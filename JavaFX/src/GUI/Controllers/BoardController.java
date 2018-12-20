@@ -1,12 +1,10 @@
-package GUI;
+package GUI.Controllers;
 
+import GUI.BoardGUI;
 import GameEngine.*;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.fxml.FXML;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class BoardController {
 

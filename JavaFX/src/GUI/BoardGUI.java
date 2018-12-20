@@ -1,16 +1,16 @@
 package GUI;
 
+import GUI.Controllers.AppController;
+import GUI.Controllers.BoardController;
 import GameEngine.*;
 import javafx.animation.FillTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.Glow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -48,6 +48,8 @@ public class BoardGUI extends ScrollPane {
         gridPane.setPrefHeight(USE_COMPUTED_SIZE);
         gridPane.setPrefWidth(USE_COMPUTED_SIZE);
         gridPane.setStyle("-fx-background-color: WHITE;");
+
+        //gridPane.setPadding(new Insets(15,15,15,15));
 
         columnConstraints.setHgrow(javafx.scene.layout.Priority.SOMETIMES);
         columnConstraints.setMinWidth(20.0);
@@ -151,7 +153,7 @@ public class BoardGUI extends ScrollPane {
                 }
 
                 currCellBoardButton.setMnemonicParsing(false);
-                currCellBoardButton.setMinSize(25,25); //new line
+                currCellBoardButton.setMinSize(30,30); //new line
                 currCellBoardButton.setPrefHeight(5000.0);
                 currCellBoardButton.setPrefWidth(5000.0);
                 currCellBoardButton.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
@@ -159,6 +161,10 @@ public class BoardGUI extends ScrollPane {
                 currCellBoardButton.setOnMouseClicked((event) -> {
                     informCellBoardButtonsClicked((CellBoardButton) event.getSource());
                 });
+
+                //currCellBoardButton.prefHeightProperty().bind(currCellBoardButton.widthProperty()); // new line
+                gridPane.setFillHeight(currCellBoardButton, true);
+                gridPane.setFillWidth(currCellBoardButton, true);
             }
         }
 
@@ -233,7 +239,7 @@ public class BoardGUI extends ScrollPane {
                 if(currDisc != null && currGUIDisc != null){
                     if(currDisc.getType() == discType){
 //                        currGUIDisc.setEffect(new Glow(1.2));
-                        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(1.65), currGUIDisc);
+                        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(2), currGUIDisc);
                         scaleTransition.setFromX(1.7);
                         scaleTransition.setToX(1);
                         scaleTransition.setFromY(1.7);
@@ -259,6 +265,8 @@ public class BoardGUI extends ScrollPane {
                 currDisc = gameBoard.getDisc(i, j);
                 currButton = cellBoardButtons[i][j];
                 currCellBoard = gameBoard.get(i, j);
+
+                currButton.setOpacity(1);
 
                 // boardController.discTypeToColor(currDisc.getType())
 

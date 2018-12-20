@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.Controllers.AppController;
 import GameEngine.GameManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -30,7 +31,7 @@ public class Main extends Application {
 
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("app.fxml");
+        URL url = getClass().getResource("FXML/app.fxml");
         fxmlLoader.setLocation(url);
         ScrollPane root = fxmlLoader.load(url.openStream());
         BorderPane borderPane = (BorderPane) root.getContent();
@@ -61,30 +62,4 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-//    private TableView<Player> createStatsComponent(List<Player> playersList){
-//        TableView<Player> table = new TableView<>();
-//        ArrayList<Player> arrayList = (ArrayList<Player>) playersList;
-//        ObservableList<Player> playersData = FXCollections.observableArrayList(arrayList);
-//        table.setEditable(true);
-//
-//        TableColumn<Player,String> color = new TableColumn<>("Color");
-//        TableColumn<Player,String> name = new TableColumn<>("Name");
-//        TableColumn<Player,Integer> score = new TableColumn<>("Score"); // ##
-//        TableColumn<Player,Integer> turnsPlayed = new TableColumn<>("Turns Played");
-//        TableColumn<Player,Integer> averageOfFlips = new TableColumn<>("Average Of Flips");
-//
-//        color.setCellValueFactory(new PropertyValueFactory<>("color"));
-//        name.setCellValueFactory(new PropertyValueFactory<Player, String>("name"));
-//        score.setCellValueFactory(new PropertyValueFactory<Player, Integer>("score"));
-//        turnsPlayed.setCellValueFactory(new PropertyValueFactory<>("turnsPlayed"));
-//        averageOfFlips.setCellValueFactory(new PropertyValueFactory<>("averageOfFlips"));
-//
-//       table.getColumns().addAll(color, name, score, turnsPlayed, averageOfFlips);
-//
-//        table.setItems(playersData);
-//        table.prefHeight(358);
-//        table.prefWidth(456);
-//
-//        return table;
-//    }
 }

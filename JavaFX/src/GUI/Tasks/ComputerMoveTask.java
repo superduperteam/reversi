@@ -1,7 +1,7 @@
-package GUI;
+package GUI.Tasks;
 
+import GUI.Controllers.AppController;
 import GameEngine.GameManager;
-import GameEngine.Player;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 
@@ -9,7 +9,7 @@ public class ComputerMoveTask extends Task<Boolean> {
 
     private GameManager gameManager;
     private AppController appController;
-    private static final int SLEEP_TIME = 1000;
+    private static final int SLEEP_TIME = 1200;
 
     public ComputerMoveTask(GameManager gameManager, AppController appController){
         this.gameManager = gameManager;
@@ -23,7 +23,7 @@ public class ComputerMoveTask extends Task<Boolean> {
 //            activePlayer.makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
 //            Thread.sleep(500);
 //            gameManager.changeTurn();
-//            Platform.runLater(new Informer(gameManager, appController));
+//            Platform.runLater(new UpdateComputerMoveTask(gameManager, appController));
 //        }
 //        return true;
 //    }
@@ -35,7 +35,7 @@ public class ComputerMoveTask extends Task<Boolean> {
             gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
             Thread.sleep(SLEEP_TIME);
             //gameManager.changeTurn();
-            Platform.runLater(new Informer(gameManager, appController));
+            Platform.runLater(new UpdateComputerMoveTask(gameManager, appController));
         }
 
         return true;
