@@ -60,7 +60,7 @@ public class Main extends Application {
 //         </center>
         ////appController.initTable();
         Scene scene = new Scene(root, 1090, 850);
-        //scene.getStylesheets().addAll("/resources/caspian.css");
+        scene.getStylesheets().addAll("/resources/caspian.css");
         //scene.getStylesheets().set(2, "resources/caspian.css");
         primaryStage.setScene(scene);
 

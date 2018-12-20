@@ -105,13 +105,11 @@ public class AppController {
             else if(newValue.equals("Normal Skin")){
                 primaryStage.getScene().getStylesheets().remove("/resources/BeautifulSkin.css");
                 primaryStage.getScene().getStylesheets().remove("/resources/caspian.css");
-                primaryStage.getScene().getStylesheets().remove("/resources/NormalSkin.css");
                 primaryStage.getScene().getStylesheets().add("/resources/NormalSkin.css");
             }
             else{
                 primaryStage.getScene().getStylesheets().remove("/resources/NormalSkin.css");
                 primaryStage.getScene().getStylesheets().remove("/resources/caspian.css");
-                primaryStage.getScene().getStylesheets().remove("/resources/BeautifulSkin.css");
                 primaryStage.getScene().getStylesheets().add("/resources/BeautifulSkin.css");
             }
 
