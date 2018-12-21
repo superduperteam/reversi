@@ -8,11 +8,13 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,8 +36,19 @@ public class StatsController {
     @FXML private TableColumn<Player,String> averageOfFlipsColumn;
 
     @FXML public void initialize() {
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+        turnColumn.setPrefWidth(screenBounds.getWidth() / 36);
+        colorColumn.setPrefWidth(screenBounds.getWidth() / 25);
+        isHumanColumn.setPrefWidth(screenBounds.getWidth() / 20);
+        nameColumn.setPrefWidth(screenBounds.getWidth() / 25);
+        idColumn.setPrefWidth(screenBounds.getWidth() / 35);
+        scoreColumn.setPrefWidth(screenBounds.getWidth() / 25);
+        turnsPlayedColumn.setPrefWidth(screenBounds.getWidth() / 25);
+        averageOfFlipsColumn.setPrefWidth(screenBounds.getWidth() / 15);
+
         tableView.setFixedCellSize(25);
-        tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(30));
+        tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(70));
     }
 
     public void setMainController(AppController mainController) {
@@ -80,10 +93,10 @@ public class StatsController {
 
         tableView.getItems().setAll(playersList);
         tableView.autosize();
-        autoFitTable(tableView);
+        //autoFitTable(tableView);
 
         tableView.setFixedCellSize(25);
-        tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(27));
+        tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(50));
         //autoResizeColumns(tableView);
     }
 

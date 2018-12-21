@@ -8,14 +8,14 @@
    <content>
       <TableView fx:id="tableView">
         <columns>
-          <TableColumn fx:id="turnColumn" minWidth="-1.0" prefWidth="50.0" text="Turn" />
-          <TableColumn fx:id="colorColumn" minWidth="-1.0" prefWidth="50.0" text="Color" />
-          <TableColumn fx:id="isHumanColumn" minWidth="-1.0" prefWidth="72.0" text="Human?" />
-          <TableColumn fx:id="nameColumn" minWidth="-1.0" text="Name" />
-          <TableColumn fx:id="idColumn" minWidth="-1.0" prefWidth="35.0" text="ID" />
-          <TableColumn fx:id="scoreColumn" minWidth="-1.0" prefWidth="55.0" text="Score" />
-          <TableColumn fx:id="turnsPlayedColumn" minWidth="-1.0" prefWidth="50.0" text="Turns Played" />
-          <TableColumn fx:id="averageOfFlipsColumn" minWidth="-1.0" prefWidth="88.0" text="Avg. Flips" />
+          <TableColumn fx:id="turnColumn" minWidth="-1.0" prefWidth="-1.0" text="Turn" />
+          <TableColumn fx:id="colorColumn" minWidth="-1.0" prefWidth="-1.0" text="Color" />
+          <TableColumn fx:id="isHumanColumn" minWidth="-1.0" prefWidth="-1.0" text="Human?" />
+          <TableColumn fx:id="nameColumn" minWidth="-1.0" prefWidth="-1.0" text="Name" />
+          <TableColumn fx:id="idColumn" minWidth="-1.0" prefWidth="-1.0" text="ID" />
+          <TableColumn fx:id="scoreColumn" minWidth="-1.0" prefWidth="-1.0" text="Score" />
+          <TableColumn fx:id="turnsPlayedColumn" minWidth="-1.0" prefWidth="-1.0" text="Turns&#10;Played" />
+          <TableColumn fx:id="averageOfFlipsColumn" minWidth="-1.0" prefWidth="-1.0" text="Avg. Flips" />
         </columns>
       </TableView>
    </content>
