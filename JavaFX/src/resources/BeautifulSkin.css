@@ -20,7 +20,7 @@
 }
 
 .label{
-    -fx-font-size: 12;
+    -fx-font-size: 1em;
     -fx-font-family: "monospace";
 }
 .borders{

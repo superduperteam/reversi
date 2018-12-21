@@ -4,9 +4,11 @@ import GUI.Controllers.AppController;
 import GameEngine.GameManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -59,7 +61,9 @@ public class Main extends Application {
 //              <fx:include fx:id="boardComponent" minHeight="-Infinity" minWidth="100.0" source="board.fxml" BorderPane.alignment="TOP_CENTER" />
 //         </center>
         ////appController.initTable();
-        Scene scene = new Scene(root, 1090, 850);
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+        Scene scene = new Scene(root, screenBounds.getWidth() - 100, screenBounds.getHeight() - 100);
         scene.getStylesheets().addAll("/resources/caspian.css");
         //scene.getStylesheets().set(2, "resources/caspian.css");
         primaryStage.setScene(scene);
