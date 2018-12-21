@@ -47,6 +47,7 @@ public class StatsController {
         turnsPlayedColumn.setPrefWidth(screenBounds.getWidth() / 25);
         averageOfFlipsColumn.setPrefWidth(screenBounds.getWidth() / 15);
 
+        tableView.setMinHeight(100);
         tableView.setFixedCellSize(25);
         tableView.prefHeightProperty().bind(Bindings.size(tableView.getItems()).multiply(tableView.getFixedCellSize()).add(70));
     }
