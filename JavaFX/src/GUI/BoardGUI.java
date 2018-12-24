@@ -7,12 +7,14 @@ import javafx.animation.FillTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 
 public class BoardGUI extends ScrollPane {
@@ -38,10 +40,12 @@ public class BoardGUI extends ScrollPane {
         CellBoard currCellBoard;
         CellBoardButton currCellBoardButton;
 
+
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         setFitToHeight(true);
         setFitToWidth(true);
-        setMaxHeight(600); // used to be USE_PREF_
-        setMaxWidth(600); // used to be USE_PREF_
+        setMaxHeight(Math.min(Math.max(600,85*rowsCount),screenBounds.getHeight()*0.9)); // used to be USE_PREF_ -> then used to be 600
+        setMaxWidth(Math.min(Math.max(600,85*columnsCount),screenBounds.getWidth()*0.6)); // used to be USE_PREF_ -> then used to be 600
 
         gridPane.setAlignment(javafx.geometry.Pos.TOP_CENTER);
         gridPane.setGridLinesVisible(true);
