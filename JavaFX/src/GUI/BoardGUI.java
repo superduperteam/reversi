@@ -44,8 +44,8 @@ public class BoardGUI extends ScrollPane {
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         setFitToHeight(true);
         setFitToWidth(true);
-        setMaxHeight(Math.min(Math.max(600,85*rowsCount),screenBounds.getHeight()*0.9)); // used to be USE_PREF_ -> then used to be 600
-        setMaxWidth(Math.min(Math.max(600,85*columnsCount),screenBounds.getWidth()*0.6)); // used to be USE_PREF_ -> then used to be 600
+        setMaxHeight(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65))); // used to be USE_PREF_ -> then used to be 600
+        setMaxWidth(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65))); // used to be USE_PREF_ -> then used to be 600
 
         gridPane.setAlignment(javafx.geometry.Pos.TOP_CENTER);
         gridPane.setGridLinesVisible(true);
