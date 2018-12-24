@@ -31,6 +31,7 @@ public class GameManager implements Serializable
         this.board = board;
         isGameActive = new SimpleBooleanProperty(false);
         calcFlipPotential();
+        updateGameScore();
     }
 
     public void calcFlipPotential(){
@@ -344,6 +345,7 @@ public class GameManager implements Serializable
         }
         else {
             goBackToTurn(lastTurn);
+            updateGameScore(); // new line
         }
 
         updateCanUndo();

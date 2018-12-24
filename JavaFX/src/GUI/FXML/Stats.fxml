@@ -4,7 +4,7 @@
 <?import javafx.scene.control.TableView?>
 
 
-<TableView fx:id="tableView" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controllers.StatsController">
+<TableView fx:id="tableView" xmlns="http://javafx.com/javafx/8.0.191" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.Controllers.StatsController">
   <columns>
     <TableColumn fx:id="turnColumn" minWidth="-1.0" prefWidth="-1.0" text="Turn" />
     <TableColumn fx:id="colorColumn" minWidth="-1.0" prefWidth="-1.0" text="Color" />

@@ -57,4 +57,9 @@ public class BoardController {
     public void highlightDiscsOfType(Board gameboard, eDiscType discType){
         boardComponent.highlightDiscs(gameboard, discType);
     }
+
+    public AppController getAppController() {
+        return appController;
+    }
+
 }

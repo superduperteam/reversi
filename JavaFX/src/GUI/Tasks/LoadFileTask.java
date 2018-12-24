@@ -40,8 +40,7 @@ public class LoadFileTask extends Task<Boolean> {
         if (selectedFile == null) {
             isChooseFile = false;
             return Boolean.FALSE;
-        }
-        else{
+        } else {
             isChooseFile = true;
         }
 
@@ -55,17 +54,17 @@ public class LoadFileTask extends Task<Boolean> {
         messageBuilder.append("Loading XML file...\n");
         updateMessage(messageBuilder.toString());
 
-       // try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
+        // try{Thread.sleep(SLEEP_TIME);} catch (InterruptedException e) { e.printStackTrace(); }
 
         didLoadSuccessfully = loadXML(absolutePath);
-        if(didLoadSuccessfully){
+        if (didLoadSuccessfully) {
 
             messageBuilder.append("Successfully loaded XML file!\n");
             updateMessage(messageBuilder.toString());
         }
 
-       // simulateProgress();
-        updateProgress(10,10);
+        // simulateProgress();
+        updateProgress(10, 10);
 //        return Boolean.TRUE;
         return didLoadSuccessfully;
     }

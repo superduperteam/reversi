@@ -31,6 +31,7 @@ public class AppController {
     private BoardController boardController;
     private boolean isTutorialMode = false;
     private BorderPane boardParent;
+    private Turn turnToShowWhenDoneWithReplay;
     @FXML private StatsController statsComponentController;
     @FXML private CheckBox tutorialModeCheckBox;
     @FXML private CheckBox animationsCheckBox;
@@ -53,11 +54,11 @@ public class AppController {
         return didStartGame;
     }
 
-    public BooleanProperty isGameInProgressProperty() {
-        return isGameInProgress;
+    public BooleanProperty isShowBoardProperty() {
+        return isShowBoard;
     }
 
-    private BooleanProperty isGameInProgress;
+    private BooleanProperty isShowBoard;
     private BooleanProperty didLoadXmlFile;
     private BooleanProperty didStartGame;
     private SimpleBooleanProperty isGameInReplayMode;
@@ -81,13 +82,13 @@ public class AppController {
         if (statsComponentController != null) {
             statsComponentController.setMainController(this);
         }
-        isGameInProgress = new SimpleBooleanProperty(false);
+        isShowBoard = new SimpleBooleanProperty(false);
 
         loadFileButton.setOnMouseClicked((event) -> {
             onLoadFileClick();
         });
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
-        endGameButton.setOnMouseClicked(event ->  OnStopGameClick());
+        endGameButton.setOnMouseClicked(event ->  onStopGameClick());
         // startGameButton.disableProperty().bind(didLoadXmlFile.not()); // not good
         //startGameButton.disableProperty().bind(Bindings.and(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()));
         endGameButton.setDisable(true);
@@ -146,7 +147,8 @@ public class AppController {
 
         gameManager.activateGame();
         didStartGame.set(true);
-        isGameInProgress.setValue(true);
+        replayModeButton.setDisable(true);
+        isShowBoard.setValue(true);
         updateGUI();
         //boardGUI.setIsGameActive(true);
     }
@@ -156,7 +158,7 @@ public class AppController {
         boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode, false);
         statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
         //boardGUI.setIsGameActive(false);
-        isGameInProgress.setValue(false);
+        isShowBoard.setValue(false);
         hintContentLabel.setText("");
     }
 
@@ -180,7 +182,7 @@ public class AppController {
             boardParent.setCenter(boardGUI);
             boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
             didLoadXmlFile.set(true);
-            isGameInProgress.setValue(false);
+            isShowBoard.setValue(false);
             initTable();
         }
 
@@ -194,7 +196,7 @@ public class AppController {
 //            boardParent.setCenter(boardGUI);
 //            boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
 //            didLoadXmlFile.set(true);
-//            isGameInProgress.setValue(false);
+//            isShowBoard.setValue(false);
 //            initTable();
 //
     }
@@ -209,11 +211,16 @@ public class AppController {
     }
 
 
-    private void OnStopGameClick() {
+    private void onStopGameClick() {
         loadFileButton.setDisable(false); // new here
 
         replayModeButton.setDisable(false);
         gameManager.setIsGameActive(false);
+
+        List<Turn> turnsList = gameManager.getHistoryOfTurns();
+        turnToShowWhenDoneWithReplay = turnsList.get(0);
+        showTurnInGIU(turnToShowWhenDoneWithReplay);
+        isShowBoard.setValue(false);
 
         StringBuilder winMessageBuilder = new StringBuilder();
 
@@ -330,20 +337,26 @@ public class AppController {
         replayModeButton.setDisable(false);
         stopReplayButton.setDisable(true);
 
-        updateGUI();
+        if(!gameManager.isGameOver()){
+            isShowBoard.setValue(false); // new line
+        }
+
+        showTurnInGIU(turnToShowWhenDoneWithReplay);
     }
 
     private void showReplayMode() {
         loadFileButton.setDisable(true); // new here
-
         replayModeButton.setDisable(true);
-        replayModePrevButton.setDisable(false);
         stopReplayButton.setDisable(false);
+        //replayModePrevButton.setDisable(false);
+        isShowBoard.setValue(true); // new line
 
         List<Turn> turnsList = gameManager.getHistoryOfTurns();
         replayTurnIterator = turnsList.listIterator(turnsList.size() - 1);
         showTurnInGIU(replayTurnIterator.next());
         replayTurnIterator.previous();
+
+        replayModePrevButton.setDisable(!replayTurnIterator.hasPrevious());
     }
 
     private void showPrevTurn() {
@@ -433,7 +446,7 @@ public class AppController {
         Player activePlayer = gameManager.getActivePlayer();
         GameManager.eMoveStatus moveStatus = null;
 
-        if(isGameInProgress.get()&&gameManager.isGameActiveProperty().get()){
+        if(isShowBoard.get()&&gameManager.isGameActiveProperty().get()){
             if(gameManager.getActivePlayer().isHuman()){
                 moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
                 updateHintContentLabel(moveStatus, true, true);
@@ -453,7 +466,7 @@ public class AppController {
 
             if (gameManager.isGameOver()) {
                 onGameOver();
-                isGameInProgress.setValue(false);
+                isShowBoard.setValue(false);
                 hintContentLabel.setText("");
             }
         }
@@ -516,6 +529,8 @@ public class AppController {
         gameManager.setIsGameActive(false);
         //didLoadXmlFile.set(false);
         //didStartGame.set(false);
+
+        turnToShowWhenDoneWithReplay = gameManager.getHistoryOfTurns().get(gameManager.getHistoryOfTurns().size() - 1);
     }
 
     private void showEndOfGamePopupMessage(Player winner){
