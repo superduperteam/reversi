@@ -30,15 +30,18 @@ public class ComputerMoveTask extends Task<Boolean> {
 
         @Override
         protected Boolean call() throws Exception {
-        if(appController.isGameInProgressProperty().get() && gameManager.isGameActiveProperty().get() && !gameManager.isGameOver()){
-            appController.setIsComputerMoveInProgress(true);
-            gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
-            Thread.sleep(SLEEP_TIME);
-            //gameManager.changeTurn();
-            Platform.runLater(new UpdateComputerMoveTask(gameManager, appController));
-        }
+        synchronized (gameManager) {
 
-        return true;
+            if (appController.isShowBoardProperty().get() && gameManager.isGameActiveProperty().get() && !gameManager.isGameOver()) {
+                appController.setIsComputerMoveInProgress(true);
+                gameManager.getActivePlayer().makeMove(gameManager.getActivePlayer().getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+                Thread.sleep(SLEEP_TIME);
+                //gameManager.changeTurn();
+                Platform.runLater(new UpdateComputerMoveTask(gameManager, appController));
+            }
+
+            return true;
+        }
     }
 }
 

@@ -67,7 +67,7 @@ public class BoardGUI extends ScrollPane {
                 //currCellBoardButton.disableProperty().bind(Bindings.and(isGameActive.not(), appController.isGameInReplayModeProperty().not()));
 //                currCellBoardButton.disableProperty().bind(Bindings.and(appController.getGameManager().isGameActiveProperty().not(),
 //                        appController.isGameInReplayModeProperty().not()));
-                currCellBoardButton.disableProperty().bind(appController.isGameInProgressProperty().not());
+                currCellBoardButton.disableProperty().bind(appController.isShowBoardProperty().not());
 //                currCellBoardButton.disableProperty().bind(isGameActive.not());
 //                 cellBoardButtons[i][j].setDisable();
                 GridPane.setHalignment(currCellBoardButton, javafx.geometry.HPos.CENTER);
@@ -266,7 +266,9 @@ public class BoardGUI extends ScrollPane {
                 currButton = cellBoardButtons[i][j];
                 currCellBoard = gameBoard.get(i, j);
 
-                currButton.setOpacity(1);
+                if(boardController.getAppController().isShowBoardProperty().get()){
+                    currButton.setOpacity(1);
+                }
 
                 // boardController.discTypeToColor(currDisc.getType())
 
