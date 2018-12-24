@@ -219,7 +219,7 @@ public class AppController {
 
         List<Turn> turnsList = gameManager.getHistoryOfTurns();
         turnToShowWhenDoneWithReplay = turnsList.get(0);
-        showTurnInGIU(turnToShowWhenDoneWithReplay);
+        showTurnInGIU(turnToShowWhenDoneWithReplay, false);
         isShowBoard.setValue(false);
 
         StringBuilder winMessageBuilder = new StringBuilder();
@@ -341,7 +341,7 @@ public class AppController {
             isShowBoard.setValue(false); // new line
         }
 
-        showTurnInGIU(turnToShowWhenDoneWithReplay);
+        showTurnInGIU(turnToShowWhenDoneWithReplay, false);
     }
 
     private void showReplayMode() {
@@ -353,7 +353,7 @@ public class AppController {
 
         List<Turn> turnsList = gameManager.getHistoryOfTurns();
         replayTurnIterator = turnsList.listIterator(turnsList.size() - 1);
-        showTurnInGIU(replayTurnIterator.next());
+        showTurnInGIU(replayTurnIterator.next(), false);
         replayTurnIterator.previous();
 
         replayModePrevButton.setDisable(!replayTurnIterator.hasPrevious());
@@ -362,7 +362,7 @@ public class AppController {
     private void showPrevTurn() {
         if(replayTurnIterator.hasPrevious()){
             Turn currTurnToShow = replayTurnIterator.previous();
-            showTurnInGIU(currTurnToShow);
+            showTurnInGIU(currTurnToShow, false);
             replayModeNextButton.setDisable(false);
 
             updateReplayModePrevNextButtons();
@@ -375,7 +375,7 @@ public class AppController {
                 replayTurnIterator.next();
                 Turn currTurnToShow = replayTurnIterator.next();
                 replayTurnIterator.previous();
-                showTurnInGIU(currTurnToShow);
+                showTurnInGIU(currTurnToShow,animationsCheckBox.isSelected());
                 replayModePrevButton.setDisable(false);
             }
 
@@ -413,10 +413,10 @@ public class AppController {
         }
     }
 
-    private void showTurnInGIU(Turn turnToShow){
+    private void showTurnInGIU(Turn turnToShow, boolean showAnimations){
         List<Player> turnPlayerList = turnToShow.getPlayersList();
 
-        boardController.updateGIUDiscs(turnToShow.getBoard(), isTutorialMode, animationsCheckBox.isSelected());
+        boardController.updateGIUDiscs(turnToShow.getBoard(), isTutorialMode, showAnimations);
         statsComponentController.refreshTable(turnPlayerList,  turnToShow.getActivePlayer());
     }
 
