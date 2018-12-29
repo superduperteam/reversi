@@ -7,6 +7,8 @@ import javafx.animation.FillTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.ContentDisplay;
@@ -291,7 +293,22 @@ public class BoardGUI extends ScrollPane {
                         if(isAnimationsEnabled){
                             oldColor = (Color)currGUIDisc.getFill();
                             FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
+
+                            boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(null);
+                            boardController.getAppController().getReplayModeNextButton().setOpacity(0.4);
+                            boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(null);
+                            boardController.getAppController().getReplayModePrevButton().setOpacity(0.4);
+                            ft.setOnFinished(event -> {
+                                boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(event1 ->
+                                        boardController.getAppController().showNextTurn());
+                                boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(event1 ->
+                                        boardController.getAppController().showPrevTurn());
+                                boardController.getAppController().getReplayModeNextButton().setOpacity(1);
+                                boardController.getAppController().getReplayModePrevButton().setOpacity(1);
+
+                            });
                             ft.play();
+
                         }
                         else{
                             currGUIDisc.setFill(newColor);

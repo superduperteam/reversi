@@ -50,6 +50,14 @@ public class AppController {
     @FXML private ComboBox skinComboBox;
     @FXML private ProgressBar loadProgressBar;
 
+    public Button getReplayModePrevButton() {
+        return replayModePrevButton;
+    }
+
+    public Button getReplayModeNextButton() {
+        return replayModeNextButton;
+    }
+
     public BooleanProperty getDidStartGameProperty() {
         return didStartGame;
     }
@@ -394,7 +402,7 @@ public class AppController {
         replayModePrevButton.setDisable(!replayTurnIterator.hasPrevious());
     }
 
-    private void showPrevTurn() {
+    public void showPrevTurn() {
         if(replayTurnIterator.hasPrevious()){
             Turn currTurnToShow = replayTurnIterator.previous();
             showTurnInGIU(currTurnToShow, false);
@@ -404,7 +412,7 @@ public class AppController {
         }
     }
 
-    private void showNextTurn() {
+    public void showNextTurn() {
         if(replayTurnIterator.hasNext()){
             if(replayTurnIterator.hasNext()){
                 replayTurnIterator.next();
