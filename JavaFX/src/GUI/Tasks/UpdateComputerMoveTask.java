@@ -16,8 +16,8 @@ public class UpdateComputerMoveTask implements Runnable {
     @Override
     public void run() {
         synchronized (gameManager) {
+            appController.setIsComputerMoveInProgress(false);
             if (appController.isShowBoardProperty().get()) {
-                appController.setIsComputerMoveInProgress(false);
                 gameManager.changeTurn();
                 appController.updateGUI();
                 if (!gameManager.getActivePlayer().isHuman() && gameManager.isGameActiveProperty().get() && !gameManager.isGameOver()) {

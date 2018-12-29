@@ -63,6 +63,7 @@ public class AppController {
     private BooleanProperty didStartGame;
     private SimpleBooleanProperty isGameInReplayMode;
     private SimpleBooleanProperty isComputerMoveInProgress;
+    private SimpleBooleanProperty isScaleAnimationsInPlay;
 
     private void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -74,6 +75,8 @@ public class AppController {
     @FXML
     public void initialize() {
         loadProgressBar.setProgress(0);
+
+        isScaleAnimationsInPlay = new SimpleBooleanProperty(false); // new line
 
         isComputerMoveInProgress = new SimpleBooleanProperty(false);
         isGameInReplayMode = new SimpleBooleanProperty(false);
@@ -119,6 +122,22 @@ public class AppController {
         disableButtonsAndCheckBoxesOPreStart();
     }
 
+    public boolean isScaleAnimationsInPlay() {
+        return isScaleAnimationsInPlay.get();
+    }
+
+    public SimpleBooleanProperty isScaleAnimationsInPlayProperty() {
+        return isScaleAnimationsInPlay;
+    }
+
+    public void setIsScaleAnimationsInPlay(boolean isScaleAnimationsInPlay) {
+        this.isScaleAnimationsInPlay.set(isScaleAnimationsInPlay);
+    }
+
+    public Button getReplayModeButton() {
+        return replayModeButton;
+    }
+
     private void disableButtonsAndCheckBoxesOPreStart(){
         undoLastMoveButton.setDisable(true);
         playerRetireButton.setDisable(true);
@@ -134,6 +153,9 @@ public class AppController {
 //        if(gameManager.isGameOver()){
 //            resetGame();
 //        }
+        isComputerMoveInProgress.setValue(false); // new line
+        boardController.stopScaleAnimationsIfItIsInPlay();
+
         loadProgressBar.setProgress(0);
         taskMessageLabel.setText("");
         loadFileButton.setDisable(true); // new here
@@ -277,8 +299,9 @@ public class AppController {
 
     // call this after gameManager is set.
     private void lateInitialize(){
-        startGameButton.disableProperty().bind(Bindings.or(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()));
-
+       // startGameButton.disableProperty().bind(Bindings.or(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()));
+        startGameButton.disableProperty().bind(
+                Bindings.or(Bindings.or(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()), isScaleAnimationsInPlayProperty()));
 
         undoLastMoveButton.setOnMouseClicked(event -> { onUndoClick(); });
 //        undoLastMoveButton.disableProperty().bind(Bindings.not(gameManager.canUndoProperty())); // not good
@@ -289,6 +312,7 @@ public class AppController {
         playerRetireButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isComputerMoveInProgress));
 
         replayModeButton.setOnMouseClicked(event -> {
+            boardController.stopScaleAnimationsIfItIsInPlay();
             isGameInReplayMode.setValue(true);
             showReplayMode();
         });
@@ -448,7 +472,7 @@ public class AppController {
         GameManager.eMoveStatus moveStatus = null;
 
         if(isShowBoard.get()&&gameManager.isGameActiveProperty().get()){
-            if(gameManager.getActivePlayer().isHuman()){
+            if(gameManager.getActivePlayer().isHuman() && !isComputerMoveInProgress.get()){
                 moveStatus = activePlayer.makeMove(clickedCellBoardPoint, gameManager.getBoard());
                 updateHintContentLabel(moveStatus, true, true);
 
@@ -456,20 +480,26 @@ public class AppController {
                     updateEndTurn();
                 }
 
-                if(!gameManager.getActivePlayer().isHuman()){
-                    hintContentLabel.setText("");
-                    simulateComputerTurns();
+                if (gameManager.isGameOver()) {
+                    onGameOver();
+                    //isShowBoard.setValue(false); new line
+//                hintContentLabel.setText(""); // new line
+                }else{
+                    if(!gameManager.getActivePlayer().isHuman()){
+                        hintContentLabel.setText("");
+                        simulateComputerTurns();
+                    }
                 }
             }
             else{
                 updateHintContentLabel(moveStatus, false, true);
             }
 
-            if (gameManager.isGameOver()) {
-                onGameOver();
-                isShowBoard.setValue(false);
-                hintContentLabel.setText("");
-            }
+//            if (gameManager.isGameOver()) {
+//                onGameOver();
+//                //isShowBoard.setValue(false); new line
+////                hintContentLabel.setText(""); // new line
+//            }
         }
         else if(!gameManager.isGameActiveProperty().get()){
             updateHintContentLabel(moveStatus, false, false);
@@ -513,6 +543,7 @@ public class AppController {
     }
 
     public void onGameOver(){
+        hintContentLabel.setText(""); // new line
         loadFileButton.setDisable(false);
         Player winner = null;
 
@@ -525,7 +556,6 @@ public class AppController {
         }
 
         showEndOfGamePopupMessage(winner);
-
         replayModeButton.setDisable(false);
         gameManager.setIsGameActive(false);
         //didLoadXmlFile.set(false);
