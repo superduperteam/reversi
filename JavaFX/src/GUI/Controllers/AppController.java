@@ -216,11 +216,12 @@ public class AppController {
 
         replayModeButton.setDisable(false);
         gameManager.setIsGameActive(false);
+        isShowBoard.setValue(false);
 
         List<Turn> turnsList = gameManager.getHistoryOfTurns();
         turnToShowWhenDoneWithReplay = turnsList.get(0);
         showTurnInGIU(turnToShowWhenDoneWithReplay, false);
-        isShowBoard.setValue(false);
+
 
         StringBuilder winMessageBuilder = new StringBuilder();
 

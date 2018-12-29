@@ -254,6 +254,9 @@ public class BoardGUI extends ScrollPane {
                 if(boardController.getAppController().isShowBoardProperty().get()){
                     currButton.setOpacity(1);
                 }
+                else {
+                    currButton.setOpacity(0.4);
+                }
 
                 // boardController.discTypeToColor(currDisc.getType())
 
