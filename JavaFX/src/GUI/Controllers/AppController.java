@@ -91,7 +91,11 @@ public class AppController {
             onLoadFileClick();
         });
         startGameButton.setOnMouseClicked((event)-> onStartGameClick());
-        endGameButton.setOnMouseClicked(event ->  onStopGameClick());
+        endGameButton.setOnMouseClicked(event ->  {
+            onStopGameClick();
+            showStopGameMessage();
+        });
+
         // startGameButton.disableProperty().bind(didLoadXmlFile.not()); // not good
         //startGameButton.disableProperty().bind(Bindings.and(Bindings.or(didLoadXmlFile.not(), isGameInReplayMode),gameManager.isGameActiveProperty()));
         endGameButton.setDisable(true);
@@ -244,7 +248,13 @@ public class AppController {
         turnToShowWhenDoneWithReplay = turnsList.get(0);
         showTurnInGIU(turnToShowWhenDoneWithReplay, false);
 
+//        StringBuilder winMessageBuilder = new StringBuilder();
+//
+//        winMessageBuilder.append("Game has ended!\n");
+//        PopupFactory.showPopup(winMessageBuilder.toString());
+    }
 
+    public void showStopGameMessage(){
         StringBuilder winMessageBuilder = new StringBuilder();
 
         winMessageBuilder.append("Game has ended!\n");
@@ -427,7 +437,11 @@ public class AppController {
             updateGUI();
 
             if(gameManager.isGameOver()){
-                onGameOver();
+                // onGameOver();
+                onStopGameClick();
+                if(gameManager.getHighestScoringPlayers().size() == 1){
+                    showEndOfGamePopupMessage(gameManager.getHighestScoringPlayers().get(0));
+                }
             }
             else{
                 if(!gameManager.getActivePlayer().isHuman()){

@@ -18,8 +18,8 @@
 				<Position row="3" column="3"/>
 			</Participant>
 			<Participant number="4">
-				<Position row="4" column="2"/>
-				<Position row="4" column="3"/>
+				<Position row="6" column="2"/>
+				<Position row="6" column="1"/>
 			</Participant>
 		</InitialPositions>
 	</Game>
@@ -30,15 +30,15 @@
 		</Player>
 		<Player id="143">
 			<Name>Menash</Name>
-			<Type>Computer</Type>
+			<Type>Human</Type>
 		</Player>
 		<Player id="456">
 			<Name>Nachtze</Name>
-			<Type>Computer</Type>
+			<Type>Human</Type>
 		</Player>
         <Player id="789">
             <Name>Ido</Name>
-            <Type>Computer</Type>
+            <Type>Human</Type>
         </Player>
 	</Players>
 	<DynamicPlayers game-title="sample game" total-players="3"/>
