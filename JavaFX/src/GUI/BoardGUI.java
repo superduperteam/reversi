@@ -294,19 +294,21 @@ public class BoardGUI extends ScrollPane {
                             oldColor = (Color)currGUIDisc.getFill();
                             FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
 
-                            boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(null);
-                            boardController.getAppController().getReplayModeNextButton().setOpacity(0.4);
-                            boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(null);
-                            boardController.getAppController().getReplayModePrevButton().setOpacity(0.4);
-                            ft.setOnFinished(event -> {
-                                boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(event1 ->
-                                        boardController.getAppController().showNextTurn());
-                                boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(event1 ->
-                                        boardController.getAppController().showPrevTurn());
-                                boardController.getAppController().getReplayModeNextButton().setOpacity(1);
-                                boardController.getAppController().getReplayModePrevButton().setOpacity(1);
+                            if(boardController.getAppController().isInReplayMode()) {
+                                boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(null);
+                                boardController.getAppController().getReplayModeNextButton().setOpacity(0.4);
+                                boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(null);
+                                boardController.getAppController().getReplayModePrevButton().setOpacity(0.4);
+                                ft.setOnFinished(event -> {
+                                    boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(event1 ->
+                                            boardController.getAppController().showNextTurn());
+                                    boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(event1 ->
+                                            boardController.getAppController().showPrevTurn());
+                                    boardController.getAppController().getReplayModeNextButton().setOpacity(1);
+                                    boardController.getAppController().getReplayModePrevButton().setOpacity(1);
 
-                            });
+                                });
+                            }
                             ft.play();
 
                         }
