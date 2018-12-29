@@ -2,6 +2,7 @@ package GUI.Controllers;
 
 import GUI.BoardGUI;
 import GameEngine.*;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.paint.Color;
 
 import java.util.HashMap;
@@ -20,6 +21,26 @@ public class BoardController {
 //    }
 
     //@FXML
+
+    public void stopScaleAnimationsIfItIsInPlay(){
+        boardComponent.stopScaleAnimations();
+    }
+
+    public void disableReplayMode(boolean newValue){
+        appController.getReplayModeButton().setDisable(true);
+    }
+
+    public boolean isScaleAnimationsInPlay() {
+        return appController.isScaleAnimationsInPlayProperty().get();
+    }
+
+    public SimpleBooleanProperty isScaleAnimationsInPlayProperty() {
+        return appController.isScaleAnimationsInPlayProperty();
+    }
+
+    public void setIsScaleAnimationsInPlay(boolean isScaleAnimationsInPlay) {
+        appController.isScaleAnimationsInPlayProperty().set(isScaleAnimationsInPlay);
+    }
 
     public BoardController(AppController parentController, BoardGUI boardGUI){
         boardComponent = boardGUI;
@@ -61,5 +82,4 @@ public class BoardController {
     public AppController getAppController() {
         return appController;
     }
-
 }

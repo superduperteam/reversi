@@ -6,6 +6,7 @@ import GameEngine.*;
 import javafx.animation.FillTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.ContentDisplay;
@@ -17,6 +18,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BoardGUI extends ScrollPane {
     private BoardController boardController;
     private final GridPane gridPane;
@@ -25,8 +29,11 @@ public class BoardGUI extends ScrollPane {
     private CellBoardButton[][] cellBoardButtons;
     private int rowsCount;
     private int columnsCount;
+    private List<ScaleTransition> scaleTransitionList;
 
     public BoardGUI(Board gameBoard, AppController appController) {
+        scaleTransitionList = new ArrayList<>();
+
         //isGameActive = appController.getGameManager().isGameActiveProperty();
         boardController = new BoardController(appController, this);
         appController.setBoardController(boardController);
@@ -72,6 +79,7 @@ public class BoardGUI extends ScrollPane {
 //                currCellBoardButton.disableProperty().bind(Bindings.and(appController.getGameManager().isGameActiveProperty().not(),
 //                        appController.isGameInReplayModeProperty().not()));
                 currCellBoardButton.disableProperty().bind(appController.isShowBoardProperty().not());
+                //                currCellBoardButton.disableProperty().bind(Bindings.or(appController.isShowBoardProperty().not(), appController.getGameManager().isGameActiveProperty().not()));
 //                currCellBoardButton.disableProperty().bind(isGameActive.not());
 //                 cellBoardButtons[i][j].setDisable();
                 GridPane.setHalignment(currCellBoardButton, javafx.geometry.HPos.CENTER);
@@ -131,8 +139,6 @@ public class BoardGUI extends ScrollPane {
         setContent(gridPane);
         gridPane.autosize();
     }
-
-
 
     public void initBoardButtons(Board gameBoard){
         Disc currDisc;
@@ -231,12 +237,23 @@ public class BoardGUI extends ScrollPane {
                         scaleTransition.setToY(1);
                         scaleTransition.setAutoReverse(true);
                         scaleTransition.setCycleCount(3);
+//                        boardController.isScaleAnimationsInPlayProperty().setValue(true);
+//                        boardController.disableReplayMode(true);
+                        scaleTransitionList.add(scaleTransition);
                         scaleTransition.play();
+                        scaleTransition.setOnFinished(event -> {
+//                            boardController.disableReplayMode(false);
+//                            boardController.isScaleAnimationsInPlayProperty().setValue(false);
+                            if(scaleTransitionList.contains(event.getSource()))
+                                scaleTransitionList.remove(event.getSource());
+                        });
                     }
                 }
             }
         }
     }
+
+
 
     public void updateBoard(Board gameBoard, boolean isTutorialMode, boolean isAnimationsEnabled) {
         Disc currDisc;
@@ -313,5 +330,22 @@ public class BoardGUI extends ScrollPane {
 
     public void setCellBoardButtons(CellBoardButton[][] _cellBoardButtons) {
         cellBoardButtons = _cellBoardButtons;
+    }
+
+    public void stopScaleAnimations() {
+        for (ScaleTransition scaleTransition : scaleTransitionList) {
+            scaleTransition.stop();
+        }
+
+        scaleTransitionList.clear();
+
+        for (int i = 0; i < rowsCount; i++) {
+            for (int j = 0; j < columnsCount; j++) {
+                if(cellBoardButtons[i][j].getGraphic() != null) {
+                    cellBoardButtons[i][j].getGraphic().setScaleX(1);
+                    cellBoardButtons[i][j].getGraphic().setScaleY(1);
+                }
+            }
+        }
     }
 }
