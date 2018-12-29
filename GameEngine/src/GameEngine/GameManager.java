@@ -146,12 +146,19 @@ public class GameManager implements Serializable
 
     public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
     {
+        int nextActivePlayer;
+
         if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
             currTurn.retiredPlayer = quitter;
             addTurnToHistory(currTurn);
             discTypeToPlayer.remove(quitter.getDiscType());
             playersList.remove(quitter);
-            activePlayer = playersList.get(activePlayerIndex % playersList.size());
+
+            if(activePlayerIndex > playersList.size() - 1){ // new line
+                activePlayerIndex = 0; // new line
+            }
+            //activePlayer = playersList.get(activePlayerIndex % playersList.size());
+            activePlayer = playersList.get(activePlayerIndex); // changed
             currTurn = getCurrentTurn();
         }
     }
