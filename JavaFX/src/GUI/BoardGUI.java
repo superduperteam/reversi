@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -30,10 +31,10 @@ public class BoardGUI extends ScrollPane {
     private int rowsCount;
     private int columnsCount;
     private List<ScaleTransition> scaleTransitionList;
-
+    private final ScrollPane boardScrollPane;
     public BoardGUI(Board gameBoard, AppController appController) {
         scaleTransitionList = new ArrayList<>();
-
+        boardScrollPane = new ScrollPane();
         //isGameActive = appController.getGameManager().isGameActiveProperty();
         boardController = new BoardController(appController, this);
         appController.setBoardController(boardController);
@@ -49,8 +50,8 @@ public class BoardGUI extends ScrollPane {
 
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        setFitToHeight(true);
-        setFitToWidth(true);
+//        setFitToHeight(true);
+//        setFitToWidth(true);
         setMaxHeight(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65))); // used to be USE_PREF_ -> then used to be 600
         setMaxWidth(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65))); // used to be USE_PREF_ -> then used to be 600
 
@@ -135,7 +136,11 @@ public class BoardGUI extends ScrollPane {
                 }
             }
         }
-
+        //boardScrollPane.setContent(gridPane);
+        //gridPane.setPrefHeight(1000);
+        //gridPane.setPrefWidth(1000);
+        gridPane.setPrefHeight(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65)) - 3); // used to be USE_PREF_ -> then used to be 600
+        gridPane.setPrefWidth(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65)) - 3);
         setContent(gridPane);
         gridPane.autosize();
     }
