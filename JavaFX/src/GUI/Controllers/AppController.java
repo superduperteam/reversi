@@ -176,6 +176,9 @@ public class AppController {
         replayModeButton.setDisable(true);
         isShowBoard.setValue(true);
         updateGUI();
+        if(!gameManager.getActivePlayer().isHuman()){
+            simulateComputerTurns();
+        }
         //boardGUI.setIsGameActive(true);
     }
 
