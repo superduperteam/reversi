@@ -50,14 +50,6 @@ public class AppController {
     @FXML private ComboBox skinComboBox;
     @FXML private ProgressBar loadProgressBar;
 
-    public Button getReplayModePrevButton() {
-        return replayModePrevButton;
-    }
-
-    public Button getReplayModeNextButton() {
-        return replayModeNextButton;
-    }
-
     public BooleanProperty getDidStartGameProperty() {
         return didStartGame;
     }
@@ -184,6 +176,9 @@ public class AppController {
         replayModeButton.setDisable(true);
         isShowBoard.setValue(true);
         updateGUI();
+        if(!gameManager.getActivePlayer().isHuman()){
+            simulateComputerTurns();
+        }
         //boardGUI.setIsGameActive(true);
     }
 
@@ -402,28 +397,42 @@ public class AppController {
         replayModePrevButton.setDisable(!replayTurnIterator.hasPrevious());
     }
 
-    public void showPrevTurn() {
+    public Button getReplayModePrevButton() {
+        return replayModePrevButton;
+    }
+
+    public Button getReplayModeNextButton() {
+        return replayModeNextButton;
+    }
+
+    private void showPrevTurn() {
         if(replayTurnIterator.hasPrevious()){
             Turn currTurnToShow = replayTurnIterator.previous();
-            showTurnInGIU(currTurnToShow, false);
             replayModeNextButton.setDisable(false);
+            updateReplayModePrevNextButtons();
+            showTurnInGIU(currTurnToShow, false);
+//            replayModeNextButton.setDisable(false);
 
             updateReplayModePrevNextButtons();
         }
     }
 
-    public void showNextTurn() {
+    private void showNextTurn() {
         if(replayTurnIterator.hasNext()){
+            replayTurnIterator.next();
             if(replayTurnIterator.hasNext()){
-                replayTurnIterator.next();
                 Turn currTurnToShow = replayTurnIterator.next();
                 replayTurnIterator.previous();
-                showTurnInGIU(currTurnToShow,animationsCheckBox.isSelected());
                 replayModePrevButton.setDisable(false);
+                updateReplayModePrevNextButtons();
+                showTurnInGIU(currTurnToShow,animationsCheckBox.isSelected());
+//                replayModePrevButton.setDisable(false);
+            }
+            else{
+                updateReplayModePrevNextButtons();
             }
 
-
-            updateReplayModePrevNextButtons();
+            //updateReplayModePrevNextButtons();
         }
     }
 

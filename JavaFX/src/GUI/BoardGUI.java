@@ -7,8 +7,6 @@ import javafx.animation.FillTransition;
 import javafx.animation.ScaleTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.ContentDisplay;
@@ -258,11 +256,14 @@ public class BoardGUI extends ScrollPane {
 
 
     public void updateBoard(Board gameBoard, boolean isTutorialMode, boolean isAnimationsEnabled) {
+        boolean isFirstAnimation = true;
         Disc currDisc;
         CellBoard currCellBoard;
         CellBoardButton currButton;
         Circle currGUIDisc;
         Color oldColor, newColor;
+        boolean prevButtonState = boardController.getAppController().getReplayModePrevButton().isDisabled();
+        boolean nextButtonState = boardController.getAppController().getReplayModeNextButton().isDisabled();
 
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; j++) {
@@ -290,27 +291,26 @@ public class BoardGUI extends ScrollPane {
                         newColor = boardController.discTypeToColor(currDisc.getType());
                         currGUIDisc = (Circle) currButton.getGraphic();
 
-                        if(isAnimationsEnabled){
-                            oldColor = (Color)currGUIDisc.getFill();
+                        if(isAnimationsEnabled) {
+                            oldColor = (Color) currGUIDisc.getFill();
                             FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
+//                            ft.play();
 
-                            if(boardController.getAppController().isInReplayMode()) {
-                                boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(null);
-                                boardController.getAppController().getReplayModeNextButton().setOpacity(0.4);
-                                boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(null);
-                                boardController.getAppController().getReplayModePrevButton().setOpacity(0.4);
-                                ft.setOnFinished(event -> {
-                                    boardController.getAppController().getReplayModeNextButton().setOnMouseClicked(event1 ->
-                                            boardController.getAppController().showNextTurn());
-                                    boardController.getAppController().getReplayModePrevButton().setOnMouseClicked(event1 ->
-                                            boardController.getAppController().showPrevTurn());
-                                    boardController.getAppController().getReplayModeNextButton().setOpacity(1);
-                                    boardController.getAppController().getReplayModePrevButton().setOpacity(1);
+                            if (boardController.getAppController().isInReplayMode()) {
+                                boardController.getAppController().getReplayModePrevButton().setDisable(true);
+                                boardController.getAppController().getReplayModeNextButton().setDisable(true);
 
-                                });
+                                if (isFirstAnimation) {
+                                    ft.setOnFinished(event -> {
+                                        boardController.getAppController().getReplayModePrevButton().setDisable(prevButtonState);
+                                        boardController.getAppController().getReplayModeNextButton().setDisable(nextButtonState);
+                                    });
+                                }
+
+                                isFirstAnimation = false;
                             }
-                            ft.play();
 
+                            ft.play();
                         }
                         else{
                             currGUIDisc.setFill(newColor);
