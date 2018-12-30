@@ -394,11 +394,21 @@ public class AppController {
         replayModePrevButton.setDisable(!replayTurnIterator.hasPrevious());
     }
 
+    public Button getReplayModePrevButton() {
+        return replayModePrevButton;
+    }
+
+    public Button getReplayModeNextButton() {
+        return replayModeNextButton;
+    }
+
     private void showPrevTurn() {
         if(replayTurnIterator.hasPrevious()){
             Turn currTurnToShow = replayTurnIterator.previous();
-            showTurnInGIU(currTurnToShow, false);
             replayModeNextButton.setDisable(false);
+            updateReplayModePrevNextButtons();
+            showTurnInGIU(currTurnToShow, false);
+//            replayModeNextButton.setDisable(false);
 
             updateReplayModePrevNextButtons();
         }
@@ -406,16 +416,21 @@ public class AppController {
 
     private void showNextTurn() {
         if(replayTurnIterator.hasNext()){
+            replayTurnIterator.next();
             if(replayTurnIterator.hasNext()){
-                replayTurnIterator.next();
                 Turn currTurnToShow = replayTurnIterator.next();
                 replayTurnIterator.previous();
-                showTurnInGIU(currTurnToShow,animationsCheckBox.isSelected());
                 replayModePrevButton.setDisable(false);
+                updateReplayModePrevNextButtons();
+                showTurnInGIU(currTurnToShow,animationsCheckBox.isSelected());
+//                replayModePrevButton.setDisable(false);
+            }
+            else{
+                updateReplayModePrevNextButtons();
             }
 
 
-            updateReplayModePrevNextButtons();
+            //updateReplayModePrevNextButtons();
         }
     }
 

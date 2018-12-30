@@ -256,11 +256,14 @@ public class BoardGUI extends ScrollPane {
 
 
     public void updateBoard(Board gameBoard, boolean isTutorialMode, boolean isAnimationsEnabled) {
+        boolean isFirstAnimation = true;
         Disc currDisc;
         CellBoard currCellBoard;
         CellBoardButton currButton;
         Circle currGUIDisc;
         Color oldColor, newColor;
+        boolean prevButtonState = boardController.getAppController().getReplayModePrevButton().isDisabled();
+        boolean nextButtonState = boardController.getAppController().getReplayModeNextButton().isDisabled();
 
         for (int i = 0; i < rowsCount; i++) {
             for (int j = 0; j < columnsCount; j++) {
@@ -288,9 +291,25 @@ public class BoardGUI extends ScrollPane {
                         newColor = boardController.discTypeToColor(currDisc.getType());
                         currGUIDisc = (Circle) currButton.getGraphic();
 
-                        if(isAnimationsEnabled){
-                            oldColor = (Color)currGUIDisc.getFill();
+                        if(isAnimationsEnabled) {
+                            oldColor = (Color) currGUIDisc.getFill();
                             FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
+//                            ft.play();
+
+                            if (boardController.getAppController().isInReplayMode()) {
+                                boardController.getAppController().getReplayModePrevButton().setDisable(true);
+                                boardController.getAppController().getReplayModeNextButton().setDisable(true);
+
+                                if (isFirstAnimation) {
+                                    ft.setOnFinished(event -> {
+                                        boardController.getAppController().getReplayModePrevButton().setDisable(prevButtonState);
+                                        boardController.getAppController().getReplayModeNextButton().setDisable(nextButtonState);
+                                    });
+                                }
+
+                                isFirstAnimation = false;
+                            }
+
                             ft.play();
                         }
                         else{
