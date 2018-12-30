@@ -429,7 +429,6 @@ public class AppController {
                 updateReplayModePrevNextButtons();
             }
 
-
             //updateReplayModePrevNextButtons();
         }
     }
