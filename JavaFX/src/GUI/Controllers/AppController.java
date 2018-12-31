@@ -354,7 +354,7 @@ public class AppController {
 //            }
             if(isGameInReplayMode.get()){
                 boardController.updateGIUDiscs(replayTurnIterator.next().getBoard(),
-                        isTutorialMode, animationsCheckBox.isSelected());
+                        isTutorialMode, false);
                 replayTurnIterator.previous();
             }
             else{
