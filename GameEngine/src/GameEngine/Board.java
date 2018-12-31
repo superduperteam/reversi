@@ -21,9 +21,6 @@ public class Board implements Serializable
 
 
 
-    public CellBoard get(int row, int column){
-        return board[row][column];
-    }
 
     public Board(int height, int width, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
