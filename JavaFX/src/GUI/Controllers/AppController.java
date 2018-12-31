@@ -215,20 +215,6 @@ public class AppController {
             isShowBoard.setValue(false);
             initTable();
         }
-
-//        setGameManager(loadFileTask.getGameManager());
-//        if(gameManager != null) {
-//            updateGameModeLabel();
-////            startGameButton.visibleProperty().bind(gameManager.isGameActiveProperty().not());
-//            //startGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty(), isGameInReplayMode));
-//            endGameButton.disableProperty().bind(Bindings.or(gameManager.isGameActiveProperty().not(), isGameInReplayMode));
-//            BoardGUI boardGUI = new BoardGUI(gameManager.getBoard(), this);
-//            boardParent.setCenter(boardGUI);
-//            boardParent.setAlignment(boardGUI, javafx.geometry.Pos.TOP_CENTER);
-//            didLoadXmlFile.set(true);
-//            isShowBoard.setValue(false);
-//            initTable();
-//
     }
 
     private void updateGameModeLabel(){
