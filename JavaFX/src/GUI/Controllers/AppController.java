@@ -486,15 +486,6 @@ public class AppController {
         statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
     }
 
-    private void onUndoClick() {
-        gameManager.undo();
-        updateGUI();
-
-        if(!gameManager.getActivePlayer().isHuman()){
-            simulateComputerTurns();
-        }
-    }
-
     private void initTable() {
         statsComponentController.setPlayers(gameManager.getPlayersList(), gameManager.getActivePlayer());
     }
@@ -567,6 +558,17 @@ public class AppController {
         Thread thread = new Thread(new ComputerMoveTask(gameManager, this));
         thread.start();
 //        try{thread.join();} catch (InterruptedException e) { e.printStackTrace(); }
+    }
+
+    private void onUndoClick() {
+        gameManager.undo();
+
+        boardController.updateGIUDiscs(gameManager.getBoard(), isTutorialMode, false);
+        statsComponentController.refreshTable(gameManager.getPlayersList(), gameManager.getActivePlayer());
+
+        if(!gameManager.getActivePlayer().isHuman()){
+            simulateComputerTurns();
+        }
     }
 
     public void updateEndTurn(){
