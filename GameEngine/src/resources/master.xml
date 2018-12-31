@@ -26,7 +26,7 @@
 	<Players>
 		<Player id="233">
 			<Name>Mushon</Name>
-			<Type>Computer</Type>
+			<Type>Human</Type>
 		</Player>
 		<Player id="143">
 			<Name>Menash</Name>
