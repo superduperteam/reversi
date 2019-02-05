@@ -142,6 +142,7 @@ public class BoardGUI extends ScrollPane {
         gridPane.setPrefHeight(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65)) - 3); // used to be USE_PREF_ -> then used to be 600
         gridPane.setPrefWidth(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65)) - 3);
         setContent(gridPane);
+        
         gridPane.autosize();
     }
 
