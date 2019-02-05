@@ -1,0 +1,45 @@
+.backgroundImage {
+    background-image: url("../images/4683.jpg"); /* The image used */
+    background-color: #cccccc; /* Used if the image is unavailable */
+    height: 100%;/* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    background-position: top;
+}
+
+.backgroundImageLobby {
+    background-image: url("../images/lobby.jpg"); /* The image used */
+    background-color: #cccccc; /* Used if the image is unavailable */
+    height: 100%;/* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    background-position: top;
+}
+
+.reversiSmallImage {
+    height: 220px;
+    width: 220px;
+}
+
+.lobbyNavHeader {
+    font-size: 200%;
+}
+
+.lobbyTextBackground {
+    background-color: rgba(255, 255, 255, 0.35);
+    margin-top: 100px;
+}
+
+.lobbyNav{
+    font-size: 120%;
+}
+
+.paragraphHeader{
+    font-weight: bolder;
+}
+
+.paragraphText{
+    font-weight: bold;
+}

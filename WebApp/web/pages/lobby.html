@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reversi</title>
+    <link rel="icon" href="../assets/images/reversi-small-img.png">
+    <title>Reversi</title>
+    <link href="../assets/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/bootstrap/ido.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <script src="../assets/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../assets/javascript/lobby.js"></script>
+    <script src="../assets/javascript/loadXmlFile.js"></script>
+    <script src="../assets/javascript/createRoom.js"></script>
+    <script src="../assets/javascript/logout.js"></script>
+</head>
+
+<body class="text-center backgroundImageLobby" style="background-color: #EFEFEF;">
+    <nav class="navbar navbar-expand navbar-dark bg-primary mb-4" style="flex-direction: column">
+        <a class="navbar-brand lobbyNavHeader" href="../pages/lobby.html">Reversi</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+            <ul class="navbar-nav mr-auto lobbyNav">
+                <li class="nav-item active">
+                    <a class="nav-link lobbyNav" href="../pages/onlinePlayers.html">Who's Online? <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link lobbyNav" href="availableRooms.html">Available Rooms</a>
+                </li>
+                <li class="nav-item active">
+                    <button class="nav-link btn btn-link lobbyNav" type="button" data-toggle="modal" data-target="#newRoomModal">Create Room</button>
+                </li>
+            </ul>
+            <div class="nav-item dropdown show">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="far fa-user" style="color: white"></i>
+                    <span id="navBarPlayerName" style="color: white"></span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                    <button id="logoutButton" class="dropdown-item" type="button" style="text-align: center;">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main role="main" class="container">
+        <div class="lobbyTextBackground">
+            <h1 class="paragraphHeader"> Welcome <span id="mainPlayerName"></span>!</h1>
+            <p class="lead paragraphText"><b>Who's Online? - See all signed up players. </br> Press Available Rooms to join a room and to start the fun.
+                </br>Press Create Room and create your own game with your own rules.</b>
+            </p>
+        </div>
+    </main>
+    <div class="modal fade" id="newRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">New Room</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="loadXmlFileDiv" class="input-group mb-3">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span id="loadXmlFileButton" class="btn btn-primary" type="button"> Load XML File
+                                    <input id="xmlFile" type="file" accept="text/xml" style="display: none;">
+                                </span>
+                            </label>
+                            <input id="xmlFileName" type="text" class="form-control" readonly="">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Room Name</span>
+                        </div>
+                        <input id="roomName" type="text" class="form-control" readonly="">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Variant</span>
+                        </div>
+                        <input id="variant" type="text" class="form-control" readonly="">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Board Rows</span>
+                        </div>
+                        <input id="boardRows" type="text" class="form-control" readonly="">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Board Columns</span>
+                        </div>
+                        <input id="boardCols" type="text" class="form-control" readonly="">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Target</span>
+                        </div>
+                        <input id="target" type="text" class="form-control" readonly="">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Total Players</span>
+                        </div>
+                        <input id="totalPlayers" type="text" class="form-control" readonly="">
+                    </div>
+                </div>
+                <div id="modalFooter" class="modal-footer">
+                    <button id="createRoomButton" type="button" class="btn btn-primary" disabled="">Create Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

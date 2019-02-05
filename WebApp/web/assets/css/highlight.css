@@ -1,0 +1,8 @@
+.highlight:hover {
+    cursor: pointer;
+}
+
+.highlight:hover rect {
+    fill: #3399FF !important;
+}
+
