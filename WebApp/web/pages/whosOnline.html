@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>N In A Row</title>
-    <link rel="icon" href="../assets/images/game-icon.ico">
-    <title>N In A Row</title>
+    <title>Reversi</title>
+    <link rel="icon" href="../assets/images/reversi-icon.png">
+    <title>Reversi</title>
     <link href="../assets/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/bootstrap/ido.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <script src="../assets/jquery/jquery-3.3.1.min.js"></script>
     <script src="../assets/bootstrap/bootstrap.bundle.min.js"></script>
@@ -14,26 +15,26 @@
     <script src="../assets/javascript/createRoom.js"></script>
     <script src="../assets/javascript/logout.js"></script>
 </head>
-<body style="background-color: #EFEFEF;">
-    <nav class="navbar navbar-expand navbar-dark bg-dark mb-4">
-        <a class="navbar-brand" href="../pages/lobby.html">N In A Row</a>
+<body class= "backgroundImageWhosOnline" style="background-color: #EFEFEF;">
+    <nav class="navbar navbar-expand navbar-dark bg-primary mb-4" style="flex-direction: column">
+        <a class="navbar-brand lobbyNavHeader" href="../pages/lobby.html">Reversi</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarsExample02">
-            <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse lobbyNav" id="navbarsExample02">
+            <ul class="navbar-nav mr-auto lobbyNav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="../pages/onlinePlayers.html">Online Players <span class="sr-only">(current)</span></a>
+                    <a class="nav-link lobbyNav" href="../pages/whosOnline.html">Who's Online? <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="availableRooms.html">Available Rooms</a>
+                    <a class="nav-link lobbyNav" href="availableRooms.html">Available Rooms</a>
                 </li>
-                <li class="nav-item active">
-                    <button class="nav-link btn btn-link" type="button" data-toggle="modal" data-target="#newRoomModal">Create Room</button>
+                <li class="nav-item active lobbyNav">
+                    <button class="nav-link btn btn-link lobbyNav" type="button" data-toggle="modal" data-target="#newRoomModal">Create Room</button>
                 </li>
             </ul>
             <div class="nav-item dropdown show">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="far fa-user" style="color: white"></i>
                     <span id="navBarPlayerName" style="color: white"></span>
                 </button>
@@ -44,7 +45,7 @@
         </div>
     </nav>
     <main role="main" class="container" style="width: 800px">
-        <div class="jumbotron" style="background-color: #D2D2D2">
+        <div class="jumbotron" style="background-color: #f4f4f4">
             <ul id="onlinePlayers" class="list-group" style="text-align: center;">
 
             </ul>
