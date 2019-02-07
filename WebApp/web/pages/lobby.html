@@ -55,18 +55,18 @@
     </main>
     <div class="modal fade" id="newRoomModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content" style="width: 1500px;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">New Room</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body createRoomForm">
                     <div id="loadXmlFileDiv" class="input-group mb-3">
                         <div class="input-group">
-                            <label class="input-group-btn">
-                                <span id="loadXmlFileButton" class="btn btn-primary" type="button"> Load XML File
+                            <label class="input-group-btn" style="margin-bottom:0px;">
+                                <span id="loadXmlFileButton" class="btn btn-primary" type="button" style="padding-bottom:14px;"> Load XML File
                                     <input id="xmlFile" type="file" accept="text/xml" style="display: none;">
                                 </span>
                             </label>
@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 <div id="modalFooter" class="modal-footer">
-                    <button id="createRoomButton" type="button" class="btn btn-primary" disabled="">Create Room</button>
+                    <button id="createRoomButton" type="button" class="btn btn-primary btn-success" disabled="">Create Room</button>
                 </div>
             </div>
         </div>

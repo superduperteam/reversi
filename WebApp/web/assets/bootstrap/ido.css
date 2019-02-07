@@ -63,3 +63,11 @@
 .paragraphText{
     font-weight: bold;
 }
+
+.createRoomForm {
+    display: flex;
+}
+
+.xmlButton {
+    padding-bottom: 14px;
+}
