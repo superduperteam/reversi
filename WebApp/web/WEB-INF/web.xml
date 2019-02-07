@@ -7,8 +7,49 @@
         <servlet-name>SignupServlet</servlet-name>
         <servlet-class>game.servlets.signup.SignupServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>game.servlets.lobby.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>XmlFileLoaderServlet</servlet-name>
+        <servlet-class>game.servlets.lobby.XmlFileLoaderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>OnlinePlayersServlet</servlet-name>
+        <servlet-class>game.servlets.lobby.OnlinePlayersServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>NewRoomServlet</servlet-name>
+        <servlet-class>game.servlets.lobby.NewRoomServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AvailableRoomsServlet</servlet-name>
+        <servlet-class>game.servlets.lobby.AvailableRoomsServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>XmlFileLoaderServlet</servlet-name>
+        <url-pattern>/xmlFileLoader</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OnlinePlayersServlet</servlet-name>
+        <url-pattern>/whosOnline</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NewRoomServlet</servlet-name>
+        <url-pattern>/newRoom</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AvailableRoomsServlet</servlet-name>
+        <url-pattern>/availableRooms</url-pattern>
+    </servlet-mapping>
+
 </web-app>

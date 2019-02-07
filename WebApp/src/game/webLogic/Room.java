@@ -3,6 +3,8 @@ package game.webLogic;
 //import game.logic.GameManager;
 //import game.webLogic.xml.generated.GameDescriptor;
 
+import GameEngine.GameManager;
+
 public class Room {
 
     private String roomName;
@@ -10,40 +12,27 @@ public class Room {
     private String variant;
     private int boardRows;
     private int boardCols;
-    private int target;
     private int totalPlayers;
     private int joinedPlayersNum = 0;
-    //private GameManager gameManager = null;
     private boolean isGameActive = false;
 
-    public Room(String roomName, String uploaderName, String variant, int boardRows, int boardCols, int target, int totalPlayers) {
+    public Room(String roomName, String uploaderName, String variant, int boardRows, int boardCols, int totalPlayers) {
         this.roomName = roomName;
         this.uploaderName = uploaderName;
         this.variant = variant;
         this.boardRows = boardRows;
         this.boardCols = boardCols;
-        this.target = target;
         this.totalPlayers = totalPlayers;
     }
 
-//    public Room(GameDescriptor gameDescriptor) {
-//        roomName = gameDescriptor.getDynamicPlayers().getGameTitle();
-//        variant = gameDescriptor.getGame().getVariant();
-//        boardRows = gameDescriptor.getGame().getBoard().getRows();
-//        boardCols = gameDescriptor.getGame().getBoard().getColumns();
-//        target = gameDescriptor.getGame().getTarget();
-//        totalPlayers = gameDescriptor.getDynamicPlayers().getTotalPlayers();
-//    }
-
-    public void createGameManager() {
-//        if(gameManager == null) {
-//            gameManager = new GameManager(boardRows, boardCols, variant, target);
-//        }
+    public Room(GameManager gameManager, String roomName,  String uploaderName){
+        this.roomName = roomName;
+        this.uploaderName = uploaderName;
+        this.variant = gameManager.getGameMode().toString();
+        this.boardRows = gameManager.getBoard().getHeight();
+        this.boardCols = gameManager.getBoard().getWidth();
+        this.totalPlayers = gameManager.getPlayersList().size();
     }
-
-//    public GameManager getGameManager() {
-//        return gameManager;
-//    }
 
     public String getRoomName() {
         return roomName;

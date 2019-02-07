@@ -4,7 +4,7 @@ function getOnlinePlayers() {
     $.ajax({
         data: "",
         type: "GET",
-        url: "../onlinePlayers",
+        url: "../whosOnline",
         timeout: 2000,
         error: function () {
             console.error("Failed to get ajax response");

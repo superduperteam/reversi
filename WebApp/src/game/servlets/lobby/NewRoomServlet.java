@@ -23,11 +23,10 @@ public class NewRoomServlet extends HttpServlet {
         String variant = request.getParameter("variant");
         int boardRows = Integer.parseInt(request.getParameter("boardRows"));
         int boardCols = Integer.parseInt(request.getParameter("boardCols"));
-        int target = Integer.parseInt(request.getParameter("target"));
         int totalPlayers = Integer.parseInt(request.getParameter("totalPlayers"));
 
-        Room room = new Room(roomName, uploaderName, variant, boardRows, boardCols, target, totalPlayers);
-        room.createGameManager();
+        Room room = new Room(roomName, uploaderName, variant, boardRows, boardCols, totalPlayers);
+        //room.createGameManager();
         roomsManager.addRoom(room);
 
         MessageJson messageJson = new MessageJson(true, "The room " + roomName + " was created successfully");

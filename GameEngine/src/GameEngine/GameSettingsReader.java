@@ -133,7 +133,7 @@ public class GameSettingsReader {
 //        return null; // ## throw execption
 //    }
 
-    private GameManager extractGameSettings(InputStream xmlStream) throws RowsNotInRangeException,
+    public GameManager extractGameSettings(InputStream xmlStream) throws RowsNotInRangeException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, PlayersInitPositionsOverrideEachOtherException,
             BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException,
             OutOfRangeNumberOfPlayersException, TooManyInitialPositionsException, ThereAreAtLeastTwoPlayersWithSameID

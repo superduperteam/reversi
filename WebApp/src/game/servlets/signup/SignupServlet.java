@@ -42,7 +42,7 @@ public class SignupServlet extends HttpServlet {
                     sessionHandler.setPlayerName(request, playerName);
                     sessionHandler.setIsPlayerComputer(request, isComputer.equals("true"));
 
-                    messageJson = new MessageJson(true, playerName + " has signed up successfully");
+                    messageJson = new MessageJson(true, "");
                 }
                 else {
                     messageJson = new MessageJson(false, playerName + " is already exists");
