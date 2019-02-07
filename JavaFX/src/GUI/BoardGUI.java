@@ -142,7 +142,6 @@ public class BoardGUI extends ScrollPane {
         gridPane.setPrefHeight(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65)) - 3); // used to be USE_PREF_ -> then used to be 600
         gridPane.setPrefWidth(Math.min(Math.max(600,85*rowsCount),Math.min(screenBounds.getHeight()*0.9,screenBounds.getWidth()*0.65)) - 3);
         setContent(gridPane);
-        
         gridPane.autosize();
     }
 
@@ -296,30 +295,35 @@ public class BoardGUI extends ScrollPane {
                     else { // the circle already there, just changing it's color..
                         newColor = boardController.discTypeToColor(currDisc.getType());
                         currGUIDisc = (Circle) currButton.getGraphic();
+                        oldColor = (Color) currGUIDisc.getFill();
 
-                        if(isAnimationsEnabled) {
-                            oldColor = (Color) currGUIDisc.getFill();
-                            FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
+                        if(!newColor.equals(oldColor))
+                        {
+                            if (isAnimationsEnabled)
+                            {
+                                FillTransition ft = new FillTransition(Duration.millis(550), currGUIDisc, oldColor, newColor);
 //                            ft.play();
 
-                            if (boardController.getAppController().isInReplayMode()) {
-                                boardController.getAppController().getReplayModePrevButton().setDisable(true);
-                                boardController.getAppController().getReplayModeNextButton().setDisable(true);
+                                if (boardController.getAppController().isInReplayMode()) {
+                                    boardController.getAppController().getReplayModePrevButton().setDisable(true);
+                                    boardController.getAppController().getReplayModeNextButton().setDisable(true);
 
-                                if (isFirstAnimation) {
-                                    ft.setOnFinished(event -> {
-                                        boardController.getAppController().getReplayModePrevButton().setDisable(prevButtonState);
-                                        boardController.getAppController().getReplayModeNextButton().setDisable(nextButtonState);
-                                    });
+                                    if (isFirstAnimation) {
+                                        ft.setOnFinished(event -> {
+                                            boardController.getAppController().getReplayModePrevButton().setDisable(prevButtonState);
+                                            boardController.getAppController().getReplayModeNextButton().setDisable(nextButtonState);
+                                        });
+                                    }
+
+                                    isFirstAnimation = false;
                                 }
 
-                                isFirstAnimation = false;
+                                ft.play();
                             }
-
-                            ft.play();
-                        }
-                        else{
-                            currGUIDisc.setFill(newColor);
+                            else
+                                {
+                                currGUIDisc.setFill(newColor);
+                            }
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package GameEngine;
 
 public class CellBoard {
+    private int flipPotential = 0;
     private Disc disc;
     private int countOfFlipsPotential;
 
@@ -10,6 +11,14 @@ public class CellBoard {
 
     public void setCountOfFlipsPotential(int countOfFlipsPotential){
         this.countOfFlipsPotential = countOfFlipsPotential;
+    }
+
+    public int getFlipPotential() {
+        return flipPotential;
+    }
+
+    public void setFlipPotential(int flipPotential) {
+        this.flipPotential = flipPotential;
     }
 
     public Disc getDisc() {

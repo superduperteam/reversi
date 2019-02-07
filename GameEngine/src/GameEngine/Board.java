@@ -18,6 +18,10 @@ public class Board implements Serializable
         this(board.getRows(), board.getColumns(), initialDiscPointsOfPlayers, gameMode);
     }
 
+
+
+
+
     public Board(int height, int width, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
         this.height = height;
