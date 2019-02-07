@@ -94,7 +94,9 @@ public class XmlFileLoaderServlet extends HttpServlet {
         } catch (PlayersInitPositionsOverrideEachOtherException e) {
             MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
-        }
+        } catch (InvalidNumberOfPlayersException e) {
+            MessageJson messageJson = new MessageJson(false, e.toString());
+            jsonManager.sendJsonOut(response, messageJson);        }
     }
 
     @Override

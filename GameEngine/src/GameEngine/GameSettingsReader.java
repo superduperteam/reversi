@@ -28,7 +28,7 @@ public class GameSettingsReader {
     public GameManager readGameSettings(Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, NoXMLFileException, PlayersInitPositionsOutOfRangeException, PlayersInitPositionsOverrideEachOtherException,
             RowsNotInRangeException, PlayerHasNoInitialPositionsException, OutOfRangeNumberOfPlayersException, FileIsNotXML, TooManyInitialPositionsException,
-            ThereAreAtLeastTwoPlayersWithSameID {
+            ThereAreAtLeastTwoPlayersWithSameID, InvalidNumberOfPlayersException {
 
         // ## REMEMBER TO CHANGE .XML !!
         File xmlFile = new File(xmlFilePath.toString());//xmlFilePath.toString());
@@ -70,11 +70,11 @@ public class GameSettingsReader {
     {
         GameManager.eGameMode gameMode;
         GameEngine.Board board;
-        List<GameEngine.Player> playersList = createPlayersListFromGameDetails(gameDescriptor);
+        //List<GameEngine.Player> playersList = createPlayersListFromGameDetails(gameDescriptor);
 
-        board = createBoardFromGameDetails(gameDescriptor, playersList);
+        board = createBoardFromGameDetails(gameDescriptor);
         gameMode = getEGameMode(gameDescriptor);
-        GameManager gameManager = new GameManager(gameMode, board);
+        GameManager gameManager = new GameManager(gameMode, board, numberOfPlayers);
 
         return gameManager;
     }
@@ -92,7 +92,7 @@ public class GameSettingsReader {
         return playersList;
     }
 
-    private GameEngine.Board createBoardFromGameDetails(GameDescriptor gameDescriptor,  List<GameEngine.Player> playersList) {
+    private GameEngine.Board createBoardFromGameDetails(GameDescriptor gameDescriptor) {
         GameManager.eGameMode gameMode;
         int playerIndex = 0;
         List<Point> currInitialPointsList;
@@ -110,7 +110,7 @@ public class GameSettingsReader {
                 currInitialPointsList.add(new Point(position.getRow() - 1, position.getColumn() - 1));
             }
 
-            initialDiscsPointsOfPlayers.put(playersList.get(playerIndex), currInitialPointsList);
+            //initialDiscsPointsOfPlayers.put(playersList.get(playerIndex), currInitialPointsList);
             playerIndex++;
         }
 
@@ -136,14 +136,16 @@ public class GameSettingsReader {
     public GameManager extractGameSettings(InputStream xmlStream) throws RowsNotInRangeException,
             ColumnsNotInRangeException, IslandsOnRegularModeException, PlayersInitPositionsOverrideEachOtherException,
             BoardSizeDoesntMatchNumOfPlayersException, PlayersInitPositionsOutOfRangeException, PlayerHasNoInitialPositionsException,
-            OutOfRangeNumberOfPlayersException, TooManyInitialPositionsException, ThereAreAtLeastTwoPlayersWithSameID
+            OutOfRangeNumberOfPlayersException, TooManyInitialPositionsException, ThereAreAtLeastTwoPlayersWithSameID,
+            InvalidNumberOfPlayersException
     {
         try{
             GameDescriptor gamedDescriptor = deserializeFrom(xmlStream);
-            arePlayersIDsUnique(gamedDescriptor);
+            //arePlayersIDsUnique(gamedDescriptor);
             areNumberOfRowsInRange(gamedDescriptor);
             areNumberOfColsInRange(gamedDescriptor);
-            checkNumberOfPlayers(gamedDescriptor);
+            //checkNumberOfPlayers(gamedDescriptor);
+            areThereValidNumberOfPlayers(gamedDescriptor);
             doEachPlayerHasAtLeastOneInitialPoint(gamedDescriptor);
             doesBoardSizeMatchNumOfPlayers(gamedDescriptor);
             areIntialPositionsInRange(gamedDescriptor);
@@ -157,22 +159,22 @@ public class GameSettingsReader {
         }
     }
 
-    private void arePlayersIDsUnique(GameDescriptor gamedDescriptor) throws ThereAreAtLeastTwoPlayersWithSameID{
-        List<jaxb.schema.generated.Player> xmlPlayersList = gamedDescriptor.getPlayers().getPlayer();
-        HashSet<BigInteger> idsSet = new HashSet<>();
-        BigInteger currID;
-
-        for(jaxb.schema.generated.Player xmlPlayer : xmlPlayersList){
-            currID = new BigInteger(xmlPlayer.getId().toString());
-
-            if(!idsSet.contains(currID)) {
-                idsSet.add(currID);
-            }
-            else{
-                throw new ThereAreAtLeastTwoPlayersWithSameID();
-            }
-        }
-    }
+//    private void arePlayersIDsUnique(GameDescriptor gamedDescriptor) throws ThereAreAtLeastTwoPlayersWithSameID{
+//        List<jaxb.schema.generated.Player> xmlPlayersList = gamedDescriptor.getPlayers().getPlayer();
+//        HashSet<BigInteger> idsSet = new HashSet<>();
+//        BigInteger currID;
+//
+//        for(jaxb.schema.generated.Player xmlPlayer : xmlPlayersList){
+//            currID = new BigInteger(xmlPlayer.getId().toString());
+//
+//            if(!idsSet.contains(currID)) {
+//                idsSet.add(currID);
+//            }
+//            else{
+//                throw new ThereAreAtLeastTwoPlayersWithSameID();
+//            }
+//        }
+//    }
 
     private static GameDescriptor deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
@@ -208,12 +210,12 @@ public class GameSettingsReader {
 
     private void doEachPlayerHasAtLeastOneInitialPoint(GameDescriptor gameDescriptor) throws PlayerHasNoInitialPositionsException, TooManyInitialPositionsException
     {
-        List<jaxb.schema.generated.Player> playersList = gameDescriptor.getPlayers().getPlayer();
+        //List<jaxb.schema.generated.Player> playersList = gameDescriptor.getPlayers().getPlayer();
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
         List<Position> currPlayerInitialPositions;
 
-        if(playersList.size() == participantsList.size())
-        {
+        //if(playersList.size() == participantsList.size())
+        //{
             for(Participant participant : participantsList)
             {
                 currPlayerInitialPositions = participant.getPosition();
@@ -223,19 +225,19 @@ public class GameSettingsReader {
                     throw new PlayerHasNoInitialPositionsException();
                 }
             }
-        }
-        else if(playersList.size() > participantsList.size()){ // it means there is a player that doesn't have initial positions
-            throw new PlayerHasNoInitialPositionsException();
-        }
-        else {
-            throw new TooManyInitialPositionsException();
-        }
+        //}
+//        else if(playersList.size() > participantsList.size()){ // it means there is a player that doesn't have initial positions
+//            throw new PlayerHasNoInitialPositionsException();
+//        }
+//        else {
+//            throw new TooManyInitialPositionsException();
+//        }
     }
 
     private void areThereIslandsOnRegularMode(GameDescriptor gameDescriptor) throws IslandsOnRegularModeException {
         GameEngine.Board board;
-        List<GameEngine.Player> playersList= createPlayersListFromGameDetails(gameDescriptor);
-        board = createBoardFromGameDetails(gameDescriptor, playersList);
+        //List<GameEngine.Player> playersList= createPlayersListFromGameDetails(gameDescriptor);
+        board = createBoardFromGameDetails(gameDescriptor);
 
         if(getEGameMode(gameDescriptor) == GameManager.eGameMode.Regular) {
             for (int row = 0; row < board.getHeight(); ++row) {
@@ -248,6 +250,13 @@ public class GameSettingsReader {
                 }
             }
         }
+    }
+
+    public void areThereValidNumberOfPlayers (GameDescriptor gameDescriptor) throws InvalidNumberOfPlayersException {
+        numberOfPlayers = gameDescriptor.getDynamicPlayers().getTotalPlayers();
+
+        if(numberOfPlayers < 2 || numberOfPlayers > 4)
+            throw new InvalidNumberOfPlayersException();
     }
 
     private void areNumberOfColsInRange(GameDescriptor gamedDescriptor) throws ColumnsNotInRangeException

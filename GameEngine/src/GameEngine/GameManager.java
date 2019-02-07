@@ -19,13 +19,15 @@ public class GameManager implements Serializable
     private Player activePlayer;
     private Board board;
     private TurnHistory.Turn currTurn;
+    private int totalNumOfPlayers;
 
-    public GameManager(eGameMode gameMode, Board board)
+    public GameManager(eGameMode gameMode, Board board, int totalNumOfPlayers)
     {
         turnHistory = new TurnHistory();
         this.playersList = new ArrayList<>();
         this.gameMode = gameMode;
         this.board = board;
+        this.totalNumOfPlayers = totalNumOfPlayers;
     }
 
     public void calcFlipPotential(){
@@ -431,4 +433,6 @@ public class GameManager implements Serializable
     }
 
     public int getNumOfPlayers() { return playersList.size(); }
+
+    public int getTotalNumOfPlayers() { return totalNumOfPlayers; }
 }

@@ -34,6 +34,7 @@ public class Room {
         this.boardCols = gameManager.getBoard().getWidth();
         this.totalPlayers = gameManager.getPlayersList().size();
         this.gameManager = gameManager;
+        this.totalPlayers = gameManager.getTotalNumOfPlayers();
     }
 
     public String getRoomName() {
