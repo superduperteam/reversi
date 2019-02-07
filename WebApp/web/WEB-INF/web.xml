@@ -39,6 +39,10 @@
         <servlet-name>LeaveRoomServlet</servlet-name>
         <servlet-class>game.servlets.room.preGameStart.LeaveRoomServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>InitializeGameServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.InitializeGameServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
@@ -74,5 +78,9 @@
     <servlet-mapping>
         <servlet-name>LeaveRoomServlet</servlet-name>
         <url-pattern>/leaveRoom</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InitializeGameServlet</servlet-name>
+        <url-pattern>/initializeGame</url-pattern>
     </servlet-mapping>
 </web-app>

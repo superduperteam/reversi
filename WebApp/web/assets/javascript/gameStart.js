@@ -32,20 +32,20 @@ function initializeGame() {
         },
         success: function (json) {
             console.log("Got ajax response - initializing the game");
-
-            if(json.variant.variantType === "POPOUT") {
+            console.log(json);
+            if(json.variant === "Regular") {
                 $("#popoutVariant").css("display", "inline");
             }
 
-            for(var i = 0; i < json.players.length; i++) {
-                var currentPlayerName = json.players[i].playerName;
-                var currentPlayerType = json.players[i].playerType.toString();
-                var currentPlayerDiscType = json.players[i].discType;
+            for(var i = 0; i < json.playersList.length; i++) {
+                var currentPlayerName = json.playersList[i].playerName;
+                var isHuman = json.playersList[i].isHuman.toString();
+                var currentPlayerDiscType = json.playersList[i].discType;
 
-                $("#players").append("<div id=\"" + currentPlayerName + "Card" + "\" class=\"card\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
+                $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"card\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
                     "                <div class=\"card-body\">\n" +
-                    "                    <h5 class=\"card-title\">" + currentPlayerName + "</h5>\n" +
-                    "                    <h6 class=\"card-subtitle mb-2 text-muted\">" + currentPlayerType + "</h6>\n" +
+                    "                    <h5 class=\"card-title\">" + isHuman + "</h5>\n" +
+                    "                    <h6 class=\"card-subtitle mb-2 text-muted\">" + isHuman + "</h6>\n" +
                     "                    <br>\n" +
                     "                    <svg height=\"20\" width=\"80\">\n" +
                     "                        <rect width=\"80\", height=\"20\" style=\"fill:" + currentPlayerDiscType + "\"></rect>\n" +
@@ -58,18 +58,17 @@ function initializeGame() {
                     "            </div>");
             }
 
-            for(var i = 0; i < json.board.cols; i++) {
+            for(var i = 0; i < json.board.width; i++) {
                 var colID = "boardCol-" + i;
 
                 $("#board").append("<div id=\"" + colID + "\"></div>");
 
-                for(var j = 0; j < json.board.rows; j++) {
+                for(var j = 0; j < json.board.height; j++) {
                     var rowID = "boardRow-" + j;
 
                     $("#" + colID).append("<div>\n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
-                        "                           <rect width=\"100\", height=\"100\" style=\"fill: blue\"></rect>\n" +
-                        "                           <circle id=\"" + rowID + "\" cx=\"50\" cy=\"50\" r=\"45\" stroke=\"#0B4E72\" stroke-width=\"3\" style=\"fill: white\"></circle>\n" +
+                        "                           <rect width=\"100\", height=\"100\" style=\"fill: white;stroke:black;stroke-width:5\"></rect>\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -101,9 +100,9 @@ function getThisPlayer() {
             console.log("Got ajax response - this player is: " + json.playerName);
 
             playerName = json.playerName;
-            playerDiscColor = json.discType;
+            //playerDiscColor = json.discType;
 
-            if(json.playerType === "HUMAN") {
+            if(json.isHuman === true) {
                 isPlayerComputer = false;
             }
             else {
@@ -131,8 +130,8 @@ function getCurrentPlayerTurn() {
 
             isLastMoveExecuted = true;
             lastTurnPlayerName = json.playerName;
-            lastTurnPlayerDiscColor = json.discType;
-            lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
+            //lastTurnPlayerDiscColor = json.discType;
+            //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
 
             if(playerName === json.playerName) {
                 $("#turn").html(playerName + ", It's your turn");
