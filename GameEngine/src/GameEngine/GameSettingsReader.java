@@ -74,7 +74,7 @@ public class GameSettingsReader {
 
         board = createBoardFromGameDetails(gameDescriptor, playersList);
         gameMode = getEGameMode(gameDescriptor);
-        GameManager gameManager = new GameManager(gameMode, playersList, board);
+        GameManager gameManager = new GameManager(gameMode, board);
 
         return gameManager;
     }

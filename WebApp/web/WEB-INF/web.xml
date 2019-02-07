@@ -27,6 +27,18 @@
         <servlet-name>AvailableRoomsServlet</servlet-name>
         <servlet-class>game.servlets.lobby.AvailableRoomsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>JoinRoomServlet</servlet-name>
+        <servlet-class>game.servlets.lobby.JoinRoomServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RoomJoinedPlayersServlet</servlet-name>
+        <servlet-class>game.servlets.room.preGameStart.RoomJoinedPlayersServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LeaveRoomServlet</servlet-name>
+        <servlet-class>game.servlets.room.preGameStart.LeaveRoomServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
@@ -51,5 +63,16 @@
         <servlet-name>AvailableRoomsServlet</servlet-name>
         <url-pattern>/availableRooms</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>JoinRoomServlet</servlet-name>
+        <url-pattern>/joinRoom</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RoomJoinedPlayersServlet</servlet-name>
+        <url-pattern>/roomJoinedPlayers</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LeaveRoomServlet</servlet-name>
+        <url-pattern>/leaveRoom</url-pattern>
+    </servlet-mapping>
 </web-app>

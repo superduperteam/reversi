@@ -15,6 +15,7 @@ public class Room {
     private int totalPlayers;
     private int joinedPlayersNum = 0;
     private boolean isGameActive = false;
+    private GameManager gameManager = null;
 
     public Room(String roomName, String uploaderName, String variant, int boardRows, int boardCols, int totalPlayers) {
         this.roomName = roomName;
@@ -32,6 +33,7 @@ public class Room {
         this.boardRows = gameManager.getBoard().getHeight();
         this.boardCols = gameManager.getBoard().getWidth();
         this.totalPlayers = gameManager.getPlayersList().size();
+        this.gameManager = gameManager;
     }
 
     public String getRoomName() {
@@ -69,4 +71,6 @@ public class Room {
     public int getTotalPlayersNum() {
         return totalPlayers;
     }
+
+    public GameManager getGameManager() { return gameManager; }
 }

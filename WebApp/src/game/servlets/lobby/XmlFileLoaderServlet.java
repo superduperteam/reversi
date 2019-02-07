@@ -35,7 +35,7 @@ public class XmlFileLoaderServlet extends HttpServlet {
 
         ServletContextHandler servletContextHandler = new ServletContextHandler();
         GameDescriptor gameDescriptor;
-//        RoomsManager roomsManager;
+        RoomsManager roomsManager;
         StringBuilder xmlContent = new StringBuilder();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 //
@@ -49,43 +49,50 @@ public class XmlFileLoaderServlet extends HttpServlet {
         GameSettingsReader gameSettingsReader = new GameSettingsReader();
             System.out.println(request.getInputStream());
             GameManager gameManager = gameSettingsReader.extractGameSettings(inputStream);
-//            roomsManager = servletContextHandler.getRoomsManager(getServletContext());
+            roomsManager = servletContextHandler.getRoomsManager(getServletContext());
 //            gameDescriptor = xmlLoader.getGameDescriptorFromXml(xmlContent);
 //            xmlLoader.validateXml(gameDescriptor, roomsManager);
 //
-            Room room = new Room(gameManager, "My Room", "Menash");
-            jsonManager.sendJsonOut(response, room);
+            Room room = new Room(gameManager, "My Room1", "Menash");
+            if(roomsManager.isRoomWithNameExists(room.getRoomName())){
+                MessageJson messageJson = new MessageJson(false, "There's a room with that name already");
+                jsonManager.sendJsonOut(response, messageJson);
+            }
+            else {
+                jsonManager.sendJsonOut(response, room);
+            }
+            roomsManager.addRoom(room);
 
         }
          catch (PlayersInitPositionsOutOfRangeException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (RowsNotInRangeException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (ColumnsNotInRangeException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (ThereAreAtLeastTwoPlayersWithSameID e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (OutOfRangeNumberOfPlayersException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (TooManyInitialPositionsException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (BoardSizeDoesntMatchNumOfPlayersException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (IslandsOnRegularModeException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (PlayerHasNoInitialPositionsException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         } catch (PlayersInitPositionsOverrideEachOtherException e) {
-            MessageJson messageJson = new MessageJson(false, e.getMessage());
+            MessageJson messageJson = new MessageJson(false, e.toString());
             jsonManager.sendJsonOut(response, messageJson);
         }
     }

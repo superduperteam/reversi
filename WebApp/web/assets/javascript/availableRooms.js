@@ -39,7 +39,6 @@ function getRooms() {
                             "                                   <p class=\"card-text\">" +
                             "                                       <b class=\"mr-2\">Variant:</b>" + json.rooms[i].variant +
                             "                                       <b class=\"mr-2 ml-4\">Board:</b>" + json.rooms[i].boardRows + " X " + json.rooms[i].boardCols +
-                            "                                       <b class=\"mr-2 ml-4\">Target:</b>" + json.rooms[i].target + "\n" +
                             "                                   </p>\n" +
                             "                                   <hr>\n" +
                             "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\">Join Room</button>\n" +

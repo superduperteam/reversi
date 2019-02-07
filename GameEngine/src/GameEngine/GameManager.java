@@ -20,18 +20,12 @@ public class GameManager implements Serializable
     private Board board;
     private TurnHistory.Turn currTurn;
 
-    public GameManager(eGameMode gameMode, List<Player> playersList, Board board)
+    public GameManager(eGameMode gameMode, Board board)
     {
         turnHistory = new TurnHistory();
-        this.playersList = new ArrayList<>(playersList);
-        activePlayerIndex = 0;
-        mapDiscTypesToPlayers();
+        this.playersList = new ArrayList<>();
         this.gameMode = gameMode;
-        activePlayer = playersList.get(0);
         this.board = board;
-        isGameActive = new SimpleBooleanProperty(false);
-        calcFlipPotential();
-        updateGameScore();
     }
 
     public void calcFlipPotential(){
@@ -414,5 +408,27 @@ public class GameManager implements Serializable
         isGameActive.set(true);
         currTurn = getCurrentTurn(); // ##
         updateGameScore();
+        activePlayerIndex = 0;
+        mapDiscTypesToPlayers();
+        activePlayer = playersList.get(0);
+        isGameActive = new SimpleBooleanProperty(false);
+        calcFlipPotential();
+        updateGameScore();
     }
+
+    public  void  addtoPlayersList(Player player)  {
+        playersList.add(player);
+    }
+
+    public void removePlayerFromList(String playerName) {
+        List<Player> playersListCopy = new ArrayList<>(playersList);
+
+        for(Player player : playersListCopy) {
+            if(player.getName().equals(playerName)){
+                playersList.remove(player);
+            }
+        }
+    }
+
+    public int getNumOfPlayers() { return playersList.size(); }
 }

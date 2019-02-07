@@ -33,6 +33,12 @@ public class Player implements Serializable {
         statistics = new Statistics();
     }
 
+    public Player(String name, boolean isHuman){
+        this.name=name;
+        this.isHuman = isHuman;
+        statistics = new Statistics();
+    }
+
     public Player(Player toCopy) {
         this.statistics = new Statistics(toCopy.getStatistics());
         this.name = new String(toCopy.getName());
