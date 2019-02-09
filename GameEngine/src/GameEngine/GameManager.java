@@ -407,13 +407,13 @@ public class GameManager implements Serializable
     public void activateGame()
     {
         updateCanUndo(); // ##
+        isGameActive = new SimpleBooleanProperty(false);
         isGameActive.set(true);
+        activePlayerIndex = 0;
+        activePlayer = playersList.get(0);
+        mapDiscTypesToPlayers();
         currTurn = getCurrentTurn(); // ##
         updateGameScore();
-        activePlayerIndex = 0;
-        mapDiscTypesToPlayers();
-        activePlayer = playersList.get(0);
-        isGameActive = new SimpleBooleanProperty(false);
         calcFlipPotential();
         updateGameScore();
     }
@@ -435,4 +435,13 @@ public class GameManager implements Serializable
     public int getNumOfPlayers() { return playersList.size(); }
 
     public int getTotalNumOfPlayers() { return totalNumOfPlayers; }
+
+    public Player getPlayerByName(String name) {
+        for(Player player: playersList) {
+            if(player.getName().equals(name))
+                return player;
+        }
+
+        return null;
+    }
 }

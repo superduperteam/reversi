@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class InitializeGameServlet extends HttpServlet {
+public class CurrentPlayerTurnServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
@@ -20,10 +20,9 @@ public class InitializeGameServlet extends HttpServlet {
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
-        gameManager.activateGame();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
-        jsonManager.sendJsonOut(response, gameManager);
+        jsonManager.sendJsonOut(response, gameManager.getActivePlayer());
     }
 
     @Override
@@ -38,6 +37,6 @@ public class InitializeGameServlet extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Servlet that initialize the game (for displaying the players and board)";
+        return "Servlet that gets current player";
     }
 }

@@ -45,7 +45,7 @@ public class Player implements Serializable {
         this.isHuman = toCopy.getIsHuman();
         this.discType = toCopy.discType; //note (from ido): im assuming that playaer doesn't change his disk type.
                                         // if he does, a different logic should be implemented
-        this.id = new BigInteger(toCopy.getId().toString());
+        //this.id = new BigInteger(toCopy.getId().toString());
 
 
         //nameUI = new SimpleStringProperty(name);

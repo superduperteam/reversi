@@ -43,6 +43,14 @@
         <servlet-name>InitializeGameServlet</servlet-name>
         <servlet-class>game.servlets.room.gameStart.InitializeGameServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ThisPlayerServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.ThisPlayerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CurrentPlayerTurnServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.CurrentPlayerTurnServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
@@ -82,5 +90,13 @@
     <servlet-mapping>
         <servlet-name>InitializeGameServlet</servlet-name>
         <url-pattern>/initializeGame</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ThisPlayerServlet</servlet-name>
+        <url-pattern>/thisPlayer</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CurrentPlayerTurnServlet</servlet-name>
+        <url-pattern>/currentPlayerTurn</url-pattern>
     </servlet-mapping>
 </web-app>

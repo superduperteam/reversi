@@ -38,13 +38,13 @@ function initializeGame() {
             }
 
             for(var i = 0; i < json.playersList.length; i++) {
-                var currentPlayerName = json.playersList[i].playerName;
-                var isHuman = json.playersList[i].isHuman.toString();
+                var currentPlayerName = json.playersList[i].name;
+                var isHuman = json.playersList[i].isHuman ? "Human" : "Computer";
                 var currentPlayerDiscType = json.playersList[i].discType;
 
                 $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"card\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
                     "                <div class=\"card-body\">\n" +
-                    "                    <h5 class=\"card-title\">" + isHuman + "</h5>\n" +
+                    "                    <h5 class=\"card-title\">" + currentPlayerName + "</h5>\n" +
                     "                    <h6 class=\"card-subtitle mb-2 text-muted\">" + isHuman + "</h6>\n" +
                     "                    <br>\n" +
                     "                    <svg height=\"20\" width=\"80\">\n" +
@@ -97,9 +97,9 @@ function getThisPlayer() {
             console.error("Failed to get ajax response");
         },
         success: function (json) {
-            console.log("Got ajax response - this player is: " + json.playerName);
+            console.log("Got ajax response - this player is: " + json.name);
 
-            playerName = json.playerName;
+            playerName = json.name;
             //playerDiscColor = json.discType;
 
             if(json.isHuman === true) {
@@ -126,14 +126,14 @@ function getCurrentPlayerTurn() {
             console.error("Failed to get ajax response");
         },
         success: function (json) {
-            console.log("Got ajax response - current player name is: " + json.playerName);
+            console.log("Got ajax response - current player name is: " + json.name);
 
             isLastMoveExecuted = true;
-            lastTurnPlayerName = json.playerName;
+            lastTurnPlayerName = json.name;
             //lastTurnPlayerDiscColor = json.discType;
             //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
 
-            if(playerName === json.playerName) {
+            if(playerName === json.name) {
                 $("#turn").html(playerName + ", It's your turn");
                 $("#quitButton").removeAttr("disabled");
 
@@ -145,7 +145,7 @@ function getCurrentPlayerTurn() {
                 }
             }
             else {
-                $("#turn").html("It's " + json.playerName + "'s turn. Stand by...");
+                $("#turn").html("It's " + json.name + "'s turn. Stand by...");
                 $("#quitButton").attr("disabled", "");
 
                 for(var i = 0; i < boardCols.length; i++) {

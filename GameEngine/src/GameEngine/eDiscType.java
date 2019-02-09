@@ -3,32 +3,32 @@ package GameEngine;
 import java.io.Serializable;
 
 public enum eDiscType implements Serializable {
-    BLACK {
+    black{
         @Override
         public String toString() {
-            return "Black";
+            return "black";
         }
     },
-    WHITE {
+    white {
         @Override
         public String toString() {
-            return "White";
+            return "white";
         }
     },
-    BLUE {
+    blue {
         @Override
         public String toString() {
-            return "Blue";
+            return "blue";
         }
-    }, GREEN {
+    }, green {
         @Override
         public String toString() {
-            return "Green";
+            return "green";
         }
-    }, RED {
+    }, red {
         @Override
         public String toString() {
-            return "Red";
+            return "red";
         }
     }
 }
