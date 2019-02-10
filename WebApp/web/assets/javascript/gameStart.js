@@ -10,7 +10,7 @@ var lastTurnPlayerName;
 var lastTurnPlayerDiscColor;
 var lastTurnPlayerTurnsPlayed;
 var isLastMoveExecuted;
-
+var currentPlayerDiscType;
 (function($) {
     $.fn.hasHorizontalScrollBar = function() {
         return this.get(0) ? this.get(0).scrollWidth > this.innerWidth() : false;
@@ -40,10 +40,10 @@ function initializeGame() {
             for(var i = 0; i < json.playersList.length; i++) {
                 var currentPlayerName = json.playersList[i].name;
                 var isHuman = json.playersList[i].isHuman ? "Human" : "Computer";
-                var currentPlayerDiscType = json.playersList[i].discType;
-
-                $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"card\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
-                    "                <div class=\"card-body\">\n" +
+                currentPlayerDiscType = json.playersList[i].discType;
+                console.table(json.playersList);
+                $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"cardBody\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
+                    "                <div class=\"cardBody\">\n" +
                     "                    <h5 class=\"card-title\">" + currentPlayerName + "</h5>\n" +
                     "                    <h6 class=\"card-subtitle mb-2 text-muted\">" + isHuman + "</h6>\n" +
                     "                    <br>\n" +
@@ -58,17 +58,17 @@ function initializeGame() {
                     "            </div>");
             }
 
-            for(var i = 0; i < json.board.width; i++) {
+            for(var i = 0; i < json.board.height; i++) {
                 var colID = "boardCol-" + i;
 
                 $("#board").append("<div id=\"" + colID + "\"></div>");
-
-                for(var j = 0; j < json.board.height; j++) {
+                console.log(json);
+                for(var j = 0; j < json.board.width; j++) {
                     var rowID = "boardRow-" + j;
-
+                    var fill1 = json.board.gameboard[i][j].discType !== undefined ? json.board.gameboard[i][j].discType : 'lightblue'
                     $("#" + colID).append("<div>\n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
-                        "                           <rect width=\"100\", height=\"100\" style=\"fill: white;stroke:black;stroke-width:5\"></rect>\n" +
+                        "                           <rect width=\"100\", height=\"100\" style=\"fill: lightblue;stroke:black;stroke-width:5\"></rect>\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -209,7 +209,7 @@ function setHighlightClickableBoardCols() {
 $(function() {
     $(document).on("click", "[id^=boardCol-]", function() {
         var destinationCol = this.id.replace("boardCol-", "");
-
+        var destinationRow = this.id.replace("boardRow-", "");
         if(this.classList.contains("highlight")) {
             if (isPlayerComputer === false && playerName === lastTurnPlayerName) {
                 if (isLastMoveExecuted) {
@@ -224,7 +224,7 @@ $(function() {
                     }
 
                     $.ajax({
-                        data: {"destinationCol": destinationCol, "isPopoutMove": isPopoutMove},
+                        data: {"destinationCol": destinationCol, "destinationRow": destinationRow ,"isPopoutMove": isPopoutMove, "discType": currentPlayerDiscType},
                         type: "POST",
                         url: "../executeMove",
                         timeout: 2000,
@@ -292,7 +292,7 @@ function updateBoard() {
             console.log("Got ajax response - last move changes: " + json.lastMoveChanges + " ; " + "is player quit: " + json.isCurrentPlayerQuit);
 
             if(passivePlayerRepeater != null) {
-                if(json.lastMoveChanges.length > 0) {
+                if(json.gameboard.length > 0) {
                     clearInterval(passivePlayerRepeater);
                     passivePlayerRepeater = null;
 
@@ -303,8 +303,9 @@ function updateBoard() {
                         $("#" + lastTurnPlayerName + "TurnsPlayed").html(++lastTurnPlayerTurnsPlayed);
                     }
 
-                    for(var i = 0; i < json.lastMoveChanges.length; i++) {
-                        document.getElementById("boardCol-" + json.lastMoveChanges[i].col).querySelector("#boardRow-" + json.lastMoveChanges[i].row).style.fill = json.lastMoveChanges[i].discType;
+                    for(var i = 0; i < json.height.length; i++) {
+                        for(var j = 0; j < json.width.length; j++)
+                            document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc;
                     }
 
                     checkGameOver();
@@ -340,7 +341,7 @@ function checkGameOver() {
 
                 $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
 
-                if(json.endGameType === "VICTORY") {
+                if(json.isGameOver === true) {
                     for (var i = 0; i < json.winnersNames.length; i++) {
                         if (playerName === json.winnersNames[i]) {
                             isWinner = true;
@@ -352,7 +353,7 @@ function checkGameOver() {
                         $("#modalPublicMessage").html("The winner is " + json.winnersNames);
                     }
                     else {
-                        $("#modalPublicMessage").html("The winners are " + json.winnersNames);
+                        $("#modalPublicMessage").html("It's a tie!");
                     }
 
                     if(isWinner) {

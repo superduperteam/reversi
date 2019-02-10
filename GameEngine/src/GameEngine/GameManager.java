@@ -175,7 +175,7 @@ public class GameManager implements Serializable
         for(Player player : playersList)
         {
             discTypeToPlayer.put(discs[currentDiscIndex], player);
-          //  player.SetDiscType(discs[currentDiscIndex]);  Commented because player's disc type is given in Player c'tor
+            player.setDiscType(discs[currentDiscIndex]);  //Commented because player's disc type is given in Player c'tor
             currentDiscIndex++;
         }
     }

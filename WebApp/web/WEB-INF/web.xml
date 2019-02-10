@@ -51,6 +51,22 @@
         <servlet-name>CurrentPlayerTurnServlet</servlet-name>
         <servlet-class>game.servlets.room.gameStart.CurrentPlayerTurnServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ExecuteMoveServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.ExecuteMoveServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BoardUpdaterServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.BoardUpdaterServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GameOverServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.GameOverServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EndGameLeaveServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.EndGameLeaveServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
@@ -98,5 +114,21 @@
     <servlet-mapping>
         <servlet-name>CurrentPlayerTurnServlet</servlet-name>
         <url-pattern>/currentPlayerTurn</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExecuteMoveServlet</servlet-name>
+        <url-pattern>/executeMove</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BoardUpdaterServlet</servlet-name>
+        <url-pattern>/boardUpdater</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GameOverServlet</servlet-name>
+        <url-pattern>/gameOver</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EndGameLeaveServlet</servlet-name>
+        <url-pattern>/endGameLeave</url-pattern>
     </servlet-mapping>
 </web-app>

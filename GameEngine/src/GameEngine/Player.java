@@ -74,6 +74,8 @@ public class Player implements Serializable {
 
     public eDiscType getDiscType() { return discType;}
 
+    public void setDiscType(eDiscType discType) { this.discType = discType; }
+
     public boolean getIsHuman(){
         return isHuman;
     }

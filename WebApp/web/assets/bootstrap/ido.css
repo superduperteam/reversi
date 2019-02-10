@@ -71,3 +71,10 @@
 .xmlButton {
     padding-bottom: 14px;
 }
+
+.cardBody {
+    background-color: lightblue;
+    border-radius: 32px;
+    stroke-width: 0px;
+    margin-left: 8px !important;
+}

@@ -6,13 +6,13 @@ import java.util.List;
 
 public class GameOverJson {
 
-//    private boolean isGameOver;
-//    private Variant.EndGameType endGameType;
-//    private List<String> winnersNames;
-//
-//    public GameOverJson(boolean isGameOver, Variant.EndGameType endGameType, List<String> winnersNames) {
-//        this.isGameOver = isGameOver;
-//        this.endGameType = endGameType;
-//        this.winnersNames = winnersNames;
-//    }
+    private boolean isGameOver;
+    private boolean isTie;
+    private List<String> winnersNames;
+
+    public GameOverJson(boolean isGameOver,boolean isTie ,List<String> winnersNames) {
+        this.isGameOver = isGameOver;
+        this.isTie = isTie;
+        this.winnersNames = winnersNames;
+    }
 }
