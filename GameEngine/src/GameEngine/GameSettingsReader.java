@@ -79,18 +79,18 @@ public class GameSettingsReader {
         return gameManager;
     }
 
-    private List<GameEngine.Player> createPlayersListFromGameDetails(GameDescriptor gameDescriptor) {
-        eDiscType[] eDiscTypes = eDiscType.values();
-        List<GameEngine.Player> playersList = new ArrayList<>();
-        List<jaxb.schema.generated.Player> xmlPlayersList = gameDescriptor.getPlayers().getPlayer();
-
-        int discTypeIndex = 0;
-        for(jaxb.schema.generated.Player xmlPlayer : xmlPlayersList) {
-            playersList.add(new Player(xmlPlayer, eDiscTypes[discTypeIndex++]));
-        }
-
-        return playersList;
-    }
+//    private List<GameEngine.Player> createPlayersListFromGameDetails(GameDescriptor gameDescriptor) {
+//        eDiscType[] eDiscTypes = eDiscType.values();
+//        List<GameEngine.Player> playersList = new ArrayList<>();
+//        List<jaxb.schema.generated.Player> xmlPlayersList = gameDescriptor.getPlayers().getPlayer();
+//
+//        int discTypeIndex = 0;
+//        for(jaxb.schema.generated.Player xmlPlayer : xmlPlayersList) {
+//            playersList.add(new Player(xmlPlayer, eDiscTypes[discTypeIndex++]));
+//        }
+//
+//        return playersList;
+//    }
 
     private GameEngine.Board createBoardFromGameDetails(GameDescriptor gameDescriptor) {
         GameManager.eGameMode gameMode;
@@ -98,7 +98,7 @@ public class GameSettingsReader {
         List<Point> currInitialPointsList;
         List<Position> currPlayerIntialPositions;
         List<Participant> participantsList = gameDescriptor.getGame().getInitialPositions().getParticipant();
-        HashMap<GameEngine.Player, List<Point>> initialDiscsPointsOfPlayers = new  LinkedHashMap<>();
+        HashMap<Participant, List<Point>> initialDiscsPointsOfPlayers = new  LinkedHashMap<>();
 
         for(Participant participant : participantsList)
         {
@@ -110,7 +110,7 @@ public class GameSettingsReader {
                 currInitialPointsList.add(new Point(position.getRow() - 1, position.getColumn() - 1));
             }
 
-            //initialDiscsPointsOfPlayers.put(playersList.get(playerIndex), currInitialPointsList);
+            initialDiscsPointsOfPlayers.put(participantsList.get(playerIndex), currInitialPointsList);
             playerIndex++;
         }
 

@@ -30,6 +30,7 @@ public class JoinRoomServlet extends HttpServlet {
 
         if(joinedRoom.isTotalPlayersJoined()) {
             joinedRoom.setIsGameActive(true);
+            gameManager.activateGame();
         }
     }
 

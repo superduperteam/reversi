@@ -20,18 +20,18 @@ public class Player implements Serializable {
     private eDiscType discType;
     private BigInteger id;
 
-    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
-        this(player.getName(), player.getType().equals("Human"), discType, player.getId());
-    }
+//    public Player(jaxb.schema.generated.Player player, eDiscType discType) {
+//        this(player.getName(), player.getType().equals("Human"), discType, player.getId());
+//    }
 
-    public Player(String name, boolean isHuman, eDiscType discType, BigInteger id)
-    {
-        this.name = name;
-        this.isHuman = isHuman;
-        this.discType = discType;
-        this.id = id;
-        statistics = new Statistics();
-    }
+//    public Player(String name, boolean isHuman, eDiscType discType, BigInteger id)
+//    {
+//        this.name = name;
+//        this.isHuman = isHuman;
+//        this.discType = discType;
+//        this.id = id;
+//        statistics = new Statistics();
+//    }
 
     public Player(String name, boolean isHuman){
         this.name=name;

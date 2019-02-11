@@ -20,7 +20,7 @@ public class InitializeGameServlet extends HttpServlet {
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
-        gameManager.activateGame();
+        //gameManager.activateGame(); Saar: Im not sure if it's supposed to be here
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
         jsonManager.sendJsonOut(response, gameManager);

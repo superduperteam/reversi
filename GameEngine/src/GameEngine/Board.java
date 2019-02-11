@@ -1,6 +1,7 @@
 package GameEngine;
 
 import jaxb.schema.generated.Game;
+import jaxb.schema.generated.Participant;
 
 import java.io.Serializable;
 import java.util.*;
@@ -11,9 +12,9 @@ public class Board implements Serializable
     private int width;
     private GameManager.eGameMode gameMode;
     private CellBoard gameboard[][];
-    private HashMap<Player, List<Point>> initialDiscPointsOfPlayers;
+   // private HashMap<Participant, List<Point>> initialDiscPointsOfPlayers;
 
-    public Board(jaxb.schema.generated.Board board, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
+    public Board(jaxb.schema.generated.Board board, HashMap<Participant, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
         this(board.getRows(), board.getColumns(), initialDiscPointsOfPlayers, gameMode);
     }
@@ -22,20 +23,20 @@ public class Board implements Serializable
 
 
 
-    public Board(int height, int width, HashMap<Player, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
+    public Board(int height, int width, HashMap<Participant, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)
     {
         this.height = height;
         this.width = width;
         this.gameboard = new CellBoard[height][width];
-        this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
-        initializeBoard(this.initialDiscPointsOfPlayers);
+       // this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayers;
+        initializeBoard(initialDiscPointsOfPlayers);
         this.gameMode = gameMode;
     }
 
-    public HashMap<Player, List<Point>> getInitialDiscPositionOfPlayers()
-    {
-        return initialDiscPointsOfPlayers;
-    }
+//    public HashMap<Participant, List<Point>> getInitialDiscPositionOfPlayers()
+//    {
+//        return initialDiscPointsOfPlayers;
+//    }
 
     public Board(Board toCopy){
         height = toCopy.height;
@@ -43,7 +44,7 @@ public class Board implements Serializable
         this.gameboard = new CellBoard[height][width];
         gameMode = toCopy.gameMode; //note(ido): i assume game mode won't change during the game.
                                     // if it can change , I need to change the logic here.
-        copyInitialDiscPoints(toCopy.initialDiscPointsOfPlayers);
+        //copyInitialDiscPoints(toCopy.initialDiscPointsOfPlayers);
 
         for(int row = 0; row < height; ++row){
             for(int col = 0; col < width; ++col){
@@ -54,30 +55,30 @@ public class Board implements Serializable
         }
     }
 
-    private void copyInitialDiscPoints(HashMap<Player, List<Point>> initialDiscPointsOfPlayerToCopy)
-    {
-        initialDiscPointsOfPlayers = new LinkedHashMap<>();
-        List<Point> currPlayerPointsList;
-
-        if(initialDiscPointsOfPlayerToCopy == null)
-        {
-            this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayerToCopy;
-        }
-        else
-        {
-            for(Player player : initialDiscPointsOfPlayerToCopy.keySet())
-            {
-                currPlayerPointsList = new ArrayList<>();
-
-                for(Point point : initialDiscPointsOfPlayerToCopy.get(player))
-                {
-                    currPlayerPointsList.add(point);
-                }
-
-                initialDiscPointsOfPlayers.put(player, currPlayerPointsList);
-            }
-        }
-    }
+//    private void copyInitialDiscPoints(HashMap<Player, List<Point>> initialDiscPointsOfPlayerToCopy)
+//    {
+//        initialDiscPointsOfPlayers = new LinkedHashMap<>();
+//        List<Point> currPlayerPointsList;
+//
+//        if(initialDiscPointsOfPlayerToCopy == null)
+//        {
+//            this.initialDiscPointsOfPlayers = initialDiscPointsOfPlayerToCopy;
+//        }
+//        else
+//        {
+//            for(Player player : initialDiscPointsOfPlayerToCopy.keySet())
+//            {
+//                currPlayerPointsList = new ArrayList<>();
+//
+//                for(Point point : initialDiscPointsOfPlayerToCopy.get(player))
+//                {
+//                    currPlayerPointsList.add(point);
+//                }
+//
+//                initialDiscPointsOfPlayers.put(player, currPlayerPointsList);
+//            }
+//        }
+//    }
 
     // Returns the number of flipped discs that were flipped due to the given move.
     public int updateBoard(Point targetInsertionPoint, eDiscType discTypeToBeInserted)
@@ -324,20 +325,23 @@ public class Board implements Serializable
         return width;
     }
 
-    private void initializeBoard(HashMap<Player, List<Point>> initialDiscsPointsOfPlayers)
+    private void initializeBoard(HashMap<Participant, List<Point>> initialDiscsPointsOfPlayers)
     {
+        int discTypeIndex = 0;
+        eDiscType[] discTypes = eDiscType.values();
         createCellBoards();
         List<Point> currentPlayerInitialDiscs;
-        Set<Player> playersSet = initialDiscsPointsOfPlayers.keySet();
+        Set<Participant> playersSet = initialDiscsPointsOfPlayers.keySet();
 
-        for(Player player : playersSet)
+        for(Participant participant : playersSet)
         {
-            currentPlayerInitialDiscs = initialDiscsPointsOfPlayers.get(player);
+            currentPlayerInitialDiscs = initialDiscsPointsOfPlayers.get(participant);
 
             for(Point point : currentPlayerInitialDiscs)
             {
-                gameboard[point.getRow()][point.getCol()].setDisc(new Disc(player.getDiscType()));
+                gameboard[point.getRow()][point.getCol()].setDisc(new Disc(discTypes[discTypeIndex]));
             }
+            discTypeIndex++;
         }
     }
 

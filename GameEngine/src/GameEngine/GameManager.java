@@ -72,13 +72,13 @@ public class GameManager implements Serializable
         activePlayer = playersList.get(activePlayerIndex);
     }
 
-    public Board getInitialBoard()
-    {
-        int boardHeight = board.getHeight();
-        int boardWidth = board.getWidth();
-        HashMap<Player, List<Point>> initialDiscPositionsOfPlayer = board.getInitialDiscPositionOfPlayers();
-        return new Board(boardHeight, boardWidth, initialDiscPositionsOfPlayer, gameMode);
-    }
+//    public Board getInitialBoard()
+//    {
+//        int boardHeight = board.getHeight();
+//        int boardWidth = board.getWidth();
+//        HashMap<Player, List<Point>> initialDiscPositionsOfPlayer = board.getInitialDiscPositionOfPlayers();
+//        return new Board(boardHeight, boardWidth, initialDiscPositionsOfPlayer, gameMode);
+//    }
 
     // Call this only after game is over.
     // should be test again when more than 2 players are allowed in a game.
