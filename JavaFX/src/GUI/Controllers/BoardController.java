@@ -63,11 +63,11 @@ public class BoardController {
     {
         discTypeToDiscColorMap = new HashMap<>();
 
-        discTypeToDiscColorMap.put(eDiscType.BLACK, Color.BLACK);
-        discTypeToDiscColorMap.put(eDiscType.WHITE, Color.WHITE);
-        discTypeToDiscColorMap.put(eDiscType.BLUE, Color.BLUE);
-        discTypeToDiscColorMap.put(eDiscType.GREEN, Color.GREEN);
-        discTypeToDiscColorMap.put(eDiscType.RED, Color.RED);
+        discTypeToDiscColorMap.put(eDiscType.black, Color.BLACK);
+        discTypeToDiscColorMap.put(eDiscType.white, Color.WHITE);
+        discTypeToDiscColorMap.put(eDiscType.blue, Color.BLUE);
+        discTypeToDiscColorMap.put(eDiscType.green, Color.GREEN);
+        discTypeToDiscColorMap.put(eDiscType.red, Color.RED);
     }
 
     public void updateGIUDiscs(Board gameBoard, boolean isTutorialMode, boolean isAnimationsEnabled)

@@ -100,6 +100,11 @@ public class LoadFileTask extends Task<Boolean> {
                 //noXMLFile.printStackTrace();
                 updateMessage("Error: " + noXMLFile);
                 isGameLoaded = false;
+            }
+                catch (InvalidNumberOfPlayersException invalidNumberOfPlayers) {
+                    //noXMLFile.printStackTrace();
+                    updateMessage("Error: " + invalidNumberOfPlayers);
+                    isGameLoaded = false;
             } catch (OutOfRangeNumberOfPlayersException playersInitPositionsOutOfRangeException) {
                 updateMessage("Error: " + playersInitPositionsOutOfRangeException);
                 isGameLoaded = false;

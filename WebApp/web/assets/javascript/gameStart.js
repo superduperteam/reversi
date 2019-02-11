@@ -58,17 +58,52 @@ function initializeGame() {
                     "            </div>");
             }
 
-            for(var i = 0; i < json.board.height; i++) {
-                var colID = "boardCol-" + i;
+            // for(var i = 0; i < json.board.height; i++) {
+            //             //     var colID = "boardCol-" + i;
+            //             //
+            //             //     $("#board").append("<div id=\"" + colID + "\"></div>");
+            //             //     console.log(json);
+            //             //     for(var j = 0; j < json.board.width; j++) {
+            //             //         var rowID = "boardRow-" + j;
+            //             //         var fill1;
+            //             //
+            //             //         if(json.board.gameboard[i][j].disc !== undefined){
+            //             //             fill1 = 'black';
+            //             //         }
+            //             //         else{
+            //             //             fill1 = 'lightblue';
+            //             //         }
+            //             //
+            //             //         $("#" + colID).append("<div>\n" +
+            //             //             "                       <svg height=\"100\" width=\"100\">\n" +
+            //             //             "                           <rect width=\"100\" height=\"100\" style=\"fill: lightblue;stroke:black;stroke-width:5\"></rect>\n" +
+            //             //             "                           <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightblue\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+            //             //             "                       </svg>\n" +
+            //             //             "                  </div>\n");
+            //             //     }
+            //             // }
+
+            for(var colIndex = 0; colIndex < json.board.width; colIndex++) {
+                var colID = "boardCol-" + colIndex;
 
                 $("#board").append("<div id=\"" + colID + "\"></div>");
                 console.log(json);
-                for(var j = 0; j < json.board.width; j++) {
-                    var rowID = "boardRow-" + j;
-                    var fill1 = json.board.gameboard[i][j].discType !== undefined ? json.board.gameboard[i][j].discType : 'lightblue'
-                    $("#" + colID).append("<div>\n" +
+                for(var rowIndex = 0; rowIndex < json.board.height; rowIndex++) {
+                    var rowID = "boardRow-" + rowIndex;
+                    var fill1;
+
+                    if(json.board.gameboard[rowIndex][colIndex].disc !== undefined){
+                        fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
+                    }
+                    else{
+                        fill1 = 'lightblue';
+                    }
+
+                    var id1 = rowID + "," + colID;
+                    $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
-                        "                           <rect width=\"100\", height=\"100\" style=\"fill: lightblue;stroke:black;stroke-width:5\"></rect>\n" +
+                        "                           <rect width=\"100\" height=\"100\" style=\"fill: lightblue;stroke:black;stroke-width:5\"></rect>\n" +
+                        "                           <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightblue\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -303,9 +338,9 @@ function updateBoard() {
                         $("#" + lastTurnPlayerName + "TurnsPlayed").html(++lastTurnPlayerTurnsPlayed);
                     }
 
-                    for(var i = 0; i < json.height.length; i++) {
-                        for(var j = 0; j < json.width.length; j++)
-                            document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc;
+                    for(var i = 0; i < json.height; i++) {
+                        for(var j = 0; j < json.width; j++)
+                            document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
                     }
 
                     checkGameOver();
