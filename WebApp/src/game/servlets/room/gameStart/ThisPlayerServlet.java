@@ -22,7 +22,7 @@ public class ThisPlayerServlet extends HttpServlet {
         GameManager gameManager = joinedRoom.getGameManager();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
-        jsonManager.sendJsonOut(response, gameManager.getPlayerByName(sessionHandler.getPlyerName(request)));
+        jsonManager.sendJsonOut(response, gameManager.getPlayerByName(sessionHandler.getPlayerName(request)));
     }
 
     @Override

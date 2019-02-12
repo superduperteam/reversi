@@ -17,7 +17,7 @@ public class LobbyServlet extends HttpServlet {
 
         ServletContextHandler servletContextHandler = new ServletContextHandler();
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
-        String playerName = sessionHandler.getPlyerName(request);
+        String playerName = sessionHandler.getPlayerName(request);
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
         jsonManager.sendJsonOut(response, playerName);

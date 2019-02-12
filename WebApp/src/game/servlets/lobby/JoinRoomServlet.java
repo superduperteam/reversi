@@ -21,7 +21,7 @@ public class JoinRoomServlet extends HttpServlet {
         RoomsManager roomsManager = servletContextHandler.getRoomsManager(getServletContext());
         Room joinedRoom = roomsManager.getRoom(roomName);
         GameManager gameManager = joinedRoom.getGameManager();
-        String playerName = sessionHandler.getPlyerName(request);
+        String playerName = sessionHandler.getPlayerName(request);
         boolean isPlayerComputer = sessionHandler.getIsPlayerComputer(request);
 
         sessionHandler.setJoinedRoom(request, joinedRoom);

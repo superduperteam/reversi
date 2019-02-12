@@ -382,7 +382,7 @@ public class GameManager implements Serializable
         OK {
             @Override
             public String toString() {
-                return "";
+                return "OK";
             }
         },
         CELL_IS_ALREADY_TAKEN {

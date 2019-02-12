@@ -18,7 +18,7 @@ public class LeaveRoomServlet extends HttpServlet {
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
-        String playerName = sessionHandler.getPlyerName(request);
+        String playerName = sessionHandler.getPlayerName(request);
 
         gameManager.removePlayerFromList(playerName);
         joinedRoom.decreaseJoinedPlayersNumByOne();

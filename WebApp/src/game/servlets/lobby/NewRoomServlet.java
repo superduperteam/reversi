@@ -19,7 +19,7 @@ public class NewRoomServlet extends HttpServlet {
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         RoomsManager roomsManager = servletContextHandler.getRoomsManager(getServletContext());
         String roomName = request.getParameter("roomName");
-        String uploaderName = sessionHandler.getPlyerName(request);
+        String uploaderName = sessionHandler.getPlayerName(request);
         String variant = request.getParameter("variant");
         int boardRows = Integer.parseInt(request.getParameter("boardRows"));
         int boardCols = Integer.parseInt(request.getParameter("boardCols"));

@@ -14,6 +14,8 @@ public class Room {
     private int boardCols;
     private int totalPlayers;
     private int joinedPlayersNum = 0;
+    private int updatedBoardPlayersNum = 0;
+    private boolean isActivePlayerMadeHisMove = false;
     private boolean isGameActive = false;
     private GameManager gameManager = null;
 
@@ -51,6 +53,30 @@ public class Room {
 
     public void increaseJoinedPlayersNumByOne() {
         ++joinedPlayersNum;
+    }
+
+    public void setIsActivePlayerMadeHisMove(){
+        isActivePlayerMadeHisMove = true;
+    }
+
+    public void clearIsActivePlayerMadeHisMove(){
+        isActivePlayerMadeHisMove = false;
+    }
+
+    public boolean isActivePlayerUpdatedBoard(){ // new
+        return isActivePlayerMadeHisMove;
+    }
+
+    public boolean isTotalPlayersUpdatedBoard() { // new
+        if(totalPlayers == updatedBoardPlayersNum) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void increaseTotalPlayerUpdatedBoardByOne(){
+        ++updatedBoardPlayersNum;
     }
 
     public void decreaseJoinedPlayersNumByOne() {

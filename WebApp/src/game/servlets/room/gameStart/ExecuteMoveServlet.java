@@ -1,7 +1,11 @@
 package game.servlets.room.gameStart;
 
 import GameEngine.GameManager;
+import GameEngine.GameManager.eMoveStatus;
+import GameEngine.Player;
+import GameEngine.Point;
 import GameEngine.eDiscType;
+import game.handlers.JsonManager;
 import game.handlers.ServletContextHandler;
 import game.handlers.SessionHandler;
 import game.webLogic.Room;
@@ -21,13 +25,26 @@ public class ExecuteMoveServlet extends HttpServlet {
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
+        JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
         if(gameManager.getActivePlayer().isHuman()) {
             int destinationCol = Integer.parseInt(request.getParameter("destinationCol"));
             int destinationRow = Integer.parseInt(request.getParameter("destinationRow"));
             //boolean isPopoutMove = Boolean.parseBoolean(request.getParameter("isPopoutMove"));
-            eDiscType discType = eDiscType.valueOf(request.getParameter("discType"));
-            gameManager.getBoard().updateBoard(new GameEngine.Point(destinationRow, destinationCol),discType);
+            //eDiscType discType = eDiscType.valueOf(request.getParameter("discType"));
+
+            // Saar: I think this method is just for updating, we need a method that will check the move and update the player.
+            //gameManager.getBoard().updateBoard(new GameEngine.Point(destinationRow, destinationCol),discType);
+
+            Player senderPlayer = gameManager.getPlayerByName(sessionHandler.getPlayerName(request)); // new line
+
+            if(senderPlayer.getName().equals(gameManager.getActivePlayer().getName())){ // is this his turn?
+                eMoveStatus moveStatus = senderPlayer.makeMove(new Point(destinationRow, destinationCol), gameManager.getBoard()); // is move legal?
+                if(moveStatus == eMoveStatus.OK){
+                    gameManager.changeTurn();
+                }
+                jsonManager.sendJsonOut(response, moveStatus);
+            }
         }
         else {
             Thread.sleep(1000);

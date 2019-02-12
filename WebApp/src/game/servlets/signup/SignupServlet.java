@@ -23,7 +23,7 @@ public class SignupServlet extends HttpServlet {
         String isComputer = request.getParameter("isComputer");
 
         if(playerName == null) {
-            if(sessionHandler.getPlyerName(request) != null) {
+            if(sessionHandler.getPlayerName(request) != null) {
                 response.sendRedirect("pages/lobby.html");
             }
             else {

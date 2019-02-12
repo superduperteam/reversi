@@ -19,7 +19,7 @@ public class SessionHandler {
         session.setAttribute(JOINED_ROOM_ATT, null);
     }
 
-    public String getPlyerName(HttpServletRequest request) {
+    public String getPlayerName(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
         return (String) session.getAttribute(PLAYER_NAME_ATT);
