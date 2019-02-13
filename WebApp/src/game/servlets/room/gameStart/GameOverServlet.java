@@ -25,7 +25,7 @@ public class GameOverServlet extends HttpServlet {
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
-        List<String> winners = new ArrayList();
+        List<String> winners = new ArrayList<>();
         for(Player winner : gameManager.getHighestScoringPlayers())
             winners.add(winner.getName());
         GameOverJson gameOverJson = new GameOverJson(gameManager.isGameOver(),winners.size() > 1 ,winners);

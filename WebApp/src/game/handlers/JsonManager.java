@@ -13,7 +13,7 @@ public class JsonManager {
             Gson gson = new Gson();
             String json = gson.toJson(data);
             System.out.println("output - " + json);
-            out.println(json);
+            out.print(json); // ## was out.println
             out.flush();
         }
     }

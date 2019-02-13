@@ -37,21 +37,26 @@ public class BoardUpdaterServlet extends HttpServlet {
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
+        Player senderPlayer = joinedRoom.getGameManager().getPlayerByName(sessionHandler.getPlayerName(request)); // new line
+        System.out.println("## debug: this player wants to get an updated board - " + senderPlayer.getName());
 
-        boolean isActivePlayerPlayedHisTurn = Boolean.parseBoolean(request.getParameter("activePlayer"));
+       // boolean isActivePlayerPlayedHisTurn = Boolean.parseBoolean(request.getParameter("activePlayer"));
 
 
-        if(isActivePlayerPlayedHisTurn){
-            joinedRoom.setIsActivePlayerMadeHisMove();
-        }
+//        if(isActivePlayerPlayedHisTurn){ // moved it to ExecuteMoveServlet
+//            joinedRoom.setIsActivePlayerMadeHisMove();
+//        }
 
         // note: active player will always get board upon request, passive players will get board only if active player already played his turn.
         if(joinedRoom.isActivePlayerUpdatedBoard()){
             joinedRoom.increaseTotalPlayerUpdatedBoardByOne();
+
+            System.out.println("## debug: this player got updated board - " + senderPlayer.getName());
+
             jsonManager.sendJsonOut(response, gameManager.getBoard()); // passive players can get board now.
         }
         else{
-            jsonManager.sendJsonOut(response, "active player didn't make his move yet"); // not yet.
+            jsonManager.sendJsonOut(response, false); // not yet.
         }
     }
 

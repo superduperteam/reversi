@@ -96,14 +96,14 @@ function initializeGame() {
                         fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
                     }
                     else{
-                        fill1 = 'lightblue';
+                        fill1 = 'lightgreen';
                     }
 
                     var id1 = rowID + "," + colID;
                     $("#" + colID).append("<div> \n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
-                        "                           <rect width=\"100\" height=\"100\" style=\"fill: lightblue;stroke:black;stroke-width:5\"></rect>\n" +
-                        "                           <circle id=\"" +id1 +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightblue\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+                        "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
+                        "                           <circle id=\"" +id1 +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -169,6 +169,7 @@ function getCurrentPlayerTurn() {
 
             if(playerName === json.name) {
                 isItMyTurn = true;
+                passivePlayerRepeater = null;
                 $("#turn").html(playerName + ", It's your turn");
                 $("#quitButton").removeAttr("disabled");
 
@@ -196,42 +197,99 @@ function getCurrentPlayerTurn() {
 }
 
 $(function() {
-    $(document).on("click", "[id^=boardRow-]", function() {
+    $(document).on("click", "[id^=boardRow-]", function () {
         var destination = this.id.replace("boardCol-", "");
         var destination = destination.replace("boardRow-", "");
         var commaIndex = destination.indexOf(",");
-        var destinationRow = destination.substr(0,commaIndex);
-        var destinationCol = destination.substr(commaIndex+1,999); // 999.. (===infinity)
+        var destinationRow = destination.substr(0, commaIndex);
+        var destinationCol = destination.substr(commaIndex + 1, 999); // 999.. (===infinity)
 
-        if(isPlayerComputer === false && isItMyTurn === true)
-        {
-            $.ajax
-            (
-                {
-                    data: {
-                        "playerName": playerName,
-                        "destinationCol": destinationCol,
-                        "destinationRow": destinationRow
-                    },
-                    type: "POST",
-                    url: "../executeMove",
-                    timeout: 2000,
-                    error: function () {
-                        console.error("Failed to get ajax response");
-                    },
-                    success: function (json) {
-                        //console.log("Got ajax response - " + playerName + "'s move executed");
-                        console.log(json)
-                        if(json === "OK"){ // "OK" - means there were no errors.
-                            updateBoard();
-                        }
-                        else{
-                            alert(json); // we explain to the user why his move is not legal.
-                        }
+        if (isPlayerComputer === false && isItMyTurn === true) {
+            $.ajax({
+                data: {
+                    "playerName": playerName,
+                    "destinationCol": destinationCol,
+                    "destinationRow": destinationRow
+                },
+                type: "POST",
+                url: "../executeMove",
+                timeout: 2000,
+                error: function () {
+                    console.error("Failed to get ajax response");
+                },
+                success: function (json) {
+                    var isActionSucceeded = json;
+                    //console.log("Got ajax response - " + playerName + "'s move executed");
+                    console.log(isActionSucceeded);
+
+                    if (isActionSucceeded === "true" || isActionSucceeded === true) {
+                        updateBoard();
+                    }
+                    else {
+                        alert(json);
                     }
                 }
-            )
+            });
         }
+    });
+});
+
+function checkGameOver() { // Saar: game ending not yet fully tested.. but synchonizeEndTun should work fine.
+    $.ajax({
+        data: "",
+        type: "GET",
+        url: "../gameOver",
+        timeout: 4000,
+        error: function () {
+            console.error("Failed to get ajax response");
+        },
+        success: function (json) {
+            var isWinner = false;
+
+            if(json.isGameOver === true) {
+                console.log("Got ajax response - the game is over");
+
+                $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
+
+                if(json.isGameOver === true) {
+                    for (var i = 0; i < json.winnersNames.length; i++) {
+                        if (playerName === json.winnersNames[i]) {
+                            isWinner = true;
+                            break;
+                        }
+                    }
+
+                    if(json.winnersNames.length === 1) {
+                        $("#modalPublicMessage").html("The winner is " + json.winnersNames);
+                    }
+                    else {
+                        $("#modalPublicMessage").html("It's a tie!");
+                    }
+
+                    if(isWinner) {
+                        $("#modalPrivateMessage").html("You Win!!");
+                    }
+                    else {
+                        $("#modalPrivateMessage").html("You Lose..");
+                    }
+                }
+                else if(json.endGameType === "TIE") {
+                    $("#modalPublicMessage").html("It's a tie!");
+                }
+                else {
+                    $("#modalPublicMessage").html("The winner is " + json.winnersNames);
+                    $("#modalPrivateMessage").html("You are the only player remaining in the room");
+                }
+
+                endGameLeaveRoom();
+            }
+            else {
+                console.log("Got ajax response - the game continues");
+                changeTurn();
+            }
+        }
+    });
+}
 
 
     //     if (isPlayerComputer === false && playerName === lastTurnPlayerName) {
@@ -267,13 +325,13 @@ $(function() {
     //             });
     //         }
     //     }
-    });
-});
 
 
 function updateBoard() {
     $.ajax({
-        data: {"activePlayer": isItMyTurn},
+        data: {"activePlayer": isItMyTurn, // for debug
+                "myName": playerName // for debug
+        },
         type: "GET",
         url: "../boardUpdater",
         timeout: 2000,
@@ -283,32 +341,70 @@ function updateBoard() {
         success: function (json) {
             //console.log("Got ajax response - last move changes: " + json.lastMoveChanges + " ; " + "is player quit: " + json.isCurrentPlayerQuit);
 
-            if(passivePlayerRepeater != null) {
-                if(json.gameboard.length > 0) {
+
+            // if(json.isCurrentPlayerQuit === true) {
+            //     $("#" + lastTurnPlayerName + "Card").css("opacity", "0.3");
+            // }
+            // else {
+            //     $("#" + lastTurnPlayerName + "TurnsPlayed").html(++lastTurnPlayerTurnsPlayed);
+            // }
+
+            if (json !== false && json !== "false") { // false === active player didn't make his move yet
+
+                // every user get the new board and updates his UI board according to the logic board.
+                for (var i = 0; i < json.height; i++) {
+                    for (var j = 0; j < json.width; j++)
+                        // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
+                        if (json.gameboard[i][j].disc !== undefined) {
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.gameboard[i][j].disc.type;
+                        }
+                        else {
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
+                        }
+                }
+
+                if (passivePlayerRepeater != null) {
+
                     clearInterval(passivePlayerRepeater);
                     passivePlayerRepeater = null;
-
-                    // if(json.isCurrentPlayerQuit === true) {
-                    //     $("#" + lastTurnPlayerName + "Card").css("opacity", "0.3");
-                    // }
-                    // else {
-                    //     $("#" + lastTurnPlayerName + "TurnsPlayed").html(++lastTurnPlayerTurnsPlayed);
-                    // }
-
-
-                    // every user get the new board and updates his UI board according to the logic board.
-                    for(var i = 0; i < json.height; i++) {
-                        for(var j = 0; j < json.width; j++)
-                           // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.gameboard[rowIndex][colIndex].disc.type;
-                    }
-
-                   // checkGameOver();
                 }
+
+
+                checkGameOver();
+            }
+
+        }
+    });
+}
+
+function synchronizeEndTurn() {
+
+    $.ajax({
+        data: {"activePlayer": isItMyTurn, // for debug
+            "myName": playerName // for debug
+        },
+        type: "GET",
+        url: "../synchronizeEndTurn",
+        timeout: 2000,
+        error: function () {
+            console.error("Failed to get ajax response");
+        },
+        success: function (json) {
+            console.log("Got ajax response - are all players synchronized after complete turn of the game: " + json);
+
+            if(json === true || json === "true") {
+                clearInterval(synchronizeEndTurnRepeater);
+                synchronizeEndTurnRepeater = null;
+                getCurrentPlayerTurn();
             }
         }
     });
 }
+
+
+
+
+
 
 // $(function() {
 //     $("#regularMove").click(function() {

@@ -42,8 +42,16 @@ public class ExecuteMoveServlet extends HttpServlet {
                 eMoveStatus moveStatus = senderPlayer.makeMove(new Point(destinationRow, destinationCol), gameManager.getBoard()); // is move legal?
                 if(moveStatus == eMoveStatus.OK){
                     gameManager.changeTurn();
+
+
+                    joinedRoom.setIsActivePlayerMadeHisMove(); // new here
+
+
+                    jsonManager.sendJsonOut(response, true);
                 }
-                jsonManager.sendJsonOut(response, moveStatus);
+                else{
+                    jsonManager.sendJsonOut(response, moveStatus);
+                }
             }
         }
         else {

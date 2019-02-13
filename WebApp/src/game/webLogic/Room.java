@@ -15,6 +15,7 @@ public class Room {
     private int totalPlayers;
     private int joinedPlayersNum = 0;
     private int updatedBoardPlayersNum = 0;
+    private int numOfPlayerMovedToNextTurn = 0;
     private boolean isActivePlayerMadeHisMove = false;
     private boolean isGameActive = false;
     private GameManager gameManager = null;
@@ -63,6 +64,18 @@ public class Room {
         isActivePlayerMadeHisMove = false;
     }
 
+    public void clearUpdatedBoardPlayersNum(){
+        updatedBoardPlayersNum = 0;
+    }
+
+    public void increaseNumOfPlayerMovedToNextTurn(){
+        ++numOfPlayerMovedToNextTurn;
+    }
+
+    public void clearNumOfPlayerMovedToNextTurn(){
+        numOfPlayerMovedToNextTurn = 0;
+    }
+
     public boolean isActivePlayerUpdatedBoard(){ // new
         return isActivePlayerMadeHisMove;
     }
@@ -100,4 +113,12 @@ public class Room {
     }
 
     public GameManager getGameManager() { return gameManager; }
+
+    public boolean isTotalPlayersMovedToNextTurn() {
+        if(numOfPlayerMovedToNextTurn == totalPlayers) {
+            return true;
+        }
+
+        return false;
+    }
 }
