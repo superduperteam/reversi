@@ -234,63 +234,6 @@ $(function() {
     });
 });
 
-function checkGameOver() { // Saar: game ending not yet fully tested.. but synchonizeEndTun should work fine.
-    $.ajax({
-        data: "",
-        type: "GET",
-        url: "../gameOver",
-        timeout: 4000,
-        error: function () {
-            console.error("Failed to get ajax response");
-        },
-        success: function (json) {
-            var isWinner = false;
-
-            if(json.isGameOver === true) {
-                console.log("Got ajax response - the game is over");
-
-                $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
-
-                if(json.isGameOver === true) {
-                    for (var i = 0; i < json.winnersNames.length; i++) {
-                        if (playerName === json.winnersNames[i]) {
-                            isWinner = true;
-                            break;
-                        }
-                    }
-
-                    if(json.winnersNames.length === 1) {
-                        $("#modalPublicMessage").html("The winner is " + json.winnersNames);
-                    }
-                    else {
-                        $("#modalPublicMessage").html("It's a tie!");
-                    }
-
-                    if(isWinner) {
-                        $("#modalPrivateMessage").html("You Win!!");
-                    }
-                    else {
-                        $("#modalPrivateMessage").html("You Lose..");
-                    }
-                }
-                else if(json.endGameType === "TIE") {
-                    $("#modalPublicMessage").html("It's a tie!");
-                }
-                else {
-                    $("#modalPublicMessage").html("The winner is " + json.winnersNames);
-                    $("#modalPrivateMessage").html("You are the only player remaining in the room");
-                }
-
-                endGameLeaveRoom();
-            }
-            else {
-                console.log("Got ajax response - the game continues");
-                changeTurn();
-            }
-        }
-    });
-}
-
 
     //     if (isPlayerComputer === false && playerName === lastTurnPlayerName) {
     //         if (isLastMoveExecuted) {
@@ -369,8 +312,8 @@ function updateBoard() {
                     passivePlayerRepeater = null;
                 }
 
-
-                checkGameOver();
+                synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); //change back to 200
+                // checkGameOver();
             }
 
         }
