@@ -53,7 +53,7 @@ public class BoardUpdaterServlet extends HttpServlet {
 
             System.out.println("## debug: this player got updated board - " + senderPlayer.getName());
 
-            jsonManager.sendJsonOut(response, gameManager.getBoard()); // passive players can get board now.
+            jsonManager.sendJsonOut(response, gameManager); // passive players can get board now.
         }
         else{
             jsonManager.sendJsonOut(response, false); // not yet.

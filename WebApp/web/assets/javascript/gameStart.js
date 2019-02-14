@@ -54,6 +54,9 @@ function initializeGame() {
                     "                    <p class=\"card-text\"> Turns Played:\n" +
                     "                        <span id=\"" + currentPlayerName + "TurnsPlayed" + "\">0</span>\n" +
                     "                    </p>\n" +
+                    "                    <p class=\"card-text\"> Score:\n" +
+                    "                        <span id=\"" + currentPlayerName + "Score" + "\">0</span>\n" +
+                    "                    </p>\n" +
                     "                </div>\n" +
                     "            </div>");
             }
@@ -295,16 +298,18 @@ function updateBoard() {
             if (json !== false && json !== "false") { // false === active player didn't make his move yet
 
                 // every user get the new board and updates his UI board according to the logic board.
-                for (var i = 0; i < json.height; i++) {
-                    for (var j = 0; j < json.width; j++)
+                for (var i = 0; i < json.board.height; i++) {
+                    for (var j = 0; j < json.board.width; j++)
                         // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
-                        if (json.gameboard[i][j].disc !== undefined) {
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.gameboard[i][j].disc.type;
+                        if (json.board.gameboard[i][j].disc !== undefined) {
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.board.gameboard[i][j].disc.type;
                         }
                         else {
                             document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
                         }
                 }
+
+
 
                 if (passivePlayerRepeater != null) {
 
@@ -313,7 +318,6 @@ function updateBoard() {
                 }
 
                 synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); //change back to 200
-                // checkGameOver();
             }
 
         }
