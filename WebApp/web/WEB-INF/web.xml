@@ -71,6 +71,10 @@
         <servlet-name>SynchronizeEndTurnServlet</servlet-name>
         <servlet-class>game.servlets.room.gameStart.SynchronizeEndTurnServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PlayerQuitServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.PlayerQuitServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
@@ -138,5 +142,9 @@
     <servlet-mapping>
         <servlet-name>SynchronizeEndTurnServlet</servlet-name>
         <url-pattern>/synchronizeEndTurn</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PlayerQuitServlet</servlet-name>
+        <url-pattern>/playerQuit</url-pattern>
     </servlet-mapping>
 </web-app>

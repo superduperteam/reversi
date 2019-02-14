@@ -311,9 +311,8 @@ function updateBoard() {
                     clearInterval(passivePlayerRepeater);
                     passivePlayerRepeater = null;
                 }
-
                 synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); //change back to 200
-                // checkGameOver();
+                checkGameOver();
             }
 
         }
@@ -434,24 +433,24 @@ function synchronizeEndTurn() {
 //     });
 // });
 //
-// $(function() {
-//     $("#quitButton").click(function() {
-//         $.ajax({
-//             data: "",
-//             type: "GET",
-//             url: "../playerQuit",
-//             timeout: 2000,
-//             error: function () {
-//                 console.error("Failed to get ajax response");
-//             },
-//             success: function () {
-//                 console.log("Got ajax response - " + playerName + " quit from the game");
-//
-//                 window.location = "../pages/availableRooms.html";
-//             }
-//         });
-//     });
-// });
+$(function() {
+    $("#quitButton").click(function() {
+        $.ajax({
+            data: "",
+            type: "GET",
+            url: "../playerQuit",
+            timeout: 2000,
+            error: function () {
+                console.error("Failed to get ajax response");
+            },
+            success: function () {
+                console.log("Got ajax response - " + playerName + " quit from the game");
+
+                window.location = "../pages/availableRooms.html";
+            }
+        });
+    });
+});
 //
 // function computerMove() {
 //     $.ajax({
@@ -515,79 +514,79 @@ function synchronizeEndTurn() {
 //     });
 // }
 //
-// function checkGameOver() {
-//     $.ajax({
-//         data: "",
-//         type: "GET",
-//         url: "../gameOver",
-//         timeout: 4000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function (json) {
-//             var isWinner = false;
-//
-//             if(json.isGameOver === true) {
-//                 console.log("Got ajax response - the game is over");
-//
-//                 $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
-//
-//                 if(json.isGameOver === true) {
-//                     for (var i = 0; i < json.winnersNames.length; i++) {
-//                         if (playerName === json.winnersNames[i]) {
-//                             isWinner = true;
-//                             break;
-//                         }
-//                     }
-//
-//                     if(json.winnersNames.length === 1) {
-//                         $("#modalPublicMessage").html("The winner is " + json.winnersNames);
-//                     }
-//                     else {
-//                         $("#modalPublicMessage").html("It's a tie!");
-//                     }
-//
-//                     if(isWinner) {
-//                         $("#modalPrivateMessage").html("You Win! Congratulations!");
-//                     }
-//                     else {
-//                         $("#modalPrivateMessage").html("You Lose..");
-//                     }
-//                 }
-//                 else if(json.endGameType === "TIE") {
-//                     $("#modalPublicMessage").html("It's a tie!");
-//                 }
-//                 else {
-//                     $("#modalPublicMessage").html("The technically winner is " + json.winnersNames);
-//                     $("#modalPrivateMessage").html("You the only player left in the room");
-//                 }
-//
-//                 endGameLeaveRoom();
-//             }
-//             else {
-//                 console.log("Got ajax response - the game continues");
-//                 changeTurn();
-//             }
-//         }
-//     });
-// }
-//
-// function endGameLeaveRoom() {
-//     $.ajax({
-//         data: "",
-//         type: "GET",
-//         url: "../endGameLeave",
-//         timeout: 2000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function () {
-//             console.log(playerName + " left the room - END GAME");
-//
-//             setTimeout("window.location='../pages/availableRooms.html'", 2000);
-//         }
-//     });
-// }
+function checkGameOver() {
+    $.ajax({
+        data: "",
+        type: "GET",
+        url: "../gameOver",
+        timeout: 4000,
+        error: function () {
+            console.error("Failed to get ajax response");
+        },
+        success: function (json) {
+            var isWinner = false;
+
+            if(json.isGameOver === true) {
+                console.log("Got ajax response - the game is over");
+
+                $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
+
+                if(json.isGameOver === true) {
+                    for (var i = 0; i < json.winnersNames.length; i++) {
+                        if (playerName === json.winnersNames[i]) {
+                            isWinner = true;
+                            break;
+                        }
+                    }
+
+                    if(json.winnersNames.length === 1) {
+                        $("#modalPublicMessage").html("The winner is " + json.winnersNames);
+                    }
+                    else {
+                        $("#modalPublicMessage").html("It's a tie!");
+                    }
+
+                    if(isWinner) {
+                        $("#modalPrivateMessage").html("You Win! Congratulations!");
+                    }
+                    else {
+                        $("#modalPrivateMessage").html("You Lose..");
+                    }
+                }
+                else if(json.endGameType === "TIE") {
+                    $("#modalPublicMessage").html("It's a tie!");
+                }
+                else {
+                    $("#modalPublicMessage").html("The technically winner is " + json.winnersNames);
+                    $("#modalPrivateMessage").html("You the only player left in the room");
+                }
+
+                endGameLeaveRoom();
+            }
+            else {
+                console.log("Got ajax response - the game continues");
+                // changeTurn();
+            }
+        }
+    });
+}
+
+function endGameLeaveRoom() {
+    $.ajax({
+        data: "",
+        type: "GET",
+        url: "../endGameLeave",
+        timeout: 2000,
+        error: function () {
+            console.error("Failed to get ajax response");
+        },
+        success: function () {
+            console.log(playerName + " left the room - END GAME");
+
+            setTimeout("window.location='../pages/availableRooms.html'", 2000);
+        }
+    });
+}
 //
 // function changeTurn() {
 //     $.ajax({
@@ -625,4 +624,4 @@ function synchronizeEndTurn() {
 //             }
 //         }
 //     });
-//}
+// }
