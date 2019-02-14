@@ -33,9 +33,9 @@ function initializeGame() {
         success: function (json) {
             console.log("Got ajax response - initializing the game");
             console.log(json);
-            if(json.variant === "Regular") {
-                $("#popoutVariant").css("display", "inline");
-            }
+
+            $("#gameModeType").text(json.gameMode);
+
 
             for(var i = 0; i < json.playersList.length; i++) {
                 var currentPlayerName = json.playersList[i].name;
@@ -233,7 +233,7 @@ $(function() {
                     if (isActionSucceeded === "true" || isActionSucceeded === true) {
                         updateBoard();
                     }
-                    else {
+                    else if(json !== "" && json != undefined) {
                         alert(json);
                     }
                 }
@@ -308,9 +308,16 @@ function updateBoard() {
                 }
 
                 for(var k = 0; k< json.playersList.length; k++){
+                    var avgOfFlips;
                     var currPlayer = json.playersList[k];
                     $("#"+ currPlayer.name + "Score").text(currPlayer.statistics.score);
-                    var avgOfFlips = currPlayer.statistics.totalNumOfFlips/currPlayer.statistics.countOfPlayedTurns;
+                    if(currPlayer.statistics.countOfPlayedTurns !== 0){
+                        avgOfFlips = currPlayer.statistics.totalNumOfFlips/currPlayer.statistics.countOfPlayedTurns;
+                    }
+                    else{
+                        avgOfFlips = 0;
+                    }
+
                     $("#"+ currPlayer.name + "AverageOfFlips").text(Number.parseFloat(avgOfFlips).toFixed(2));
                     $("#"+ currPlayer.name + "TurnsPlayed").text(currPlayer.statistics.countOfPlayedTurns);
                 }

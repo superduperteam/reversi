@@ -8,6 +8,7 @@ import GameEngine.eDiscType;
 import game.handlers.JsonManager;
 import game.handlers.ServletContextHandler;
 import game.handlers.SessionHandler;
+import game.json.MessageJson;
 import game.webLogic.Room;
 
 import javax.servlet.ServletException;
@@ -50,7 +51,8 @@ public class ExecuteMoveServlet extends HttpServlet {
                     jsonManager.sendJsonOut(response, true);
                 }
                 else{
-                    jsonManager.sendJsonOut(response, moveStatus);
+
+                    jsonManager.sendJsonOut(response, moveStatus.toString());
                 }
             }
         }
