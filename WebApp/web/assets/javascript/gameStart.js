@@ -208,6 +208,11 @@ $(function() {
     $(document).on("click", "[id^=boardRow-]", function () {
         var destination = this.id.replace("boardCol-", "");
         destination = destination.replace("boardRow-", "");
+
+        if(destination.indexOf("Circle") >= 0){
+
+        }destination = destination.replace("Circle", "");
+
         var commaIndex = destination.indexOf(",");
         var destinationRow = destination.substr(0, commaIndex);
         var destinationCol = destination.substr(commaIndex + 1, 999); // 999.. (===infinity)
