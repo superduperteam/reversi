@@ -379,7 +379,7 @@ public class GameManager implements Serializable
     }
 
     public enum eMoveStatus {
-        OK {
+        OK{
             @Override
             public String toString() {
                 return "OK";
