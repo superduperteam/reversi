@@ -233,7 +233,7 @@ $(function() {
                     if (isActionSucceeded === "true" || isActionSucceeded === true) {
                         updateBoard();
                     }
-                    else if(json !== "" && json != undefined) {
+                    else if(json !== "" && json !== undefined) {
                         alert(json);
                     }
                 }
@@ -334,8 +334,8 @@ function updateBoard() {
                         }
                 }
 
-                synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); //change back to 200
-                //checkGameOver();
+
+                checkGameOver();
             }
 
         }
@@ -550,7 +550,7 @@ function checkGameOver() {
             var isWinner = false;
 
             if(json.isGameOver === true) {
-                console.log("Got ajax response - the game is over");
+                console.log("Got ajax response - game is over now");
 
                 $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
 
@@ -570,10 +570,10 @@ function checkGameOver() {
                     }
 
                     if(isWinner) {
-                        $("#modalPrivateMessage").html("You Win! Congratulations!");
+                        $("#modalPrivateMessage").html("You Win!");
                     }
                     else {
-                        $("#modalPrivateMessage").html("You Lose..");
+                        $("#modalPrivateMessage").html("You Lose");
                     }
                 }
                 else if(json.endGameType === "TIE") {
@@ -587,8 +587,9 @@ function checkGameOver() {
                 endGameLeaveRoom();
             }
             else {
-                console.log("Got ajax response - the game continues");
-                // changeTurn();
+                console.log("Got ajax response - the game is not over yet");
+
+                synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); // ask server to go to next turn.
             }
         }
     });

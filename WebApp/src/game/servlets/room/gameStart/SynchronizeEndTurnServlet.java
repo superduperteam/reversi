@@ -29,7 +29,8 @@ public class SynchronizeEndTurnServlet extends HttpServlet {
 
         responseAnswer = joinedRoom.isTotalPlayersUpdatedBoard();
         if(responseAnswer){
-            Player senderPlayer = joinedRoom.getGameManager().getPlayerByName(sessionHandler.getPlayerName(request)); // new line
+            // Saar: I think this line might create bugs(it's probably get the name from cookie)
+//           Player senderPlayer = joinedRoom.getGameManager().getPlayerByName(sessionHandler.getPlayerName(request));
             System.out.println("## debug: all players updated board - " + senderName);
 
             joinedRoom.increaseNumOfPlayerMovedToNextTurn();
