@@ -41,6 +41,8 @@ function initializeGame() {
                 var currentPlayerName = json.playersList[i].name;
                 var isHuman = json.playersList[i].isHuman ? "Human" : "Computer";
                 currentPlayerDiscType = json.playersList[i].discType;
+                var score = json.playersList[i].statistics.score;
+
                 console.table(json.playersList);
                 $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"cardBody\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
                     "                <div class=\"cardBody\">\n" +
@@ -51,6 +53,12 @@ function initializeGame() {
                     "                        <rect width=\"80\", height=\"20\" style=\"fill:" + currentPlayerDiscType + "\"></rect>\n" +
                     "                    </svg>\n" +
                     "                    <br><br>\n" +
+                    "                    <p class=\"card-text\"> Score:\n" +
+                    "                        <span id=\"" + currentPlayerName + "Score" + "\">" + score + "</span>\n" +
+                    "                    </p>\n" +
+                    "                    <p class=\"card-text\"> Average of flips:\n" +
+                    "                        <span id=\"" + currentPlayerName + "AverageOfFlips" + "\">0</span>\n" +
+                    "                    </p>\n" +
                     "                    <p class=\"card-text\"> Turns Played:\n" +
                     "                        <span id=\"" + currentPlayerName + "TurnsPlayed" + "\">0</span>\n" +
                     "                    </p>\n" +
@@ -199,7 +207,7 @@ function getCurrentPlayerTurn() {
 $(function() {
     $(document).on("click", "[id^=boardRow-]", function () {
         var destination = this.id.replace("boardCol-", "");
-        var destination = destination.replace("boardRow-", "");
+        destination = destination.replace("boardRow-", "");
         var commaIndex = destination.indexOf(",");
         var destinationRow = destination.substr(0, commaIndex);
         var destinationCol = destination.substr(commaIndex + 1, 999); // 999.. (===infinity)
@@ -294,25 +302,33 @@ function updateBoard() {
 
             if (json !== false && json !== "false") { // false === active player didn't make his move yet
 
+                if (passivePlayerRepeater != null) { // user got an updated board, we can stop asking for it.
+                    clearInterval(passivePlayerRepeater);
+                    passivePlayerRepeater = null;
+                }
+
+                for(var k = 0; k< json.playersList.length; k++){
+                    var currPlayer = json.playersList[k];
+                    $("#"+ currPlayer.name + "Score").text(currPlayer.statistics.score);
+                    var avgOfFlips = currPlayer.statistics.totalNumOfFlips/currPlayer.statistics.countOfPlayedTurns;
+                    $("#"+ currPlayer.name + "AverageOfFlips").text(Number.parseFloat(avgOfFlips).toFixed(2));
+                    $("#"+ currPlayer.name + "TurnsPlayed").text(currPlayer.statistics.countOfPlayedTurns);
+                }
+
                 // every user get the new board and updates his UI board according to the logic board.
-                for (var i = 0; i < json.height; i++) {
-                    for (var j = 0; j < json.width; j++)
+                for (var i = 0; i < json.board.height; i++) {
+                    for (var j = 0; j < json.board.width; j++)
                         // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
-                        if (json.gameboard[i][j].disc !== undefined) {
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.gameboard[i][j].disc.type;
+                        if (json.board.gameboard[i][j].disc !== undefined) {
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.board.gameboard[i][j].disc.type;
                         }
                         else {
                             document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
                         }
                 }
 
-                if (passivePlayerRepeater != null) {
-
-                    clearInterval(passivePlayerRepeater);
-                    passivePlayerRepeater = null;
-                }
                 synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); //change back to 200
-                checkGameOver();
+                //checkGameOver();
             }
 
         }
