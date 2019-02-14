@@ -53,12 +53,14 @@ public class XmlFileLoaderServlet extends HttpServlet {
 //            gameDescriptor = xmlLoader.getGameDescriptorFromXml(xmlContent);
 //            xmlLoader.validateXml(gameDescriptor, roomsManager);
 //
-            Room room = new Room(gameManager, "My Room1", "Menash");
-            if(roomsManager.isRoomWithNameExists(room.getRoomName())){
+            Room room = null;
+
+            if(roomsManager.isRoomWithNameExists(gameManager.getGameTitle())){
                 MessageJson messageJson = new MessageJson(false, "There's a room with that name already");
                 jsonManager.sendJsonOut(response, messageJson);
             }
             else {
+                room = new Room(gameManager, gameManager.getGameTitle(), "Menash");
                 jsonManager.sendJsonOut(response, room);
             }
             roomsManager.addRoom(room);

@@ -1,6 +1,7 @@
 var boardCols;
 var passivePlayerRepeater;
 var synchronizeEndTurnRepeater;
+var gameoverRepeater;
 
 var playerName;
 var isPlayerComputer;
@@ -93,7 +94,7 @@ function initializeGame() {
 
             for(var colIndex = 0; colIndex < json.board.width; colIndex++) {
                 var colID = "boardCol-" + colIndex;
-
+                var numOfPossibleMoves = "";
                 $("#board").append("<div id=\"" + colID + "\"></div>");
                 console.log(json);
                 for(var rowIndex = 0; rowIndex < json.board.height; rowIndex++) {
@@ -105,6 +106,7 @@ function initializeGame() {
                     }
                     else{
                         fill1 = 'lightgreen';
+                        numOfPossibleMoves = json.board.gameboard[rowIndex][colIndex].flipPotential;
                     }
 
                     var id1 = rowID + "," + colID;
@@ -112,6 +114,8 @@ function initializeGame() {
                         "                       <svg height=\"100\" width=\"100\">\n" +
                         "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
                         "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+                        "                           <text id=\"" +id1 +"text" +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">" + numOfPossibleMoves + " </text>\n" +
+
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -197,7 +201,7 @@ function getCurrentPlayerTurn() {
                 // for(var i = 0; i < boardCols.length; i++) {
                 //     boardCols.eq(i).removeClass("highlight");
                 // }
-
+                gameoverRepeater = setInterval(checkGameOver, 3000);
                 passivePlayerRepeater = setInterval(updateBoard, 500);
             }
         }
@@ -474,7 +478,7 @@ $(function() {
             success: function () {
                 console.log("Got ajax response - " + playerName + " quit from the game");
 
-                window.location = "../pages/availableRooms.html";
+               window.location = "../pages/availableRooms.html";
             }
         });
     });
@@ -549,7 +553,7 @@ function checkGameOver() {
         url: "../gameOver",
         timeout: 4000,
         error: function () {
-            console.error("Failed to get ajax response");
+            console.error("Failed to get ajax response - on check game over");
         },
         success: function (json) {
             var isWinner = false;
@@ -609,9 +613,9 @@ function endGameLeaveRoom() {
         error: function () {
             console.error("Failed to get ajax response");
         },
-        success: function () {
-            console.log(playerName + " left the room - END GAME");
-
+        success: function (json) {
+            clearInterval(gameoverRepeater);
+            gameoverRepeater = null;
             setTimeout("window.location='../pages/availableRooms.html'", 2000);
         }
     });

@@ -23,7 +23,6 @@ function getRooms() {
                 if(document.getElementById("noAvailableRooms") != null) {
                     $("#noAvailableRooms").remove();
                 }
-
                 for(var i = 0; i < json.rooms.length; i++) {
                     var roomID = json.rooms[i].roomName.replace(/ /g, "_");
 
@@ -33,7 +32,8 @@ function getRooms() {
                             "                               <i class=\"fas fa-gamepad mr-2\"></i>" + json.rooms[i].roomName + "\n" +
                             "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].totalPlayers + "\n" +
                             "                           </button>\n" +
-                            "                           <div class=\"collapse\" id=\"" + roomID + "Collapse\" style=\"\">\n" +
+                            "                           <div class=\"collapse popup\" onclick='showBoardOnPopup()'  id=\"" + roomID + "Collapse\" style=\"\">\n" +
+                                                            "<span class=\"popuptext\" id=\"popupboard\"> popuptext...   </span>\n" +
                             "                               <div class=\"card card-body\">\n" +
                             "                                   <h5 class=\"card-title\">Uploader: " + json.rooms[i].uploaderName + "</h5>\n" +
                             "                                   <p class=\"card-text\">" +
@@ -67,6 +67,38 @@ function getRooms() {
         }
     });
 }
+
+function showBoardOnPopup() {
+    console.log('in my func');
+
+    // for(var colIndex = 0; colIndex < json.board.width; colIndex++) {
+    //     var colID = "boardCol-" + colIndex;
+    //
+    //     $("#popupboard").append("<div id=\"" + colID + "\"></div>");
+    //     console.log(json);
+    //     for(var rowIndex = 0; rowIndex < json.board.height; rowIndex++) {
+    //         var rowID = "boardRow-" + rowIndex;
+    //         var fill1;
+    //
+    //         if(json.board.gameboard[rowIndex][colIndex].disc !== undefined){
+    //             fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
+    //         }
+    //         else{
+    //             fill1 = 'lightgreen';
+    //         }
+    //
+    //         var id1 = rowID + "," + colID;
+    //         $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
+    //             "                       <svg height=\"100\" width=\"100\">\n" +
+    //             "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
+    //             "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+    //             "                       </svg>\n" +
+    //             "                  </div>\n");
+    //     }
+    // }
+
+    var popup = document.getElementById("popupboard");
+    popup.classList.toggle("show");}
 
 function getPlayerName() {
     $.ajax({

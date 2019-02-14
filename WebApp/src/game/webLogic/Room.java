@@ -4,6 +4,9 @@ package game.webLogic;
 //import game.webLogic.xml.generated.GameDescriptor;
 
 import GameEngine.GameManager;
+import GameEngine.Point;
+
+import java.util.List;
 
 public class Room {
 

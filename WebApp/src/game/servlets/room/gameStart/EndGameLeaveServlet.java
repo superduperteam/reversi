@@ -19,9 +19,9 @@ public class EndGameLeaveServlet extends HttpServlet {
         GameManager gameManager = joinedRoom.getGameManager();
 
         joinedRoom.decreaseJoinedPlayersNumByOne();
-        sessionHandler.setJoinedRoom(request, null);
+        sessionHandler.setJoinedRoom(request, joinedRoom);
 
-        gameManager.retirePlayerFromGame(gameManager.getActivePlayer());
+//        gameManager.retirePlayerFromGame(gameManager.getActivePlayer());
 
 //        if(gameManager.getAreAllPlayersEndedUpdateGameOver()) {
 //            joinedRoom.setIsGameActive(false);
