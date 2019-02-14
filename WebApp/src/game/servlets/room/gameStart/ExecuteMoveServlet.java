@@ -37,10 +37,12 @@ public class ExecuteMoveServlet extends HttpServlet {
             // Saar: I think this method is just for updating, we need a method that will check the move and update the player.
             //gameManager.getBoard().updateBoard(new GameEngine.Point(destinationRow, destinationCol),discType);
 
-            Player senderPlayer = gameManager.getPlayerByName(sessionHandler.getPlayerName(request)); // new line
+            //Player senderPlayer = gameManager.getPlayerByName(sessionHandler.getPlayerName(request)); // problematic
+            String senderName = request.getParameter("myName");
+            Player player = gameManager.getPlayerByName(senderName);
 
-            if(senderPlayer.getName().equals(gameManager.getActivePlayer().getName())){ // is this his turn?
-                eMoveStatus moveStatus = senderPlayer.makeMove(new Point(destinationRow, destinationCol), gameManager.getBoard()); // is move legal?
+            if(player.getName().equals(gameManager.getActivePlayer().getName())){ // is this his turn?
+                eMoveStatus moveStatus = player.makeMove(new Point(destinationRow, destinationCol), gameManager.getBoard()); // is move legal?
                 if(moveStatus == eMoveStatus.OK){
                     gameManager.changeTurn();
 

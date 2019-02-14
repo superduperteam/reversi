@@ -108,10 +108,10 @@ function initializeGame() {
                     }
 
                     var id1 = rowID + "," + colID;
-                    $("#" + colID).append("<div> \n" +
+                    $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
                         "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
-                        "                           <circle id=\"" +id1 +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+                        "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -215,7 +215,7 @@ $(function() {
         if (isPlayerComputer === false && isItMyTurn === true) {
             $.ajax({
                 data: {
-                    "playerName": playerName,
+                    "myName": playerName,
                     "destinationCol": destinationCol,
                     "destinationRow": destinationRow
                 },
@@ -327,10 +327,10 @@ function updateBoard() {
                     for (var j = 0; j < json.board.width; j++)
                         // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
                         if (json.board.gameboard[i][j].disc !== undefined) {
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = json.board.gameboard[i][j].disc.type;
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "Circle").style.fill = json.board.gameboard[i][j].disc.type;
                         }
                         else {
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "Circle").style.fill = 'lightgreen';
                         }
                 }
 
