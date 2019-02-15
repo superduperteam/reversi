@@ -20,6 +20,7 @@ public class PlayerQuitServlet extends HttpServlet {
 
         gameManager.retirePlayerFromGame(gameManager.getActivePlayer());
         joinedRoom.decreaseJoinedPlayersNumByOne();
+        joinedRoom.setIsActivePlayerMadeHisMove(); // new here
     }
 
     @Override

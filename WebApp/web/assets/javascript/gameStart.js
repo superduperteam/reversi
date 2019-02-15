@@ -1,7 +1,9 @@
-var boardCols;
 var passivePlayerRepeater;
 var synchronizeEndTurnRepeater;
 var gameoverRepeater;
+
+var boardHeight
+var boardWidth;
 
 var playerName;
 var isPlayerComputer;
@@ -106,16 +108,21 @@ function initializeGame() {
                     }
                     else{
                         fill1 = 'lightgreen';
-                        numOfPossibleMoves = json.board.gameboard[rowIndex][colIndex].flipPotential;
+                        //if(json.board.gameboard[rowIndex][colIndex].flipPotential !== 0 && json.board.gameboard[rowIndex][colIndex].flipPotential !== '0'){
+                        //}
                     }
+
+                    if(json.board.gameboard[rowIndex][colIndex].countOfFlipsPotential !== 0 && json.board.gameboard[rowIndex][colIndex].countOfFlipsPotential !== '0'){
+                        numOfPossibleMoves = json.board.gameboard[rowIndex][colIndex].countOfFlipsPotential;
+                    }
+                    //numOfPossibleMoves = json.board.gameboard[rowIndex][colIndex].countOfFlipsPotential;
 
                     var id1 = rowID + "," + colID;
                     $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
                         "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
                         "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
-                        "                           <text id=\"" +id1 +"text" +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">"+ numOfPossibleMoves + " </text>\n" +
-
+                        "                           <text style=\"display: none\" id=\"" +id1 +"text" +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">"+ numOfPossibleMoves + " </text>\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -127,7 +134,8 @@ function initializeGame() {
 
             $("#startGameModal").modal({show: true});
 
-            boardCols = $("[id^=\"boardCol-\"]");
+            boardWidth = json.board.width;
+            boardHeight = json.board.height;
 
             getThisPlayer();
         }
@@ -209,6 +217,30 @@ function getCurrentPlayerTurn() {
 }
 
 $(function() {
+    // $('#textbox1').val(this.checked);
+    $("#tutorialModeCheckBox").change(function() {
+        if(boardHeight !== undefined && boardWidth !== undefined){
+            if(this.checked) {
+                for (var i = 0; i < boardHeight; i++) {
+                    for (var j = 0; j < boardWidth; j++){
+                        if(isItMyTurn){
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").style.display = "";
+                        }
+                    }
+                }
+            }
+            else{
+                for (var k = 0; k < boardHeight; k++) {
+                    for (var m = 0; m < boardWidth; m++){
+                        document.getElementById("boardRow-" + k + "," + "boardCol-" + m + "text").style.display = "none";
+                    }
+                }
+            }
+        }
+    });
+});
+
+$(function() {
     $(document).on("click", "[id^=boardRow-]", function () {
         var destination = this.id.replace("boardCol-", "");
         destination = destination.replace("boardRow-", "");
@@ -253,7 +285,6 @@ $(function() {
         }
     });
 });
-
 
     //     if (isPlayerComputer === false && playerName === lastTurnPlayerName) {
     //         if (isLastMoveExecuted) {
@@ -314,6 +345,7 @@ function updateBoard() {
 
             if (json !== false && json !== "false") { // false === active player didn't make his move yet
 
+                var numOfPossibleMoves;
                 if (passivePlayerRepeater != null) { // user got an updated board, we can stop asking for it.
                     clearInterval(passivePlayerRepeater);
                     passivePlayerRepeater = null;
@@ -336,7 +368,8 @@ function updateBoard() {
 
                 // every user get the new board and updates his UI board according to the logic board.
                 for (var i = 0; i < json.board.height; i++) {
-                    for (var j = 0; j < json.board.width; j++)
+                    for (var j = 0; j < json.board.width; j++){
+                        numOfPossibleMoves = "";
                         // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
                         if (json.board.gameboard[i][j].disc !== undefined) {
                             document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "Circle").style.fill = json.board.gameboard[i][j].disc.type;
@@ -344,8 +377,27 @@ function updateBoard() {
                         else {
                             document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "Circle").style.fill = 'lightgreen';
                         }
-                }
 
+                        if(json.board.gameboard[i][j].countOfFlipsPotential !== 0 && json.board.gameboard[i][j].countOfFlipsPotential !== '0'){
+                            numOfPossibleMoves = json.board.gameboard[i][j].countOfFlipsPotential;
+                        }
+
+                        document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").textContent = numOfPossibleMoves;
+
+                        var isTutorialChecked =  $("#tutorialModeCheckBox").prop('checked');
+
+                        // if(playerName === json.activePlayer.name){
+                        //     alert("my board my turn");
+                        // }
+
+                        if(playerName === json.activePlayer.name && isTutorialChecked === true){
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").style.display = "";
+                        }
+                        else{
+                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").style.display = "none";
+                        }
+                    }
+                }
 
                 checkGameOver();
             }

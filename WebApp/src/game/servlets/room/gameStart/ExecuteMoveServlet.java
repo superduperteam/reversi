@@ -52,7 +52,6 @@ public class ExecuteMoveServlet extends HttpServlet {
                         if (moveStatus == eMoveStatus.OK) {
                             gameManager.changeTurn();
 
-
                             joinedRoom.setIsActivePlayerMadeHisMove(); // new here
                             System.out.println("%% " + senderName + " made a move");
 

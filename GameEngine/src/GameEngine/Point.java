@@ -40,6 +40,6 @@ public class Point implements Serializable
 
     @Override
     public String toString() {
-        return new String(String.valueOf(row + 1) +","+String.valueOf(col + 1));
+        return new String(String.valueOf(row) +","+String.valueOf(col));
     }
 }
