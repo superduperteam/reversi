@@ -21,7 +21,20 @@ public class CurrentPlayerTurnServlet extends HttpServlet {
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
+        String senderName = request.getParameter("myName");
 
+//        synchronized (gameManager.mtx){
+//            joinedRoom.markPlayerAsMovedToNextTurn(senderName);
+//            if(joinedRoom.isTotalPlayersMovedToNextTurn()){
+//                joinedRoom.turnsPlayed++;
+//                System.out.printf("@@ turns played = " + joinedRoom.turnsPlayed);
+//                joinedRoom.clearUpdatedBoardPlayers();
+//                joinedRoom.clearIsActivePlayerMadeHisMove();
+//                joinedRoom.clearPlayerMovedToNextTurn();
+//            }
+
+         //   jsonManager.sendJsonOut(response, gameManager.getActivePlayer());
+  //      }
         jsonManager.sendJsonOut(response, gameManager.getActivePlayer());
     }
 

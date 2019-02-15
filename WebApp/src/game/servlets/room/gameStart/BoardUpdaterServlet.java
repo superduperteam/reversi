@@ -50,12 +50,17 @@ public class BoardUpdaterServlet extends HttpServlet {
 //        }
 
         // note: active player will always get board upon request, passive players will get board only if active player already played his turn.
-        if(joinedRoom.isActivePlayerUpdatedBoard()){
-            joinedRoom.increaseTotalPlayerUpdatedBoardByOne();
+        if(joinedRoom.isActivePlayerMadeHisMove()){
+//            joinedRoom.increaseTotalPlayerUpdatedBoardByOne();
+//
+            System.out.println("## debug: Server sent updated board to - " + senderName);
 
-            System.out.println("## debug: this player got updated board - " + senderName);
 
-            jsonManager.sendJsonOut(response, gameManager); // passive players can get board now.
+            synchronized (gameManager.mtx){
+                System.out.print("!! actual players in game: + ");
+                System.out.println(gameManager.getPlayersList().size());
+                jsonManager.sendJsonOut(response, gameManager); // passive players can get board now.
+            }
         }
         else{
             jsonManager.sendJsonOut(response, false); // not yet.

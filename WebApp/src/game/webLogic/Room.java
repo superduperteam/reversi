@@ -4,9 +4,10 @@ package game.webLogic;
 //import game.webLogic.xml.generated.GameDescriptor;
 
 import GameEngine.GameManager;
+import GameEngine.Player;
 import GameEngine.Point;
 
-import java.util.List;
+import java.util.*;
 
 public class Room {
 
@@ -15,10 +16,11 @@ public class Room {
     private String variant;
     private int boardRows;
     private int boardCols;
+    public int turnsPlayed = 0;
     private int totalPlayers;
     private int joinedPlayersNum = 0;
-    private int updatedBoardPlayersNum = 0;
-    private int numOfPlayerMovedToNextTurn = 0;
+    private HashMap<Player, Boolean> playersUpdatedBoardMap;
+    private HashMap<Player, Boolean> playersMovedToNextTurnMap;
     private boolean isActivePlayerMadeHisMove = false;
     private boolean isGameActive = false;
     private GameManager gameManager = null;
@@ -38,7 +40,6 @@ public class Room {
         this.variant = gameManager.getGameMode().toString();
         this.boardRows = gameManager.getBoard().getHeight();
         this.boardCols = gameManager.getBoard().getWidth();
-        this.totalPlayers = gameManager.getPlayersList().size();
         this.gameManager = gameManager;
         this.totalPlayers = gameManager.getTotalNumOfPlayers();
     }
@@ -47,52 +48,115 @@ public class Room {
         return roomName;
     }
 
-    public boolean getIsGameActive() {
-        return isGameActive;
-    }
+   // public boolean getIsGameActive() {
+//        return isGameActive;
+//    }
 
     public void setIsGameActive(boolean isGameActive) {
         this.isGameActive = isGameActive;
-    }
 
-    public void increaseJoinedPlayersNumByOne() {
-        ++joinedPlayersNum;
+        if(isGameActive){
+            List<Player> playerList = gameManager.getPlayersList();
+
+            playersUpdatedBoardMap = new HashMap<>();
+            playersMovedToNextTurnMap = new HashMap<>();
+
+            for(Player player : playerList){
+                playersUpdatedBoardMap.put(player, false);
+                playersMovedToNextTurnMap.put(player, false);
+            }
+        }
     }
 
     public void setIsActivePlayerMadeHisMove(){
         isActivePlayerMadeHisMove = true;
     }
 
+    public boolean isActivePlayerMadeHisMove(){ // new
+        return isActivePlayerMadeHisMove;
+    }
+
     public void clearIsActivePlayerMadeHisMove(){
         isActivePlayerMadeHisMove = false;
     }
 
-    public void clearUpdatedBoardPlayersNum(){
-        updatedBoardPlayersNum = 0;
+    private void clearPlayersBooleanMap(HashMap<Player, Boolean> playerBooleanHashMap){
+        List<Player> playerList = gameManager.getPlayersList();
+
+        playerBooleanHashMap.clear();
+
+        for (Player player : playerList) {
+            playerBooleanHashMap.put(player, false);
+        }
     }
 
-    public void increaseNumOfPlayerMovedToNextTurn(){
-        ++numOfPlayerMovedToNextTurn;
+    public void clearUpdatedBoardPlayers() {
+        clearPlayersBooleanMap(playersUpdatedBoardMap);
     }
 
-    public void clearNumOfPlayerMovedToNextTurn(){
-        numOfPlayerMovedToNextTurn = 0;
+
+    public void clearPlayerMovedToNextTurn(){
+        clearPlayersBooleanMap(playersMovedToNextTurnMap);
     }
 
-    public boolean isActivePlayerUpdatedBoard(){ // new
-        return isActivePlayerMadeHisMove;
+    public void markPlayerAsMovedToNextTurn(String playerName){
+        Player playerToUpdate = gameManager.getPlayerByName(playerName);
+        markPlayerInHashMap(playersMovedToNextTurnMap ,playerToUpdate);
+
+        System.out.println("## debug: #PlayersMovedToNextTurn value is - " + getCountOfPlayerWhoFinished(playersMovedToNextTurnMap));
+        System.out.println("## debug: total players in PlayersMovedToNextTurn  - " + playersMovedToNextTurnMap.keySet().size());
+    }
+
+    public void markPlayerAsUpdatedBoard(String playerName){
+        Player playerToUpdate = gameManager.getPlayerByName(playerName);
+        if(playerToUpdate == null){
+            System.out.println("hello");
+        }
+        markPlayerInHashMap(playersUpdatedBoardMap ,playerToUpdate);
+
+        System.out.println("## debug: #PlayersUpdatedBoard value is - " + getCountOfPlayerWhoFinished(playersUpdatedBoardMap));
+        System.out.println("## debug: total players in PlayersUpdatedBoard  - " + playersUpdatedBoardMap.keySet().size());
+    }
+
+    private void markPlayerInHashMap(HashMap<Player, Boolean> playerBooleanHashMap, Player playerToUpdate){
+        if(playerBooleanHashMap.containsKey(playerToUpdate)){
+            playerBooleanHashMap.put(playerToUpdate, true); // ##
+        }
+    }
+
+    private int getCountOfPlayerWhoFinished(HashMap<Player, Boolean> playerBooleanHashMap){
+        Set<Player> playersInGameSet = playerBooleanHashMap.keySet();
+        int countOfPlayersWithTrueValue = 0;
+
+        for(Player player : playersInGameSet){
+            if(playerBooleanHashMap.containsKey(player)){
+                if(playerBooleanHashMap.get(player)){
+                    countOfPlayersWithTrueValue++;
+                }
+            }
+        }
+
+        return countOfPlayersWithTrueValue;
     }
 
     public boolean isTotalPlayersUpdatedBoard() { // new
-        if(totalPlayers == updatedBoardPlayersNum) {
+        if(totalPlayers == getCountOfPlayerWhoFinished(playersUpdatedBoardMap)) {
             return true;
         }
 
         return false;
     }
 
-    public void increaseTotalPlayerUpdatedBoardByOne(){
-        ++updatedBoardPlayersNum;
+    public boolean isTotalPlayersMovedToNextTurn() {
+        if( getCountOfPlayerWhoFinished(playersMovedToNextTurnMap) == totalPlayers) { // maybe gamemanager.getPlayerList().size()?
+            return true;
+        }
+
+        return false;
+    }
+
+    public void increaseJoinedPlayersNumByOne() {
+        ++joinedPlayersNum;
     }
 
     public void decreaseJoinedPlayersNumByOne() {
@@ -116,12 +180,4 @@ public class Room {
     }
 
     public GameManager getGameManager() { return gameManager; }
-
-    public boolean isTotalPlayersMovedToNextTurn() {
-        if(numOfPlayerMovedToNextTurn == totalPlayers) {
-            return true;
-        }
-
-        return false;
-    }
 }

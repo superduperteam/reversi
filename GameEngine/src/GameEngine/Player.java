@@ -33,8 +33,8 @@ public class Player implements Serializable {
 //        statistics = new Statistics();
 //    }
 
-    public Player(String name, boolean isHuman){
-        this.name=name;
+    public Player(String name, boolean isHuman) {
+        this.name = name;
         this.isHuman = isHuman;
         statistics = new Statistics();
     }
@@ -44,7 +44,7 @@ public class Player implements Serializable {
         this.name = new String(toCopy.getName());
         this.isHuman = toCopy.getIsHuman();
         this.discType = toCopy.discType; //note (from ido): im assuming that playaer doesn't change his disk type.
-                                        // if he does, a different logic should be implemented
+        // if he does, a different logic should be implemented
         //this.id = new BigInteger(toCopy.getId().toString());
 
 
@@ -59,7 +59,7 @@ public class Player implements Serializable {
         this.isHuman = isHuman;
     }
 
-    public BigInteger getId(){
+    public BigInteger getId() {
         return id;
     }
 
@@ -67,16 +67,19 @@ public class Player implements Serializable {
         return name;
     }
 
-    public void quitGame(GameManager gameManager)
-    {
+    public void quitGame(GameManager gameManager) {
         gameManager.retirePlayerFromGame(this);
     }
 
-    public eDiscType getDiscType() { return discType;}
+    public eDiscType getDiscType() {
+        return discType;
+    }
 
-    public void setDiscType(eDiscType discType) { this.discType = discType; }
+    public void setDiscType(eDiscType discType) {
+        this.discType = discType;
+    }
 
-    public boolean getIsHuman(){
+    public boolean getIsHuman() {
         return isHuman;
     }
 
@@ -84,48 +87,45 @@ public class Player implements Serializable {
         return statistics;
     }
 
-    public boolean isHuman()
-    {
+    public boolean isHuman() {
         return isHuman;
     }
 
-    public Point getRandomMove(Board board)
-    {
+    public Point getRandomMove(Board board) {
         List<Point> allPossibleMoves = board.getListOfAllPossibleMoves(this);
 
         return pickRandomMoveFromList(allPossibleMoves);
     }
 
-    private Point pickRandomMoveFromList(List<Point> allPossibleMoves)
-    {
+    private Point pickRandomMoveFromList(List<Point> allPossibleMoves) {
         Random random = new Random();
         int moveIndex = random.nextInt(allPossibleMoves.size());
 
         return allPossibleMoves.get(moveIndex);
     }
 
-    public int getScore()
-    {
+    public int getScore() {
         return statistics.score;
     }
 
-    public int getTurnsPlayed()
-    {
+    public int getTurnsPlayed() {
         return statistics.countOfPlayedTurns;
     }
 
-    public double getAverageOfFlips() { return statistics.getAverageOfFlips(); }
+    public double getAverageOfFlips() {
+        return statistics.getAverageOfFlips();
+    }
 
-    public String getColor() {return discType.toString();}
+    public String getColor() {
+        return discType.toString();
+    }
 
-    public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board)
-    {
+    public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board) {
         GameManager.eMoveStatus isAbleToDoTheMove;
 
         isAbleToDoTheMove = board.isMoveLegal(targetInsertionPoint, discType);
 
-        if(isAbleToDoTheMove == GameManager.eMoveStatus.OK)
-        {
+        if (isAbleToDoTheMove == GameManager.eMoveStatus.OK) {
             statistics.totalNumOfFlips += board.updateBoard(targetInsertionPoint, discType);
             statistics.countOfPlayedTurns++;
         }
@@ -133,7 +133,7 @@ public class Player implements Serializable {
         return isAbleToDoTheMove;
     }
 
-    public class Statistics implements  Serializable{
+    public class Statistics implements Serializable {
         private int countOfPlayedTurns;
         private double totalNumOfFlips;
         private int score;
@@ -150,8 +150,7 @@ public class Player implements Serializable {
             this.score = toCopy.score;
         }
 
-        public void resetStatistics()
-        {
+        public void resetStatistics() {
             resetScore();
             countOfPlayedTurns = 0;
             totalNumOfFlips = 0;
@@ -172,10 +171,10 @@ public class Player implements Serializable {
         public double getAverageOfFlips() {
             double avgNumOfFlips = 0;
 
-            if(countOfPlayedTurns > 0){
+            if (countOfPlayedTurns > 0) {
                 avgNumOfFlips = totalNumOfFlips / countOfPlayedTurns;
             }
-            return  avgNumOfFlips;
+            return avgNumOfFlips;
         }
     }
 
@@ -184,11 +183,11 @@ public class Player implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return Objects.equals(id, player.id);
+        return Objects.equals(name, player.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(name);
     }
 }

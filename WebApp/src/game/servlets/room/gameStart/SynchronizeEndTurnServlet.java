@@ -26,22 +26,31 @@ public class SynchronizeEndTurnServlet extends HttpServlet {
         String senderName = request.getParameter("myName");
         System.out.println("## debug: want to go to next turn - " + senderName);
 
+        if(joinedRoom != null){
+            joinedRoom.markPlayerAsUpdatedBoard(senderName); // if user asked this. this means he got board.
 
-        responseAnswer = joinedRoom.isTotalPlayersUpdatedBoard();
-        if(responseAnswer){
-            // Saar: I think this line might create bugs(it's probably get the name from cookie)
+            System.out.println("## debug: this player got updated board - " + senderName);
+
+            responseAnswer = joinedRoom.isTotalPlayersUpdatedBoard();
+
+            if(responseAnswer){
+                // Saar: I think this line might create bugs(it's probably get the name from cookie)
 //           Player senderPlayer = joinedRoom.getGameManager().getPlayerByName(sessionHandler.getPlayerName(request));
-            System.out.println("## debug: all players updated board - " + senderName);
+                System.out.println("## debug: all players updated board - " + senderName);
 
-            joinedRoom.increaseNumOfPlayerMovedToNextTurn();
-            if(joinedRoom.isTotalPlayersMovedToNextTurn()){
-                joinedRoom.clearUpdatedBoardPlayersNum();
-                joinedRoom.clearIsActivePlayerMadeHisMove();
-                joinedRoom.clearNumOfPlayerMovedToNextTurn();
+                joinedRoom.markPlayerAsMovedToNextTurn(senderName);
+                if(joinedRoom.isTotalPlayersMovedToNextTurn()){
+                    joinedRoom.turnsPlayed++;
+                    System.out.println("@@ turns played = " + joinedRoom.turnsPlayed);
+                    joinedRoom.clearUpdatedBoardPlayers();
+                    joinedRoom.clearIsActivePlayerMadeHisMove();
+                    joinedRoom.clearPlayerMovedToNextTurn();
+                }
             }
-        }
 
-        jsonManager.sendJsonOut(response, responseAnswer);
+            jsonManager.sendJsonOut(response, responseAnswer);
+        }
+        else System.out.println("@@ debug warning, GO TO SynchronizeEndTurnServlet, joinedRoom was NULL");
     }
 
     @Override

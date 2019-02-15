@@ -25,13 +25,13 @@ public class JoinRoomServlet extends HttpServlet {
         boolean isPlayerComputer = sessionHandler.getIsPlayerComputer(request);
 
         sessionHandler.setJoinedRoom(request, joinedRoom);
-        gameManager.addtoPlayersList(new Player(playerName, !isPlayerComputer));
+        gameManager.addToPlayersList(new Player(playerName, !isPlayerComputer));
         joinedRoom.increaseJoinedPlayersNumByOne();
 
-        if(joinedRoom.isTotalPlayersJoined()) {
-            joinedRoom.setIsGameActive(true);
-            gameManager.activateGame();
-        }
+//        if(joinedRoom.isTotalPlayersJoined()) {
+//            gameManager.activateGame();
+//            joinedRoom.setIsGameActive(true);
+//        }
     }
 
     @Override

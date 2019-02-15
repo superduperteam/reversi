@@ -20,7 +20,12 @@ public class InitializeGameServlet extends HttpServlet {
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
-        //gameManager.activateGame(); Saar: Im not sure if it's supposed to be here
+
+        if(!gameManager.isGameActive()){
+            gameManager.activateGame();
+            joinedRoom.setIsGameActive(true);
+        }
+
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
         jsonManager.sendJsonOut(response, gameManager);

@@ -9,8 +9,9 @@ import java.util.*;
 public class GameManager implements Serializable
 {
     private SimpleBooleanProperty canUndoProperty = new SimpleBooleanProperty();
-    private SimpleBooleanProperty isGameActive;
+    private SimpleBooleanProperty isGameActive  = new SimpleBooleanProperty();
 
+    private boolean isGameActiveBoolean = false;
     private eGameMode gameMode;
     private HashMap<eDiscType, Player> discTypeToPlayer;
     private TurnHistory turnHistory;
@@ -21,6 +22,8 @@ public class GameManager implements Serializable
     private TurnHistory.Turn currTurn;
     private int totalNumOfPlayers;
     private String gameTitle;
+
+    public Object mtx;
 
     public GameManager(eGameMode gameMode, Board board, int totalNumOfPlayers, String gameTitle)
     {
@@ -300,6 +303,10 @@ public class GameManager implements Serializable
         }
     }
 
+    public boolean getIsGameActive() {
+        return isGameActiveBoolean;
+    }
+
     private TurnHistory.Turn getCurrentTurn() {
         TurnHistory.Turn turn = new TurnHistory.Turn(board, activePlayer, playersList);
 
@@ -408,9 +415,11 @@ public class GameManager implements Serializable
     // call this only after all info about players is gathered.
     public void activateGame()
     {
+        mtx = new Object();
         updateCanUndo(); // ##
         isGameActive = new SimpleBooleanProperty(false);
         isGameActive.set(true);
+        isGameActiveBoolean = true;
         activePlayerIndex = 0;
         activePlayer = playersList.get(0);
         mapDiscTypesToPlayers();
@@ -420,7 +429,7 @@ public class GameManager implements Serializable
         updateGameScore();
     }
 
-    public  void  addtoPlayersList(Player player)  {
+    public void addToPlayersList(Player player)  {
         playersList.add(player);
     }
 

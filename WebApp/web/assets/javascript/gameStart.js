@@ -114,7 +114,7 @@ function initializeGame() {
                         "                       <svg height=\"100\" width=\"100\">\n" +
                         "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
                         "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
-                        "                           <text id=\"" +id1 +"text" +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">" + numOfPossibleMoves + " </text>\n" +
+                        "                           <text id=\"" +id1 +"text" +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">"+ numOfPossibleMoves + " </text>\n" +
 
                         "                       </svg>\n" +
                         "                  </div>\n");
@@ -201,7 +201,7 @@ function getCurrentPlayerTurn() {
                 // for(var i = 0; i < boardCols.length; i++) {
                 //     boardCols.eq(i).removeClass("highlight");
                 // }
-                gameoverRepeater = setInterval(checkGameOver, 3000);
+                //gameoverRepeater = setInterval(checkGameOver, 3000); // Saar: The game doesn't change turns if you add this (normal game without quiting).
                 passivePlayerRepeater = setInterval(updateBoard, 500);
             }
         }
@@ -214,8 +214,11 @@ $(function() {
         destination = destination.replace("boardRow-", "");
 
         if(destination.indexOf("Circle") >= 0){
-
-        }destination = destination.replace("Circle", "");
+            destination = destination.replace("Circle", "");
+        }
+        if(destination.indexOf("text") >= 0){ // Saar: without this, the request could make the server throws exception
+            destination = destination.replace("text", "");
+        }
 
         var commaIndex = destination.indexOf(",");
         var destinationRow = destination.substr(0, commaIndex);
@@ -355,7 +358,7 @@ function synchronizeEndTurn() {
 
     $.ajax({
         data: {"activePlayer": isItMyTurn, // for debug
-            "myName": playerName // for debug
+                "myName": playerName // for debug
         },
         type: "GET",
         url: "../synchronizeEndTurn",
@@ -614,8 +617,11 @@ function endGameLeaveRoom() {
             console.error("Failed to get ajax response");
         },
         success: function (json) {
-            clearInterval(gameoverRepeater);
-            gameoverRepeater = null;
+            // clearInterval(gameoverRepeater);
+            // gameoverRepeater = null;
+            // setTimeout("window.location='../pages/availableRooms.html'", 2000);
+            console.log(playerName + " left the room - game is ended");
+
             setTimeout("window.location='../pages/availableRooms.html'", 2000);
         }
     });
