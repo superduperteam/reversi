@@ -90,22 +90,21 @@ public class GameManager implements Serializable
     public List<Player> getHighestScoringPlayers()
     {
         List<Player> highestScoringPlayers = new ArrayList<>();
-        int maxPlayerPoints = playersList.get(0).getScore();
-        highestScoringPlayers.add(playersList.get(0));
+        if(playersList.size()>0) {
+            int maxPlayerPoints = playersList.get(0).getScore();
+            highestScoringPlayers.add(playersList.get(0));
 
-        for(Player player : playersList)
-        {
-            if(player.getScore() > maxPlayerPoints)
-            {
-                maxPlayerPoints = player.getScore();
-                highestScoringPlayers.clear(); // everybody that is in the list is not relevant anymore..
-                highestScoringPlayers.add(player);
-            }
-            else if(player.getScore() == maxPlayerPoints)
-            {
-                if(!highestScoringPlayers.contains(player)) // maybe it's the first
+            for (Player player : playersList) {
+                if (player.getScore() > maxPlayerPoints) {
+                    maxPlayerPoints = player.getScore();
+                    highestScoringPlayers.clear(); // everybody that is in the list is not relevant anymore..
                     highestScoringPlayers.add(player);
+                } else if (player.getScore() == maxPlayerPoints) {
+                    if (!highestScoringPlayers.contains(player)) // maybe it's the first
+                        highestScoringPlayers.add(player);
+                }
             }
+
         }
 
         return highestScoringPlayers;
@@ -129,8 +128,10 @@ public class GameManager implements Serializable
             turnHistory.turnHistoryStack.clear();
         }
 
-        playersList.forEach(player -> player.getStatistics().resetStatistics());
+        //playersList.forEach(player -> player.getStatistics().resetStatistics());
         isGameActive.set(false);
+        isGameActiveBoolean = false;
+        playersList.clear(); // for ex3
     }
 
     public void changeTurn()
@@ -138,8 +139,8 @@ public class GameManager implements Serializable
         addTurnToHistory(currTurn);
         setActivePlayerToBeNextPlayer();
 
-        updateGameScore();
-        calcFlipPotential();
+//        updateGameScore();
+//        calcFlipPotential();
         currTurn = getCurrentTurn();
 
         updateCanUndo();
@@ -147,8 +148,6 @@ public class GameManager implements Serializable
 
     public void retirePlayerFromGame(Player quitter) // in ex2 it is only possible to quit when it is your turn
     {
-        int nextActivePlayer;
-
         if(activePlayer == quitter){ // in ex 3 - a player can retire at any time.
             currTurn.retiredPlayer = quitter;
             addTurnToHistory(currTurn);
@@ -158,9 +157,11 @@ public class GameManager implements Serializable
             if(activePlayerIndex > playersList.size() - 1){ // new line
                 activePlayerIndex = 0; // new line
             }
-            //activePlayer = playersList.get(activePlayerIndex % playersList.size());
-            activePlayer = playersList.get(activePlayerIndex); // changed
-            currTurn = getCurrentTurn();
+
+            if(activePlayerIndex < playersList.size()){
+                activePlayer = playersList.get(activePlayerIndex); // changed
+                currTurn = getCurrentTurn();
+            }
         }
     }
 
@@ -423,10 +424,9 @@ public class GameManager implements Serializable
         activePlayerIndex = 0;
         activePlayer = playersList.get(0);
         mapDiscTypesToPlayers();
+        updateGameScore();
         currTurn = getCurrentTurn(); // ##
-        updateGameScore();
         calcFlipPotential();
-        updateGameScore();
     }
 
     public void addToPlayersList(Player player)  {

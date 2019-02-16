@@ -1,5 +1,6 @@
 package game.handlers;
 
+import GameEngine.GameManager;
 import game.webLogic.Room;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ public class SessionHandler {
     private final String PLAYER_NAME_ATT = "playerName";
     private final String IS_COMPUTER_ATT = "isComputer";
     private final String JOINED_ROOM_ATT = "joinedRoom";
+    private final String LAST_UPLOADED_GAME_MANAGER_ATT = "uploadedGameManager";
 
     public void createSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
@@ -23,6 +25,12 @@ public class SessionHandler {
         HttpSession session = request.getSession();
 
         return (String) session.getAttribute(PLAYER_NAME_ATT);
+    }
+
+    public GameManager getLastUploadedGameManager(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+
+        return (GameManager) session.getAttribute(LAST_UPLOADED_GAME_MANAGER_ATT);
     }
 
     public void setPlayerName(HttpServletRequest request, String playerName) {
@@ -53,5 +61,11 @@ public class SessionHandler {
         HttpSession session = request.getSession();
 
         session.setAttribute(JOINED_ROOM_ATT, joinedRoom);
+    }
+
+    public void setLastUploadedGameManager(HttpServletRequest request, GameManager gameManager) {
+        HttpSession session = request.getSession();
+
+        session.setAttribute(LAST_UPLOADED_GAME_MANAGER_ATT, gameManager);
     }
 }

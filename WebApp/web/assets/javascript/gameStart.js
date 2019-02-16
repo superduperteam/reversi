@@ -1,5 +1,6 @@
 var passivePlayerRepeater;
 var synchronizeEndTurnRepeater;
+var getCurrentTurnRepeater;
 var gameoverRepeater;
 
 var boardHeight
@@ -36,9 +37,7 @@ function initializeGame() {
         success: function (json) {
             console.log("Got ajax response - initializing the game");
             console.log(json);
-
             $("#gameModeType").text(json.gameMode);
-
 
             for(var i = 0; i < json.playersList.length; i++) {
                 var currentPlayerName = json.playersList[i].name;
@@ -69,31 +68,6 @@ function initializeGame() {
                     "            </div>");
             }
 
-            // for(var i = 0; i < json.board.height; i++) {
-            //             //     var colID = "boardCol-" + i;
-            //             //
-            //             //     $("#board").append("<div id=\"" + colID + "\"></div>");
-            //             //     console.log(json);
-            //             //     for(var j = 0; j < json.board.width; j++) {
-            //             //         var rowID = "boardRow-" + j;
-            //             //         var fill1;
-            //             //
-            //             //         if(json.board.gameboard[i][j].disc !== undefined){
-            //             //             fill1 = 'black';
-            //             //         }
-            //             //         else{
-            //             //             fill1 = 'lightblue';
-            //             //         }
-            //             //
-            //             //         $("#" + colID).append("<div>\n" +
-            //             //             "                       <svg height=\"100\" width=\"100\">\n" +
-            //             //             "                           <rect width=\"100\" height=\"100\" style=\"fill: lightblue;stroke:black;stroke-width:5\"></rect>\n" +
-            //             //             "                           <circle cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightblue\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
-            //             //             "                       </svg>\n" +
-            //             //             "                  </div>\n");
-            //             //     }
-            //             // }
-
             for(var colIndex = 0; colIndex < json.board.width; colIndex++) {
                 var colID = "boardCol-" + colIndex;
                 var numOfPossibleMoves = "";
@@ -121,8 +95,8 @@ function initializeGame() {
                     $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
                         "                       <svg height=\"100\" width=\"100\">\n" +
                         "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
-                        "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
-                        "                           <text style=\"display: none\" id=\"" +id1 +"text" +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">"+ numOfPossibleMoves + " </text>\n" +
+                        "                           <circle id=\"Circle" +id1 +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+                        "                           <text style=\"display: none\" id=\"text" +id1 +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">"+ numOfPossibleMoves + " </text>\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");
                 }
@@ -163,7 +137,7 @@ function getThisPlayer() {
             else {
                 isPlayerComputer = true;
                 $("#quitButton").css("display", "none");
-                $("#popoutVariant").css("display", "none");
+                // $("#popoutVariant").css("display", "none");
             }
 
             getCurrentPlayerTurn();
@@ -183,6 +157,11 @@ function getCurrentPlayerTurn() {
         success: function (json) {
             console.log("Got ajax response - current player name is: " + json.name);
 
+            if(json !== "false" && json !== false){
+                clearInterval(getCurrentTurnRepeater);
+                getCurrentTurnRepeater = null;
+            }
+
            //isLastMoveExecuted = true;
             //lastTurnPlayerDiscColor = json.discType;
             //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
@@ -193,11 +172,7 @@ function getCurrentPlayerTurn() {
                 $("#turn").html(playerName + ", It's your turn");
                 $("#quitButton").removeAttr("disabled");
 
-                if(isPlayerComputer === false) {
-                    //setHighlightClickableBoardCols();
-
-                }
-                else {
+                if(isPlayerComputer === true) {
                     computerMove();
                 }
             }
@@ -216,6 +191,25 @@ function getCurrentPlayerTurn() {
     });
 }
 
+function computerMove() {
+    $.ajax({
+        data: {"activePlayer": isItMyTurn, // for debug
+            "myName": playerName // for debug
+        },
+        type: "GET",
+        url: "../executeMove",
+        timeout: 4000,
+        error: function () {
+            console.error("Failed to get ajax response");
+        },
+        success: function () {
+            console.log("Got ajax response - " + playerName + "was move executed");
+
+            updateBoard();
+        }
+    });
+}
+
 $(function() {
     // $('#textbox1').val(this.checked);
     $("#tutorialModeCheckBox").change(function() {
@@ -224,7 +218,7 @@ $(function() {
                 for (var i = 0; i < boardHeight; i++) {
                     for (var j = 0; j < boardWidth; j++){
                         if(isItMyTurn){
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").style.display = "";
+                            document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
                         }
                     }
                 }
@@ -232,7 +226,7 @@ $(function() {
             else{
                 for (var k = 0; k < boardHeight; k++) {
                     for (var m = 0; m < boardWidth; m++){
-                        document.getElementById("boardRow-" + k + "," + "boardCol-" + m + "text").style.display = "none";
+                        document.getElementById("textboardRow-" + k + "," + "boardCol-" + m).style.display = "none";
                     }
                 }
             }
@@ -277,49 +271,17 @@ $(function() {
                     if (isActionSucceeded === "true" || isActionSucceeded === true) {
                         updateBoard();
                     }
-                    else if(json !== "" && json !== undefined) {
+                    else if(json !== "" && json !== undefined && json !== false && json !== "false") {
                         alert(json);
+                    }
+                    else if(json === "again" || json === "\"again\""){
+                        $( "#boardRow-" + destinationRow +"," + "boardCol" + destinationCol).click();
                     }
                 }
             });
         }
     });
 });
-
-    //     if (isPlayerComputer === false && playerName === lastTurnPlayerName) {
-    //         if (isLastMoveExecuted) {
-    //             isLastMoveExecuted = false;
-    //
-    //             var isPopoutMove = false;
-    //
-    //             if ($("#popoutVariant").css("display") === "inline") {
-    //                 if ($("#popoutMove").is(":checked")) {
-    //                     isPopoutMove = true;
-    //                 }
-    //             }
-    //
-    //             $.ajax({
-    //                 data: {
-    //                     "destinationCol": destinationCol,
-    //                     "destinationRow": destinationRow,
-    //                     "isPopoutMove": isPopoutMove,
-    //                     "discType": currentPlayerDiscType
-    //                 },
-    //                 type: "POST",
-    //                 url: "../executeMove",
-    //                 timeout: 2000,
-    //                 error: function () {
-    //                     console.error("Failed to get ajax response");
-    //                 },
-    //                 success: function () {
-    //                     console.log("Got ajax response - " + playerName + "'s move executed");
-    //
-    //                     updateBoard();
-    //                 }
-    //             });
-    //         }
-    //     }
-
 
 function updateBoard() {
     $.ajax({
@@ -372,17 +334,17 @@ function updateBoard() {
                         numOfPossibleMoves = "";
                         // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
                         if (json.board.gameboard[i][j].disc !== undefined) {
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "Circle").style.fill = json.board.gameboard[i][j].disc.type;
+                            document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = json.board.gameboard[i][j].disc.type;
                         }
                         else {
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "Circle").style.fill = 'lightgreen';
+                            document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
                         }
 
                         if(json.board.gameboard[i][j].countOfFlipsPotential !== 0 && json.board.gameboard[i][j].countOfFlipsPotential !== '0'){
                             numOfPossibleMoves = json.board.gameboard[i][j].countOfFlipsPotential;
                         }
 
-                        document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").textContent = numOfPossibleMoves;
+                        document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).textContent = numOfPossibleMoves;
 
                         var isTutorialChecked =  $("#tutorialModeCheckBox").prop('checked');
 
@@ -391,10 +353,10 @@ function updateBoard() {
                         // }
 
                         if(playerName === json.activePlayer.name && isTutorialChecked === true){
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").style.display = "";
+                            document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
                         }
                         else{
-                            document.getElementById("boardRow-" + i + "," + "boardCol-" + j + "text").style.display = "none";
+                            document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "none";
                         }
                     }
                 }
@@ -406,11 +368,55 @@ function updateBoard() {
     });
 }
 
+function checkGameOver() {
+    $.ajax({
+        data: "",
+        type: "GET",
+        url: "../gameOver",
+        timeout: 4000,
+        error: function () {
+            console.error("Failed to get ajax response - on check game over");
+        },
+        success: function (json) {
+            var isWinner = false;
+
+            if(json.isGameOver === true) {
+                console.log("Got ajax response - game is over now");
+                $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
+                if(json.isGameOver === true) {
+                    for (var i = 0; i < json.winnersNames.length; i++) {
+                        if (playerName === json.winnersNames[i]) {
+                            isWinner = true;
+                            break;}}
+                    if(json.winnersNames.length === 1) {
+                        $("#modalPublicMessage").html("The winner is " + json.winnersNames);}
+                    else {
+                        $("#modalPublicMessage").html("It's a tie!");}
+                    if(isWinner) {
+                        $("#modalPrivateMessage").html("You Win!");}
+                    else {
+                        $("#modalPrivateMessage").html("You Lose");}}
+                else if(json.endGameType === "TIE") {
+                    $("#modalPublicMessage").html("It's a tie!");}
+                else {
+                    $("#modalPublicMessage").html("The technically winner is " + json.winnersNames);
+                    $("#modalPrivateMessage").html("You the only player left in the room");}
+
+                endGameLeaveRoom();
+            }
+            else {
+                console.log("Got ajax response - the game is not over yet");
+                synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); // ask server to go to next turn.
+            }
+        }
+    });
+}
+
 function synchronizeEndTurn() {
 
     $.ajax({
         data: {"activePlayer": isItMyTurn, // for debug
-                "myName": playerName // for debug
+            "myName": playerName // for debug
         },
         type: "GET",
         url: "../synchronizeEndTurn",
@@ -424,16 +430,54 @@ function synchronizeEndTurn() {
             if(json === true || json === "true") {
                 clearInterval(synchronizeEndTurnRepeater);
                 synchronizeEndTurnRepeater = null;
-                getCurrentPlayerTurn();
+                //getCurrentPlayerTurn();
+
+                getCurrentTurnRepeater = setInterval(getCurrentPlayerTurn, 200);
             }
         }
     });
 }
 
+function endGameLeaveRoom() {
+    $.ajax({
+        data: {"myName": playerName // for debug
+        },
+        type: "GET",
+        url: "../endGameLeave",
+        timeout: 2000,
+        error: function () {
+            console.error("Failed to get ajax response");
+        },
+        success: function (json) {
+            // clearInterval(gameoverRepeater);
+            // gameoverRepeater = null;
+            // setTimeout("window.location='../pages/availableRooms.html'", 2000);
+            console.log(playerName + " left the room - game is ended");
 
+            setTimeout("window.location='../pages/availableRooms.html'", 2000);
+        }
+    });
+}
 
+$(function() {
+    $("#quitButton").click(function() {
+        $.ajax({
+            data: {"myName": playerName // for debug
+            },
+            type: "GET",
+            url: "../playerQuit",
+            timeout: 2000,
+            error: function () {
+                console.error("Failed to get ajax response");
+            },
+            success: function () {
+                console.log("Got ajax response - " + playerName + " quit from the game");
 
-
+                window.location = "../pages/availableRooms.html";
+            }
+        });
+    });
+});
 
 // $(function() {
 //     $("#regularMove").click(function() {
@@ -520,24 +564,7 @@ function synchronizeEndTurn() {
 //     });
 // });
 //
-$(function() {
-    $("#quitButton").click(function() {
-        $.ajax({
-            data: "",
-            type: "GET",
-            url: "../playerQuit",
-            timeout: 2000,
-            error: function () {
-                console.error("Failed to get ajax response");
-            },
-            success: function () {
-                console.log("Got ajax response - " + playerName + " quit from the game");
 
-               window.location = "../pages/availableRooms.html";
-            }
-        });
-    });
-});
 //
 // function computerMove() {
 //     $.ajax({
@@ -601,83 +628,6 @@ $(function() {
 //     });
 // }
 //
-function checkGameOver() {
-    $.ajax({
-        data: "",
-        type: "GET",
-        url: "../gameOver",
-        timeout: 4000,
-        error: function () {
-            console.error("Failed to get ajax response - on check game over");
-        },
-        success: function (json) {
-            var isWinner = false;
-
-            if(json.isGameOver === true) {
-                console.log("Got ajax response - game is over now");
-
-                $("#endGameModal").modal({show: true, backdrop: "static", keyBoard: false});
-
-                if(json.isGameOver === true) {
-                    for (var i = 0; i < json.winnersNames.length; i++) {
-                        if (playerName === json.winnersNames[i]) {
-                            isWinner = true;
-                            break;
-                        }
-                    }
-
-                    if(json.winnersNames.length === 1) {
-                        $("#modalPublicMessage").html("The winner is " + json.winnersNames);
-                    }
-                    else {
-                        $("#modalPublicMessage").html("It's a tie!");
-                    }
-
-                    if(isWinner) {
-                        $("#modalPrivateMessage").html("You Win!");
-                    }
-                    else {
-                        $("#modalPrivateMessage").html("You Lose");
-                    }
-                }
-                else if(json.endGameType === "TIE") {
-                    $("#modalPublicMessage").html("It's a tie!");
-                }
-                else {
-                    $("#modalPublicMessage").html("The technically winner is " + json.winnersNames);
-                    $("#modalPrivateMessage").html("You the only player left in the room");
-                }
-
-                endGameLeaveRoom();
-            }
-            else {
-                console.log("Got ajax response - the game is not over yet");
-
-                synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200); // ask server to go to next turn.
-            }
-        }
-    });
-}
-
-function endGameLeaveRoom() {
-    $.ajax({
-        data: "",
-        type: "GET",
-        url: "../endGameLeave",
-        timeout: 2000,
-        error: function () {
-            console.error("Failed to get ajax response");
-        },
-        success: function (json) {
-            // clearInterval(gameoverRepeater);
-            // gameoverRepeater = null;
-            // setTimeout("window.location='../pages/availableRooms.html'", 2000);
-            console.log(playerName + " left the room - game is ended");
-
-            setTimeout("window.location='../pages/availableRooms.html'", 2000);
-        }
-    });
-}
 //
 // function changeTurn() {
 //     $.ajax({

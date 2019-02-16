@@ -1,6 +1,7 @@
 package game.servlets.room.gameStart;
 
 import GameEngine.GameManager;
+import GameEngine.Player;
 import game.handlers.ServletContextHandler;
 import game.handlers.SessionHandler;
 import game.webLogic.Room;
@@ -18,9 +19,11 @@ public class PlayerQuitServlet extends HttpServlet {
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
 
-        gameManager.retirePlayerFromGame(gameManager.getActivePlayer());
-        joinedRoom.decreaseJoinedPlayersNumByOne();
-        joinedRoom.setIsActivePlayerMadeHisMove(); // new here
+        Player quitter = gameManager.getPlayerByName(request.getParameter("myName"));
+        quitter.quitGame(gameManager);
+        //gameManager.retirePlayerFromGame(quitter);
+        joinedRoom.removePlayerFromRecords(quitter);
+        joinedRoom.markIsActivePlayerQuit(); // saar: Without this, other player will not know that the user quit.
     }
 
     @Override

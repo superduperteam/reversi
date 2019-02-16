@@ -27,7 +27,7 @@ public class SynchronizeEndTurnServlet extends HttpServlet {
         System.out.println("## debug: want to go to next turn - " + senderName);
 
         if(joinedRoom != null){
-            joinedRoom.markPlayerAsUpdatedBoard(senderName); // if user asked this. this means he got board.
+//            joinedRoom.markPlayerAsUpdatedBoard(senderName); // if user asked this. this means he got board.
 
             System.out.println("## debug: this player got updated board - " + senderName);
 
@@ -40,11 +40,21 @@ public class SynchronizeEndTurnServlet extends HttpServlet {
 
                 joinedRoom.markPlayerAsMovedToNextTurn(senderName);
                 if(joinedRoom.isTotalPlayersMovedToNextTurn()){
-                    joinedRoom.turnsPlayed++;
-                    System.out.println("@@ turns played = " + joinedRoom.turnsPlayed);
-                    joinedRoom.clearUpdatedBoardPlayers();
-                    joinedRoom.clearIsActivePlayerMadeHisMove();
-                    joinedRoom.clearPlayerMovedToNextTurn();
+//                    System.out.println("@@ turns played = " + joinedRoom.turnsPlayed++);
+//                    joinedRoom.clearUpdatedBoardPlayers();
+//                    joinedRoom.clearIsActivePlayerMadeHisMove();
+//                    joinedRoom.clearPlayerMovedToNextTurn();
+                    GameManager gameManager = joinedRoom.getGameManager();
+
+                    if(joinedRoom.isActivePlayerQuit())
+                    {
+                        joinedRoom.clearMarkOfIsActivePlayerQuit(); // if he retired, the turn already changed..
+                    }
+                    else{
+                        gameManager.changeTurn();
+                    }
+
+
                 }
             }
 

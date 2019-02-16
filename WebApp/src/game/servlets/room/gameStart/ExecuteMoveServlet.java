@@ -28,50 +28,74 @@ public class ExecuteMoveServlet extends HttpServlet {
         GameManager gameManager = joinedRoom.getGameManager();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
-        synchronized (gameManager.mtx) { // Saar: Every request the server gets, tomcat creates a new thread, but they all work on the same
+        synchronized (gameManager.mtx) { // Saar: I think this is necessary. Every request the server gets, tomcat creates a new thread, but they all work on the same
             // object - gameManager. I can't synchronized on gameManager object because it's a local reference, so I created a mtx object so every
             // thread will have this same reference.
+            String senderName = request.getParameter("myName");
+            Player player = gameManager.getPlayerByName(senderName);
 
-            if (!joinedRoom.isActivePlayerMadeHisMove()) { // if active player didn't make his move - go on and execute the new move.
-                if (gameManager.getActivePlayer().isHuman()) {
-                    int destinationCol = Integer.parseInt(request.getParameter("destinationCol"));
-                    int destinationRow = Integer.parseInt(request.getParameter("destinationRow"));
-                    //boolean isPopoutMove = Boolean.parseBoolean(request.getParameter("isPopoutMove"));
-                    //eDiscType discType = eDiscType.valueOf(request.getParameter("discType"));
+            if(!player.isHuman()){
+                Thread.sleep(1000);
+            }
 
-                    // Saar: I think this method is just for updating, we need a method that will check the move and update the player.
-                    //gameManager.getBoard().updateBoard(new GameEngine.Point(destinationRow, destinationCol),discType);
+            if (joinedRoom.isEveryOneInSameTurn() && !joinedRoom.isActivePlayerMadeHisMove())
+            { // if active player didn't make his move - go on and execute the new move.
+                if (player.getName().equals(gameManager.getActivePlayer().getName())) { // is this his turn?
 
-                    //Player senderPlayer = gameManager.getPlayerByName(sessionHandler.getPlayerName(request)); // problematic
-                    String senderName = request.getParameter("myName");
-                    Player player = gameManager.getPlayerByName(senderName);
+                    if (gameManager.getActivePlayer().isHuman()) {
+                        int destinationCol = Integer.parseInt(request.getParameter("destinationCol"));
+                        int destinationRow = Integer.parseInt(request.getParameter("destinationRow"));
+                        //boolean isPopoutMove = Boolean.parseBoolean(request.getParameter("isPopoutMove"));
+                        //eDiscType discType = eDiscType.valueOf(request.getParameter("discType"));
+
+                        // Saar: This method is just for updating, we need a method that will check the move and update the player.
+                        //gameManager.getBoard().updateBoard(new GameEngine.Point(destinationRow, destinationCol),discType);
+
+                        //Player senderPlayer = gameManager.getPlayerByName(sessionHandler.getPlayerName(request)); // problematic
 
 
-                    if (player.getName().equals(gameManager.getActivePlayer().getName())) { // is this his turn?
                         eMoveStatus moveStatus = player.makeMove(new Point(destinationRow, destinationCol), gameManager.getBoard()); // is move legal?
                         if (moveStatus == eMoveStatus.OK) {
-                            gameManager.changeTurn();
+                           // gameManager.changeTurn();
+                            gameManager.updateGameScore();
+                            gameManager.calcFlipPotential();
 
-                            joinedRoom.setIsActivePlayerMadeHisMove(); // new here
-                            System.out.println("%% " + senderName + " made a move");
+                            joinedRoom.markActivePlayerMadeHisMove();
+                            System.out.println("%% " + senderName + " made move: " + new Point(destinationRow, destinationCol));
 
                             jsonManager.sendJsonOut(response, true);
-                        } else {
-
-                            jsonManager.sendJsonOut(response, moveStatus.toString());
                         }
+                        else
+                            {
+                            jsonManager.sendJsonOut(response, moveStatus.toString());
+                            }
                     }
-                } else {
-                    Thread.sleep(1000);
-                    //gameManager.getBoard()(-1); computer move goes here.
-                }
-            }
-            else { // else - a move was already made by an active player - this can only mean that: not all of the users got a positive response from request of synchronizeEndTurn.
-                // This case means - There's someone trailing behind. Try again later. We return nothing, so the timeout of the request will expire and the same message will be sent again
-                // by the browser.
-                // NOTE: we cannot return 'false' as an answer because we don't want the user to click the cell again.
-            }
+                    else {
 
+                        eMoveStatus moveStatus = player.makeMove(player.getRandomMove(gameManager.getBoard()), gameManager.getBoard());
+
+                        //if(moveStatus == eMoveStatus.OK){ // a random move should always be valid, but just to be on the safer side..
+                        // gameManager.changeTurn();
+                        gameManager.updateGameScore();
+                        gameManager.calcFlipPotential();
+
+                        joinedRoom.markActivePlayerMadeHisMove();
+                        System.out.println("** (AI) " + senderName + " made move: ");
+                        jsonManager.sendJsonOut(response, true);
+                        // }
+                        //  else System.out.println("** error made a move");
+                    }
+                }
+                else{
+                    jsonManager.sendJsonOut(response, false);
+                    }
+                }
+            else
+                { // else - a move was already made by an active player - this can only mean that: not all of the users got a positive response to the request of synchronizeEndTurn.
+                // This case means - There's someone trailing behind. Try again later. We return nothing.
+                // NOTE: we cannot return 'false' as an answer because the user will not click the cell again.
+                    jsonManager.sendJsonOut(response, "again");
+            }
         }
     }
 

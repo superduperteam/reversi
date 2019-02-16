@@ -52,16 +52,19 @@ public class BoardUpdaterServlet extends HttpServlet {
 //            jsonManager.sendJsonOut(response, false); // not yet.
 //        }
         synchronized (gameManager.mtx) {
-            if (joinedRoom.isActivePlayerMadeHisMove()) {
+           // if (joinedRoom.isActivePlayerMadeHisMove()) {
+            if(joinedRoom.isPlayerBoardSynced(senderName)){
 //            joinedRoom.increaseTotalPlayerUpdatedBoardByOne();
 
-                System.out.println("## debug: Server sent updated board to - " + senderName);
+                System.out.println("## debug: Server SENT UPDATED BOARD to - " + senderName);
 
-                System.out.print("!! actual players in game: + ");
-                System.out.println(gameManager.getPlayersList().size());
+//                System.out.print("!! actual players in game: + ");
+//                System.out.println(gameManager.getPlayersList().size());
 
                 jsonManager.sendJsonOut(response, gameManager); // passive players can get board now.
-            } else {
+                joinedRoom.markPlayerAsUpdatedBoard(senderName); // if user asked this. this means he got board.
+            }
+            else {
                 jsonManager.sendJsonOut(response, false); // not yet.
             }
         }

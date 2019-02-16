@@ -5,6 +5,7 @@ import GameEngine.GameManager;
 import GameEngine.GameSettingsReader;
 import com.sun.media.sound.InvalidDataException;
 import game.handlers.ServletContextHandler;
+import game.handlers.SessionHandler;
 import game.json.MessageJson;
 import game.handlers.JsonManager;
 import game.webLogic.Room;
@@ -60,10 +61,11 @@ public class XmlFileLoaderServlet extends HttpServlet {
                 jsonManager.sendJsonOut(response, messageJson);
             }
             else {
-                room = new Room(gameManager, gameManager.getGameTitle(), "Menash");
+                SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
+                room = new Room(gameManager, gameManager.getGameTitle(), sessionHandler.getPlayerName(request));
+                sessionHandler.setLastUploadedGameManager(request, gameManager);
                 jsonManager.sendJsonOut(response, room);
             }
-            roomsManager.addRoom(room);
 
         }
          catch (PlayersInitPositionsOutOfRangeException e) {

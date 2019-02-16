@@ -1,5 +1,6 @@
 package game.servlets.lobby;
 
+import GameEngine.GameManager;
 import game.handlers.ServletContextHandler;
 import game.handlers.SessionHandler;
 import game.json.MessageJson;
@@ -25,14 +26,12 @@ public class NewRoomServlet extends HttpServlet {
         int boardCols = Integer.parseInt(request.getParameter("boardCols"));
         int totalPlayers = Integer.parseInt(request.getParameter("totalPlayers"));
 
-        Room room = roomsManager.getRoom(roomName);
-        //Room room = new Room(roomName, uploaderName, variant, boardRows, boardCols, totalPlayers);
-        //room.createGameManager();
-        //roomsManager.addRoom(room);
+        GameManager gameManager = sessionHandler.getLastUploadedGameManager(request);
+        Room room = new Room(gameManager, gameManager.getGameTitle(), sessionHandler.getPlayerName(request));
+        roomsManager.addRoom(room);
 
         MessageJson messageJson = new MessageJson(true, "The room " + roomName + " was created successfully");
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
-
         jsonManager.sendJsonOut(response, messageJson);
     }
 

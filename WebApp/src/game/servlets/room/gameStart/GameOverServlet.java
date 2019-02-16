@@ -30,8 +30,8 @@ public class GameOverServlet extends HttpServlet {
             winners.add(winner.getName());
         GameOverJson gameOverJson = new GameOverJson(gameManager.isGameOver() || joinedRoom.getJoinedPlayersNum() == 1
                 ,winners.size() > 1 ,winners);
-        System.out.println("joined players");
-        System.out.println(joinedRoom.getJoinedPlayersNum());
+//        System.out.print("joined players ");
+//        System.out.println(joinedRoom.getJoinedPlayersNum());
 
         if(gameManager.isGameOver()) {
             Thread.sleep(500);

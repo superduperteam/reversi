@@ -1,6 +1,7 @@
 package game.servlets.room.gameStart;
 
 import GameEngine.GameManager;
+import GameEngine.Player;
 import game.handlers.ServletContextHandler;
 import game.handlers.SessionHandler;
 import game.webLogic.Room;
@@ -19,9 +20,18 @@ public class EndGameLeaveServlet extends HttpServlet {
         GameManager gameManager = joinedRoom.getGameManager();
 
         joinedRoom.decreaseJoinedPlayersNumByOne();
-        sessionHandler.setJoinedRoom(request, joinedRoom);
+        //sessionHandler.setJoinedRoom(request, joinedRoom); // ?
 
-//        gameManager.retirePlayerFromGame(gameManager.getActivePlayer());
+        Player player = gameManager.getPlayerByName(request.getParameter("myName"));
+        if(player != null){
+            player.quitGame(gameManager);
+        }
+
+
+        if(joinedRoom.isTotalPlayerLeft()){
+            joinedRoom.clearJoinedPlayersNum();
+        }
+
 
 //        if(gameManager.getAreAllPlayersEndedUpdateGameOver()) {
 //            joinedRoom.setIsGameActive(false);

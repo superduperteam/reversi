@@ -20,6 +20,9 @@ public class JoinRoomServlet extends HttpServlet {
         String roomName = request.getParameter("roomName");
         RoomsManager roomsManager = servletContextHandler.getRoomsManager(getServletContext());
         Room joinedRoom = roomsManager.getRoom(roomName);
+        if(joinedRoom.getGameManager().isGameActive()){
+            joinedRoom.resetRoom();
+        }
         GameManager gameManager = joinedRoom.getGameManager();
         String playerName = sessionHandler.getPlayerName(request);
         boolean isPlayerComputer = sessionHandler.getIsPlayerComputer(request);
@@ -27,6 +30,7 @@ public class JoinRoomServlet extends HttpServlet {
         sessionHandler.setJoinedRoom(request, joinedRoom);
         gameManager.addToPlayersList(new Player(playerName, !isPlayerComputer));
         joinedRoom.increaseJoinedPlayersNumByOne();
+
 
 //        if(joinedRoom.isTotalPlayersJoined()) {
 //            gameManager.activateGame();
