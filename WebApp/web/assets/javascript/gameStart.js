@@ -46,7 +46,7 @@ function initializeGame() {
                 var score = json.playersList[i].statistics.score;
 
                 console.table(json.playersList);
-                $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"cardBody\" style=\"width: 18rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
+                $("#players").append("<div id=\"" + isHuman + "Card" + "\" class=\"cardBody\" style=\"height: 12rem; width: 12rem; float: none; margin-right: auto; margin-left: auto;\">\n" +
                     "                <div class=\"cardBody\">\n" +
                     "                    <h5 class=\"card-title\">" + currentPlayerName + "</h5>\n" +
                     "                    <h6 class=\"card-subtitle mb-2 text-muted\">" + isHuman + "</h6>\n" +
@@ -55,15 +55,15 @@ function initializeGame() {
                     "                        <rect width=\"80\", height=\"20\" style=\"fill:" + currentPlayerDiscType + "\"></rect>\n" +
                     "                    </svg>\n" +
                     "                    <br><br>\n" +
-                    "                    <p class=\"card-text\"> Score:\n" +
+                    "                    <div class=\"card-text\"> Score:\n" +
                     "                        <span id=\"" + currentPlayerName + "Score" + "\">" + score + "</span>\n" +
-                    "                    </p>\n" +
-                    "                    <p class=\"card-text\"> Average of flips:\n" +
+                    "                    </div>\n" +
+                    "                    <div class=\"card-text\"> Average of flips:\n" +
                     "                        <span id=\"" + currentPlayerName + "AverageOfFlips" + "\">0</span>\n" +
-                    "                    </p>\n" +
-                    "                    <p class=\"card-text\"> Turns Played:\n" +
+                    "                    </div>\n" +
+                    "                    <div class=\"card-text\"> Turns Played:\n" +
                     "                        <span id=\"" + currentPlayerName + "TurnsPlayed" + "\">0</span>\n" +
-                    "                    </p>\n" +
+                    "                    </div>\n" +
                     "                </div>\n" +
                     "            </div>");
             }
@@ -93,9 +93,9 @@ function initializeGame() {
 
                     var id1 = rowID + "," + colID;
                     $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
-                        "                       <svg height=\"100\" width=\"100\">\n" +
-                        "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
-                        "                           <circle id=\"Circle" +id1 +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
+                        "                       <svg height=\"80\" width=\"80\">\n" +
+                        "                           <rect width=\"80\" height=\"80\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
+                        "                           <circle id=\"Circle" +id1 +"\" cx=\"40\" cy=\"40\" r=\"32\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
                         "                           <text style=\"display: none\" id=\"text" +id1 +"\" x=\"50%\" y=\"50%\" stroke=\"#51c5cf\" stroke-width=\"2px\" dy=\".3em\">"+ numOfPossibleMoves + " </text>\n" +
                         "                       </svg>\n" +
                         "                  </div>\n");

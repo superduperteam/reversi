@@ -32,6 +32,14 @@
         <servlet-class>game.servlets.lobby.JoinRoomServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ChatServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.ChatServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SendChatServlet</servlet-name>
+        <servlet-class>game.servlets.room.gameStart.SendChatServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>RoomJoinedPlayersServlet</servlet-name>
         <servlet-class>game.servlets.room.preGameStart.RoomJoinedPlayersServlet</servlet-class>
     </servlet>
@@ -78,6 +86,14 @@
     <servlet-mapping>
         <servlet-name>SignupServlet</servlet-name>
         <url-pattern>/signup</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChatServlet</servlet-name>
+        <url-pattern>/chat</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SendChatServlet</servlet-name>
+        <url-pattern>/sendChat</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>

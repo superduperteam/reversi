@@ -9,6 +9,8 @@
     <link href="../assets/bootstrap/ido.css" rel="stylesheet">
     <script src="../assets/jquery/jquery-3.3.1.min.js"></script>
     <script src="../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../assets/javascript/context-path-helper.js"></script>
+    <script src="../assets/javascript/chatroom.js"></script>
     <script src="../assets/javascript/gameStart.js"></script>
 </head>
 <body style="background-color: #EFEFEF;">
@@ -57,6 +59,22 @@
         </div>
     </div>-->
     <div class="jumbotron text-center" style="background-color: white">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="content">
+                        <div id="chatwindow">
+                            <h4>Chat</h4>
+                            <div id="chatarea" class="span6 messages"></div>
+                            <form id="chatform" method="POST" action="../sendChat">
+                                <input type="text" id="userstring" name="userstring"/>
+                                <input type="submit" value="Send"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <h1 id="turn" class="jumbotron-heading"></h1>
             <div id="gameMode">

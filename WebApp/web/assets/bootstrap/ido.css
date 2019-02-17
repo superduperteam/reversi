@@ -73,6 +73,11 @@
     display: flex;
 }
 
+.messages {
+    height: 180px;
+    overflow-y: auto;
+}
+
 .xmlButton {
     padding-bottom: 14px;
 }

@@ -6,7 +6,10 @@ package game.webLogic;
 import GameEngine.GameManager;
 import GameEngine.Player;
 import GameEngine.Point;
+import game.servlets.room.gameStart.Constants;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class Room {
@@ -26,6 +29,7 @@ public class Room {
     private boolean isActivePlayerQuit = false;
     private boolean isGameActive = false;
     private GameManager gameManager = null;
+    private ChatManager chatManager;
 
     public Room(String roomName, String uploaderName, String variant, int boardRows, int boardCols, int totalPlayers) {
         this.roomName = roomName;
@@ -67,6 +71,8 @@ public class Room {
                 playersUpdatedBoardMap.put(player, 0);
                 playersMovedToNextTurnMap.put(player, 0);
             }
+
+            chatManager = new ChatManager();
         }
     }
 
@@ -287,4 +293,20 @@ public class Room {
             playersMovedToNextTurnMap.remove(playerToRemove);
         }
     }
+
+    public ChatManager getChatManager(ServletContext servletContext) {
+        return chatManager;
+    }
+
+    public int getIntParameter(HttpServletRequest request, String name) {
+        String value = request.getParameter(name);
+        if (value != null) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException numberFormatException) {
+            }
+        }
+        return Constants.INT_PARAMETER_ERROR;
+    }
+
 }
