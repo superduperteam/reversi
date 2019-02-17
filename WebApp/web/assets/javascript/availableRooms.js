@@ -29,11 +29,11 @@ function getRooms() {
                     if(document.getElementById(roomID) == null) {
                         $("#availableRooms").append("<div id=\"" + roomID + "\" class=\"list-group\">\n" +
                             "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
-                            "                               <i class=\"fas fa-gamepad mr-2\"></i>" + json.rooms[i].roomName + "\n" +
+                            "                               <i></i>" + json.rooms[i].roomName + "\n" +
                             "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].totalPlayers + "\n" +
                             "                           </button>\n" +
                             "                           <div class=\"collapse popup\" onclick='showBoardOnPopup()'  id=\"" + roomID + "Collapse\" style=\"\">\n" +
-                                                            "<span class=\"popuptext\" id=\"popupboard\"> popuptext...   </span>\n" +
+                                                            "<div class=\"collapse popup\" style=\"display: flex\" id=\""+ i +"popupboard" + "\">  </div>\n" +
                             "                               <div class=\"card card-body\">\n" +
                             "                                   <h5 class=\"card-title\">Uploader: " + json.rooms[i].uploaderName + "</h5>\n" +
                             "                                   <p class=\"card-text\">" +
@@ -45,6 +45,7 @@ function getRooms() {
                             "                               </div>\n" +
                             "                           </div>\n" +
                             "                        </div>\n");
+                        showBoardOnPopup(json.rooms[i].gameManager, i);
                     }
                     else {
                         if($("#" + roomID + "JoinedPlayers").html() === json.rooms[i].totalPlayers || json.rooms[i].isGameActive === true) {
@@ -68,37 +69,45 @@ function getRooms() {
     });
 }
 
-function showBoardOnPopup() {
+function showBoardOnPopup(json, num) {
     console.log('in my func');
 
-    // for(var colIndex = 0; colIndex < json.board.width; colIndex++) {
-    //     var colID = "boardCol-" + colIndex;
-    //
-    //     $("#popupboard").append("<div id=\"" + colID + "\"></div>");
-    //     console.log(json);
-    //     for(var rowIndex = 0; rowIndex < json.board.height; rowIndex++) {
-    //         var rowID = "boardRow-" + rowIndex;
-    //         var fill1;
-    //
-    //         if(json.board.gameboard[rowIndex][colIndex].disc !== undefined){
-    //             fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
-    //         }
-    //         else{
-    //             fill1 = 'lightgreen';
-    //         }
-    //
-    //         var id1 = rowID + "," + colID;
-    //         $("#" + colID).append("<div id=\"" + id1 + "\"> \n" +
-    //             "                       <svg height=\"100\" width=\"100\">\n" +
-    //             "                           <rect width=\"100\" height=\"100\" style=\"fill: lightgreen;stroke:black;stroke-width:5\"></rect>\n" +
-    //             "                           <circle id=\"" +id1 +"Circle" +"\" cx=\"50\" cy=\"50\" r=\"40\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1+ "\" />\n" +
-    //             "                       </svg>\n" +
-    //             "                  </div>\n");
-    //     }
-    // }
 
-    var popup = document.getElementById("popupboard");
-    popup.classList.toggle("show");}
+    var originalCellSize = 30;
+
+
+    for (var colIndex = 0; colIndex < json.board.width; colIndex++) {
+        var colID = "boardCol-" + colIndex;
+        var uID = num + "popupboard";
+
+        $("#" + uID).append("<div id=\"" + num + colID + "\"></div>");
+        console.log(json);
+        for (var rowIndex = 0; rowIndex < json.board.height; rowIndex++) {
+            var rowID = "boardRow-" + rowIndex;
+            var fill1;
+
+            if (json.board.gameboard[rowIndex][colIndex].disc !== undefined) {
+                fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
+            }
+            else {
+                fill1 = 'lightgreen';
+            }
+
+            var id1 = rowID + "," + colID;
+            var searchCOLID = "" + num + colID;
+
+            $("#" + searchCOLID).append("<div id=\"" + id1 + "\"> \n" +
+                "                       <svg height=\"30\" width=\"30\">\n" +
+                "                           <rect width=\"30\" height=\"30\" style=\"fill: lightgreen;stroke:black;stroke-width:0.5\"></rect>\n" +
+                "                           <circle class=\"popupboard\" id=\"Circle" + id1 + "\" cx=\"15\" cy=\"15\" r=\"11\" stroke=\"lightgreen\" stroke-width=\"1\" fill=\"" + fill1 + "\" />\n" +
+                "                       </svg>\n" +
+                "                  </div>\n");
+        }
+    }
+
+    var popup = document.getElementById(num + "popupboard");
+    popup.classList.toggle("show");
+}
 
 function getPlayerName() {
     $.ajax({

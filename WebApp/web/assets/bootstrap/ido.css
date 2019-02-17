@@ -43,6 +43,11 @@
     width: 220px;
 }
 
+.previewBoard {
+    height: 300px;
+    width: 300px;
+}
+
 .lobbyNavHeader {
     font-size: 32px;
 }
