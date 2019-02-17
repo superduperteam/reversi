@@ -22,14 +22,14 @@ public class EndGameLeaveServlet extends HttpServlet {
         joinedRoom.decreaseJoinedPlayersNumByOne();
         //sessionHandler.setJoinedRoom(request, joinedRoom); // ?
 
-        Player player = gameManager.getPlayerByName(request.getParameter("myName"));
-        if(player != null){
-            player.quitGame(gameManager);
-        }
+//        Player player = gameManager.getPlayerByName(request.getParameter("myName"));
+//        if(player != null){
+//            player.quitGame(gameManager);
+//        }
 
 
         if(joinedRoom.isTotalPlayerLeft()){
-            joinedRoom.clearJoinedPlayersNum();
+            joinedRoom.resetRoom();
         }
 
 

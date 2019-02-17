@@ -34,6 +34,8 @@ public class ExecuteMoveServlet extends HttpServlet {
             String senderName = request.getParameter("myName");
             Player player = gameManager.getPlayerByName(senderName);
 
+            if(player == null){ return; }
+
             if(!player.isHuman()){
                 Thread.sleep(1000);
             }
@@ -58,7 +60,7 @@ public class ExecuteMoveServlet extends HttpServlet {
                         if (moveStatus == eMoveStatus.OK) {
                            // gameManager.changeTurn();
                             gameManager.updateGameScore();
-                            gameManager.calcFlipPotential();
+//                            gameManager.calcFlipPotential();
 
                             joinedRoom.markActivePlayerMadeHisMove();
                             System.out.println("%% " + senderName + " made move: " + new Point(destinationRow, destinationCol));

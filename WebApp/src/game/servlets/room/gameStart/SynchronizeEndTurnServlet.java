@@ -52,6 +52,8 @@ public class SynchronizeEndTurnServlet extends HttpServlet {
                     }
                     else{
                         gameManager.changeTurn();
+                        gameManager.updateGameScore();
+                        gameManager.calcFlipPotential();
                     }
 
 

@@ -36,7 +36,7 @@ public class CurrentPlayerTurnServlet extends HttpServlet {
          //   jsonManager.sendJsonOut(response, gameManager.getActivePlayer());
   //      }
         if (joinedRoom.isEveryOneInSameTurn()) { // if active player didn't make his move - go on and execute the new move.
-            jsonManager.sendJsonOut(response, gameManager.getActivePlayer());
+            jsonManager.sendJsonOut(response, gameManager);
         }
         else{
             jsonManager.sendJsonOut(response, false);

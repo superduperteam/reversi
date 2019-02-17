@@ -227,7 +227,7 @@ public class Room {
         ++joinedPlayersNum;
     }
 
-    public void decreaseJoinedPlayersNumByOne() {
+    public synchronized void decreaseJoinedPlayersNumByOne() {
         --joinedPlayersNum;
     }
 
@@ -249,12 +249,12 @@ public class Room {
 
     public GameManager getGameManager() { return gameManager; }
 
-    public boolean isTotalPlayerLeft()
+    public synchronized boolean isTotalPlayerLeft()
     {
         return joinedPlayersNum == 0;
     }
 
-    public void resetRoom() {
+    public synchronized void resetRoom() {
 //        joinedPlayersNum = 0;
         isGameActive = false;
         gameManager.resetGame();
@@ -266,7 +266,6 @@ public class Room {
     }
 
     public void clearJoinedPlayersNum(){
-        joinedPlayersNum = 0;
         isGameActive = false;
     }
 

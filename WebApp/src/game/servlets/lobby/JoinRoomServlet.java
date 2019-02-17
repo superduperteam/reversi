@@ -20,9 +20,9 @@ public class JoinRoomServlet extends HttpServlet {
         String roomName = request.getParameter("roomName");
         RoomsManager roomsManager = servletContextHandler.getRoomsManager(getServletContext());
         Room joinedRoom = roomsManager.getRoom(roomName);
-        if(joinedRoom.getGameManager().isGameActive()){
-            joinedRoom.resetRoom();
-        }
+//        if(joinedRoom.getGameManager().isGameActive()){
+//            joinedRoom.resetRoom();
+//        }
         GameManager gameManager = joinedRoom.getGameManager();
         String playerName = sessionHandler.getPlayerName(request);
         boolean isPlayerComputer = sessionHandler.getIsPlayerComputer(request);

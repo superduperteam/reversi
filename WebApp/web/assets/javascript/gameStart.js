@@ -155,18 +155,20 @@ function getCurrentPlayerTurn() {
             console.error("Failed to get ajax response");
         },
         success: function (json) {
-            console.log("Got ajax response - current player name is: " + json.name);
+            console.log("Got ajax response - current player name is: " + json.activePlayer.name);
 
             if(json !== "false" && json !== false){
                 clearInterval(getCurrentTurnRepeater);
                 getCurrentTurnRepeater = null;
             }
 
+
+            updateUI(json);
            //isLastMoveExecuted = true;
             //lastTurnPlayerDiscColor = json.discType;
             //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
 
-            if(playerName === json.name) {
+            if(playerName === json.activePlayer.name) {
                 isItMyTurn = true;
                 passivePlayerRepeater = null;
                 $("#turn").html(playerName + ", It's your turn");
@@ -178,14 +180,14 @@ function getCurrentPlayerTurn() {
             }
             else {
                 isItMyTurn = false;
-                $("#turn").html("It's " + json.name + "'s turn. Stand by...");
+                $("#turn").html("It's " + json.activePlayer.name + "'s turn. Stand by...");
                 $("#quitButton").attr("disabled", "");
 
                 // for(var i = 0; i < boardCols.length; i++) {
                 //     boardCols.eq(i).removeClass("highlight");
                 // }
                 //gameoverRepeater = setInterval(checkGameOver, 3000); // Saar: The game doesn't change turns if you add this (normal game without quiting).
-                passivePlayerRepeater = setInterval(updateBoard, 500);
+                passivePlayerRepeater = setInterval(updateGame, 500);
             }
         }
     });
@@ -205,7 +207,7 @@ function computerMove() {
         success: function () {
             console.log("Got ajax response - " + playerName + "was move executed");
 
-            updateBoard();
+            updateGame();
         }
     });
 }
@@ -217,9 +219,9 @@ $(function() {
             if(this.checked) {
                 for (var i = 0; i < boardHeight; i++) {
                     for (var j = 0; j < boardWidth; j++){
-                        if(isItMyTurn){
+                        // if(isItMyTurn){
                             document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
-                        }
+                        // }
                     }
                 }
             }
@@ -269,7 +271,7 @@ $(function() {
                     console.log(isActionSucceeded);
 
                     if (isActionSucceeded === "true" || isActionSucceeded === true) {
-                        updateBoard();
+                        updateGame();
                     }
                     else if(json !== "" && json !== undefined && json !== false && json !== "false") {
                         alert(json);
@@ -283,7 +285,65 @@ $(function() {
     });
 });
 
-function updateBoard() {
+function updateUI(gameManager){
+
+    var numOfPossibleMoves;
+    if (passivePlayerRepeater != null) { // user got an updated board, we can stop asking for it.
+        clearInterval(passivePlayerRepeater);
+        passivePlayerRepeater = null;
+    }
+
+    for(var k = 0; k< gameManager.playersList.length; k++){
+        var avgOfFlips;
+        var currPlayer = gameManager.playersList[k];
+        $("#"+ currPlayer.name + "Score").text(currPlayer.statistics.score);
+        if(currPlayer.statistics.countOfPlayedTurns !== 0){
+            avgOfFlips = currPlayer.statistics.totalNumOfFlips/currPlayer.statistics.countOfPlayedTurns;
+        }
+        else{
+            avgOfFlips = 0;
+        }
+
+        $("#"+ currPlayer.name + "AverageOfFlips").text(Number.parseFloat(avgOfFlips).toFixed(2));
+        $("#"+ currPlayer.name + "TurnsPlayed").text(currPlayer.statistics.countOfPlayedTurns);
+    }
+
+    // every user get the new board and updates his UI board according to the logic board.
+    for (var i = 0; i < gameManager.board.height; i++) {
+        for (var j = 0; j < gameManager.board.width; j++){
+            numOfPossibleMoves = "";
+            // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = gameManager.gameboard[i][j].disc.discType1;
+            if (gameManager.board.gameboard[i][j].disc !== undefined) {
+                document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = gameManager.board.gameboard[i][j].disc.type;
+            }
+            else {
+                document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
+            }
+
+            if(gameManager.board.gameboard[i][j].countOfFlipsPotential !== 0 && gameManager.board.gameboard[i][j].countOfFlipsPotential !== '0'){
+                numOfPossibleMoves = gameManager.board.gameboard[i][j].countOfFlipsPotential;
+            }
+
+            document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).textContent = numOfPossibleMoves;
+
+            var isTutorialChecked =  $("#tutorialModeCheckBox").prop('checked');
+
+            // if(playerName === gameManager.activePlayer.name){
+            //     alert("my board my turn");
+            // }
+
+            //if(playerName === gameManager.activePlayer.name && isTutorialChecked === true){
+            if(isTutorialChecked === true){
+                document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
+            }
+            else{
+                document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "none";
+            }
+        }
+    }
+}
+
+function updateGame() {
     $.ajax({
         data: {"activePlayer": isItMyTurn, // for debug
                 "myName": playerName // for debug
@@ -306,61 +366,7 @@ function updateBoard() {
             // }
 
             if (json !== false && json !== "false") { // false === active player didn't make his move yet
-
-                var numOfPossibleMoves;
-                if (passivePlayerRepeater != null) { // user got an updated board, we can stop asking for it.
-                    clearInterval(passivePlayerRepeater);
-                    passivePlayerRepeater = null;
-                }
-
-                for(var k = 0; k< json.playersList.length; k++){
-                    var avgOfFlips;
-                    var currPlayer = json.playersList[k];
-                    $("#"+ currPlayer.name + "Score").text(currPlayer.statistics.score);
-                    if(currPlayer.statistics.countOfPlayedTurns !== 0){
-                        avgOfFlips = currPlayer.statistics.totalNumOfFlips/currPlayer.statistics.countOfPlayedTurns;
-                    }
-                    else{
-                        avgOfFlips = 0;
-                    }
-
-                    $("#"+ currPlayer.name + "AverageOfFlips").text(Number.parseFloat(avgOfFlips).toFixed(2));
-                    $("#"+ currPlayer.name + "TurnsPlayed").text(currPlayer.statistics.countOfPlayedTurns);
-                }
-
-                // every user get the new board and updates his UI board according to the logic board.
-                for (var i = 0; i < json.board.height; i++) {
-                    for (var j = 0; j < json.board.width; j++){
-                        numOfPossibleMoves = "";
-                        // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
-                        if (json.board.gameboard[i][j].disc !== undefined) {
-                            document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = json.board.gameboard[i][j].disc.type;
-                        }
-                        else {
-                            document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = 'lightgreen';
-                        }
-
-                        if(json.board.gameboard[i][j].countOfFlipsPotential !== 0 && json.board.gameboard[i][j].countOfFlipsPotential !== '0'){
-                            numOfPossibleMoves = json.board.gameboard[i][j].countOfFlipsPotential;
-                        }
-
-                        document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).textContent = numOfPossibleMoves;
-
-                        var isTutorialChecked =  $("#tutorialModeCheckBox").prop('checked');
-
-                        // if(playerName === json.activePlayer.name){
-                        //     alert("my board my turn");
-                        // }
-
-                        if(playerName === json.activePlayer.name && isTutorialChecked === true){
-                            document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
-                        }
-                        else{
-                            document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "none";
-                        }
-                    }
-                }
-
+                updateUI(json)
                 checkGameOver();
             }
 
