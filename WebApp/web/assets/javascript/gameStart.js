@@ -163,7 +163,7 @@ function getCurrentPlayerTurn() {
             }
 
 
-            updateUI(json);
+            // updateUI(json);
            //isLastMoveExecuted = true;
             //lastTurnPlayerDiscColor = json.discType;
             //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
@@ -174,12 +174,16 @@ function getCurrentPlayerTurn() {
                 $("#turn").html(playerName + ", It's your turn");
                 $("#quitButton").removeAttr("disabled");
 
+                updateUI(json);
+
                 if(isPlayerComputer === true) {
                     computerMove();
                 }
             }
             else {
                 isItMyTurn = false;
+
+                updateUI(json);
                 $("#turn").html("It's " + json.activePlayer.name + "'s turn. Stand by...");
                 $("#quitButton").attr("disabled", "");
 
@@ -219,9 +223,9 @@ $(function() {
             if(this.checked) {
                 for (var i = 0; i < boardHeight; i++) {
                     for (var j = 0; j < boardWidth; j++){
-                        // if(isItMyTurn){
+                         if(isItMyTurn){
                             document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
-                        // }
+                         }
                     }
                 }
             }
@@ -333,7 +337,7 @@ function updateUI(gameManager){
             // }
 
             //if(playerName === gameManager.activePlayer.name && isTutorialChecked === true){
-            if(isTutorialChecked === true){
+            if(playerName === gameManager.activePlayer.name && isTutorialChecked === true){
                 document.getElementById("textboardRow-" + i + "," + "boardCol-" + j).style.display = "";
             }
             else{
