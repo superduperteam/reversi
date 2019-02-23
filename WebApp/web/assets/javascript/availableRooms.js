@@ -28,12 +28,12 @@ function getRooms() {
 
                     if(document.getElementById(roomID) == null) {
                         $("#availableRooms").append("<div id=\"" + roomID + "\" class=\"list-group\">\n" +
-                            "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
+                            "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" style=\"background-color:green; border-radius: 32px\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
                             "                               <i></i>" + json.rooms[i].roomName + "\n" +
                             "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].totalPlayers + "\n" +
                             "                           </button>\n" +
                             "                           <div class=\"collapse popup\" onclick='showBoardOnPopup()'  id=\"" + roomID + "Collapse\" style=\"\">\n" +
-                                                            "<div class=\"collapse popup\" style=\"display: flex\" id=\""+ i +"popupboard" + "\">  </div>\n" +
+                                                            "<div class=\"collapse popup\" style=\"display: flex; justify-content: center\" id=\""+ i +"popupboard" + "\">  </div>\n" +
                             "                               <div class=\"card card-body\">\n" +
                             "                                   <h5 class=\"card-title\">Uploader: " + json.rooms[i].uploaderName + "</h5>\n" +
                             "                                   <p class=\"card-text\">" +
@@ -41,7 +41,7 @@ function getRooms() {
                             "                                       <b class=\"mr-2 ml-4\">Board:</b>" + json.rooms[i].boardRows + " X " + json.rooms[i].boardCols +
                             "                                   </p>\n" +
                             "                                   <hr>\n" +
-                            "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\">Join Room</button>\n" +
+                            "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\" style=\"background-color:green; border-radius: 32px\">Join Room</button>\n" +
                             "                               </div>\n" +
                             "                           </div>\n" +
                             "                        </div>\n");
