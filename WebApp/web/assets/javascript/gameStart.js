@@ -155,43 +155,41 @@ function getCurrentPlayerTurn() {
             console.error("Failed to get ajax response");
         },
         success: function (json) {
-            console.log("Got ajax response - current player name is: " + json.activePlayer.name);
-
-            if(json !== "false" && json !== false){
+            if (json !== "false" && json !== false) {
+                console.log("Got ajax response - current player name is: " + json.activePlayer.name);
                 clearInterval(getCurrentTurnRepeater);
                 getCurrentTurnRepeater = null;
-            }
 
 
-            // updateUI(json);
-           //isLastMoveExecuted = true;
-            //lastTurnPlayerDiscColor = json.discType;
-            //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
+                // updateUI(json);
+                //isLastMoveExecuted = true;
+                //lastTurnPlayerDiscColor = json.discType;
+                //lastTurnPlayerTurnsPlayed = json.turnsPlayedNum;
 
-            if(playerName === json.activePlayer.name) {
-                isItMyTurn = true;
-                passivePlayerRepeater = null;
-                $("#turn").html(playerName + ", It's your turn");
-                $("#quitButton").removeAttr("disabled");
+                if (playerName === json.activePlayer.name) {
+                    isItMyTurn = true;
+                    passivePlayerRepeater = null;
+                    $("#turn").html(playerName + ", It's your turn");
+                    $("#quitButton").removeAttr("disabled");
 
-                updateUI(json);
+                    updateUI(json);
 
-                if(isPlayerComputer === true) {
-                    computerMove();
+                    if (isPlayerComputer === true) {
+                        computerMove();
+                    }
+                } else {
+                    isItMyTurn = false;
+
+                    updateUI(json);
+                    $("#turn").html("It's " + json.activePlayer.name + "'s turn. Stand by...");
+                    $("#quitButton").attr("disabled", "");
+
+                    // for(var i = 0; i < boardCols.length; i++) {
+                    //     boardCols.eq(i).removeClass("highlight");
+                    // }
+                    //gameoverRepeater = setInterval(checkGameOver, 3000); // Saar: The game doesn't change turns if you add this (normal game without quiting).
+                    passivePlayerRepeater = setInterval(updateGame, 500);
                 }
-            }
-            else {
-                isItMyTurn = false;
-
-                updateUI(json);
-                $("#turn").html("It's " + json.activePlayer.name + "'s turn. Stand by...");
-                $("#quitButton").attr("disabled", "");
-
-                // for(var i = 0; i < boardCols.length; i++) {
-                //     boardCols.eq(i).removeClass("highlight");
-                // }
-                //gameoverRepeater = setInterval(checkGameOver, 3000); // Saar: The game doesn't change turns if you add this (normal game without quiting).
-                passivePlayerRepeater = setInterval(updateGame, 500);
             }
         }
     });
@@ -277,7 +275,7 @@ $(function() {
                     if (isActionSucceeded === "true" || isActionSucceeded === true) {
                         updateGame();
                     }
-                    else if(json !== "" && json !== undefined && json !== false && json !== "false") {
+                    else if(json !== "" && json !== undefined && json !== false && json !== "false" && json !== "again" && json !== "\"again\"") {
                         alert(json);
                     }
                     else if(json === "again" || json === "\"again\""){

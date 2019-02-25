@@ -1,17 +1,17 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="web:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/web_war_exploded</output-path>
+  <artifact type="exploded-war" name="WebApp:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/WebApp_war_exploded</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="WebApp/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
           <element id="module-output" name="WebApp" />
+          <element id="module-output" name="GameEngine" />
         </element>
         <element id="directory" name="lib">
-          <element id="artifact" artifact-name="GameEngine:jar" />
           <element id="library" level="project" name="gson-2.8.5" />
         </element>
       </element>
+      <element id="javaee-facet-resources" facet="WebApp/web/Web" />
     </root>
   </artifact>
 </component>
