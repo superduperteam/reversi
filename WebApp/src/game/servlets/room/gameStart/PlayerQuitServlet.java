@@ -21,7 +21,6 @@ public class PlayerQuitServlet extends HttpServlet {
 
         Player quitter = gameManager.getPlayerByName(request.getParameter("myName"));
         quitter.quitGame(gameManager);
-        //gameManager.retirePlayerFromGame(quitter);
         joinedRoom.removePlayerFromRecords(quitter);
         joinedRoom.markIsActivePlayerQuit(); // saar: Without this, other player will not know that the user quit.
     }

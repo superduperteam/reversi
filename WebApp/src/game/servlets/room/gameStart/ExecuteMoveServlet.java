@@ -21,14 +21,14 @@ public class ExecuteMoveServlet extends HttpServlet {
 
     //private static final Object Player = ;
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, InterruptedException {
+    protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, InterruptedException {
         ServletContextHandler servletContextHandler = new ServletContextHandler();
         SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
         Room joinedRoom = sessionHandler.getJoinedRoom(request);
         GameManager gameManager = joinedRoom.getGameManager();
         JsonManager jsonManager = servletContextHandler.getJsonHandler(getServletContext());
 
-        synchronized (gameManager.mtx) { // Saar: I think this is necessary. Every request the server gets, tomcat creates a new thread, but they all work on the same
+        //synchronized (gameManager.mtx) { // Saar: I think this is necessary. Every request the server gets, tomcat creates a new thread, but they all work on the same
             // object - gameManager. I can't synchronized on gameManager object because it's a local reference, so I created a mtx object so every
             // thread will have this same reference.
             String senderName = request.getParameter("myName");
@@ -98,7 +98,7 @@ public class ExecuteMoveServlet extends HttpServlet {
                 // NOTE: we cannot return 'false' as an answer because the user will not click the cell again.
                     jsonManager.sendJsonOut(response, "again");
             }
-        }
+    //    }
     }
 
     @Override

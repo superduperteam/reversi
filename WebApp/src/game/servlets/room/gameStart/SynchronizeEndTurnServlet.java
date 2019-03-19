@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class SynchronizeEndTurnServlet extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         boolean responseAnswer;
 

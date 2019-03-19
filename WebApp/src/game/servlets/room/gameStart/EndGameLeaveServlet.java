@@ -31,12 +31,6 @@ public class EndGameLeaveServlet extends HttpServlet {
         if(joinedRoom.isTotalPlayerLeft()){
             joinedRoom.resetRoom();
         }
-
-
-//        if(gameManager.getAreAllPlayersEndedUpdateGameOver()) {
-//            joinedRoom.setIsGameActive(false);
-//            gameManager.initializeGameManager();
-//        }
     }
 
     @Override

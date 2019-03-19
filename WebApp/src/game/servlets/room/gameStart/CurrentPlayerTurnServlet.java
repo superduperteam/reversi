@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class CurrentPlayerTurnServlet extends HttpServlet {
 
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected synchronized void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
         ServletContextHandler servletContextHandler = new ServletContextHandler();

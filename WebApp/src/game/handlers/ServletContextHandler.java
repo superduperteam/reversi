@@ -28,7 +28,7 @@ public class ServletContextHandler {
         return (OnlinePlayersManager) servletContext.getAttribute(PLAYERS_MANAGER_ATT);
     }
 
-    public RoomsManager getRoomsManager(ServletContext servletContext) {
+    public synchronized RoomsManager getRoomsManager(ServletContext servletContext) {
         if(servletContext.getAttribute(ROOMS_MANAGER_ATT) == null) {
             servletContext.setAttribute(ROOMS_MANAGER_ATT, new RoomsManager());
         }
@@ -36,7 +36,7 @@ public class ServletContextHandler {
         return (RoomsManager) servletContext.getAttribute(ROOMS_MANAGER_ATT);
     }
 
-    public JsonManager getJsonHandler(ServletContext servletContext) {
+    public synchronized JsonManager getJsonHandler(ServletContext servletContext) {
         if(servletContext.getAttribute(JSON_HANDLER_ATT) == null) {
             servletContext.setAttribute(JSON_HANDLER_ATT, new JsonManager());
         }
