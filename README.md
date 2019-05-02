@@ -39,7 +39,7 @@ Features:
 ![alt text](https://i.imgur.com/ZIP0cB6.png)
 
 ## Desktop Application
-#### Reversi game as a desktip application.
+#### Reversi game as a desktop application.
 
 Features:
 - Up to 4 players.
