@@ -44,12 +44,13 @@ Features:
 Features:
 - Up to 4 players.
 - To start a game, user should upload game settings (XML) that defines - board, players' names, game mode and etc'.
-- In-game chat
+
+
 - Replay mode - at the end of a game, users can watch the turns play-by-play.
 - AI-players can be included in the game.
 - Undo button - cancelling the last move.
 - Retire button.
-- User cam pick his favorite theme (CSS).
+- User can pick his favorite theme (CSS).
 - Cool animations. 
 
 #### Pictures from the game:
