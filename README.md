@@ -38,7 +38,7 @@ Features:
 #### - Actual Room page
 ![alt text](https://i.imgur.com/ZIP0cB6.png)
 #### - Actual Room page
-![alt text](https://i.ibb.co/vqrbZ9d/Capture2.png)
+![alt text](https://i.ibb.co/pX4XLSc/10altaltalt.png)
 
 ## Desktop Application
 #### Reversi game as a desktop application.
