@@ -36,7 +36,7 @@ Features:
 #### - Waiting window
 ![alt text](https://i.imgur.com/OY3bLWk.png)
 #### - Actual Room page
-![alt text](https://i.imgur.com/ZIP0cB6.png)
+![alt text](https://i.ibb.co/7bJcc0y/Capture1.png)
 
 ## Desktop Application
 #### Reversi game as a desktop application.
