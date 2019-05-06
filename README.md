@@ -36,8 +36,6 @@ Features:
 #### - Waiting window
 ![alt text](https://i.imgur.com/OY3bLWk.png)
 #### - Actual Room page
-![alt text](https://i.imgur.com/ZIP0cB6.png)
-#### - Actual Room page
 ![alt text](https://i.ibb.co/pX4XLSc/10altaltalt.png)
 
 ## Desktop Application
