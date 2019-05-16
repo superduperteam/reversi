@@ -5,7 +5,7 @@
 This is sort of an extended version of the game:
 * 2-4 players (instead of just 2).
 * Dynamic board size.
-* Two game-modes:
+* Two game modes:
   * Regular (original mode)
   * Islands - each turn, a player can put his/her disc in any unoccupied cell on the board.
 
