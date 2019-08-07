@@ -1,0 +1,147 @@
+.backgroundImage {
+    background-image: url("../images/4683.jpg"); /* The image used */
+    background-color: #cccccc; /* Used if the image is unavailable */
+    height: 100%;/* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    background-position: top;
+}
+
+.backgroundImageLobby {
+    background-image: url("../images/lobby.jpg"); /* The image used */
+    background-color: #cccccc; /* Used if the image is unavailable */
+    height: 100%;/* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    background-position: top;
+}
+
+.backgroundImageAvailableGames {
+    background-image: url("../images/available-games-background.jpg"); /* The image used */
+    background-color: #cccccc; /* Used if the image is unavailable */
+    height: 100%;/* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    background-position: top;
+}
+
+.backgroundImageWhosOnline {
+    background-image: url("../images/whos-online-background.png"); /* The image used */
+    background-color: #cccccc; /* Used if the image is unavailable */
+    height: 100%;/* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    background-position: top;
+}
+
+.reversiSmallImage {
+    height: 220px;
+    width: 220px;
+}
+
+.previewBoard {
+    height: 300px;
+    width: 300px;
+}
+
+.lobbyNavHeader {
+    font-size: 32px;
+}
+
+.lobbyTextBackground {
+    background-color: rgba(255, 255, 255, 0.35);
+    margin-top: 100px;
+}
+
+.lobbyNav{
+    font-size: 20px;
+}
+
+.paragraphHeader{
+    font-weight: bolder;
+}
+
+.paragraphText{
+    font-weight: bold;
+}
+
+.createRoomForm {
+    display: flex;
+}
+
+.messages {
+    height: 180px;
+    overflow-y: auto;
+}
+
+.xmlButton {
+    padding-bottom: 14px;
+}
+
+.newRoomStyle {
+    overflow: auto !important;
+}
+
+.cardBody {
+    background-color: lightblue;
+    border-radius: 32px;
+    stroke-width: 0px;
+    margin-left: 8px !important;
+}
+
+
+/* Popup container */
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* The actual popup (appears on top) */
+.popup .popuptext {
+    visibility: hidden;
+    width: 160px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: #555;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
