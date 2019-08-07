@@ -168,6 +168,8 @@ public class GameUI
                 //islandsOnRegularModeException.printStackTrace();
                 System.out.println("Error: " + islandsOnRegularModeException);
                 isGameLoaded = false;
+            } catch (InvalidNumberOfPlayersException e) {
+                e.printStackTrace();
             }
         }
         else {
@@ -411,7 +413,8 @@ public class GameUI
     {
         System.out.println("Game Description:");
         // System.out.println(getStringOfInitialDiscPointsOfPlayers(gameManager.getBoard().getInitialDiscPositionOfPlayers()));
-        printBoardState(gameManager.getInitialBoard()); // or printBoardState(gameManager.getBoard())?
+
+        printBoardState(gameManager.getHistoryOfBoardStates().get(0)); // or printBoardState(gameManager.getBoard())?
         printPlayersAndTheirDiscType(gameManager.getPlayersList());
         printGameMode(gameManager);
         printIsGameActive(isGameActive);

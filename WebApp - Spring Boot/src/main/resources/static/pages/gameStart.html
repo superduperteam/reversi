@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../images/reversi-icon.png">
+    <title>Reversi</title>
+    <link href="../bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/highlight.css" rel="stylesheet">
+    <link href="../bootstrap/ido.css" rel="stylesheet">
+    <script src="../jquery/jquery-3.3.1.min.js"></script>
+    <script src="../bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../javascript/context-path-helper.js"></script>
+    <script src="../javascript/chatroom.js"></script>
+    <script src="../javascript/gameStart.js"></script>
+</head>
+<body style="background-color: white">
+    <div class="modal fade" id="endGameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Game Over</h5>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <h4 id="modalPublicMessage"></h4>
+                    <h3 id="modalPrivateMessage"></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="startGameModal" tabindex="-1" role="dialog" aria-labelledby="startGameModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Start Game</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <h4>Game Started!</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron text-center" style="background-color: white">
+        <div class="container-fluid">
+            <div class="row">`
+                <div class="col-xs-4">
+                    <div class="content">
+                        <div id="chatwindow">
+                            <h4>Chat</h4>
+                            <div id="chatarea" class="text-left span6 messages"></div>
+                            <form id="chatform" method="POST" action="../sendChat">
+                                <input type="text" id="userstring" name="userstring"/>
+                                <input type="submit" value="Send"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h1 id="turn" class="jumbotron-heading"></h1>
+            <div id="gameMode">
+                <h1 id="gameModeType" class="h3 mb-3 font-weight-normal"></h1>
+            </div>
+            <input id="tutorialModeCheckBox" type="checkbox" name="tutorialModeName" value="tutorialModeValue"> Tutorial Mode<br>
+            <p>
+                <button id="quitButton" type="button" class="btn btn-primary" disabled="">Quit</button>
+            </p>
+        </div>
+        <div id="players" class="row" style="display: inline-flex;">
+
+        </div>
+    </div>
+    <div id="boardJumbotron" class="jumbotron justify-content-center" style="white-space: nowrap; background-color: white; text-align: center; overflow: auto; display: flex; width: 100%;">
+        <div id="board" style="display: flex">
+
+        </div>
+    </div>
+</body>
+</html>

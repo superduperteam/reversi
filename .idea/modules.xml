@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/GameEngine/GameEngine.iml" filepath="$PROJECT_DIR$/GameEngine/GameEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/JavaFX/JavaFX.iml" filepath="$PROJECT_DIR$/JavaFX/JavaFX.iml" />
       <module fileurl="file://$PROJECT_DIR$/WebApp/WebApp.iml" filepath="$PROJECT_DIR$/WebApp/WebApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebApp - Spring Boot/WebApp - Spring Boot.iml" filepath="$PROJECT_DIR$/WebApp - Spring Boot/WebApp - Spring Boot.iml" />
     </modules>
   </component>
 </project>

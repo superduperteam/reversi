@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="../images/reversi-icon.png">
+    <title>Reversi</title>
+    <link href="../bootstrap/bootstrap.min.css" rel="stylesheet">
+    <script src="../jquery/jquery-3.3.1.min.js"></script>
+    <script src="../bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="../javascript/preGameStart.js"></script>
+</head>
+<body style="background-color: cornflowerblue">
+    <div class="modal fade" id="roomJoinedPlayersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Waiting For Others...</h5>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <h3 id="modalMessage"></h3>
+                </div>
+                <div id="modalFooter" class="modal-footer" style="text-align: center;">
+                    <button id="leaveRoomButton" type="button" class="btn btn-primary">Leave Room</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
