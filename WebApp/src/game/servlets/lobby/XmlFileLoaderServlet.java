@@ -47,7 +47,7 @@ public class XmlFileLoaderServlet extends HttpServlet {
         System.out.println(xmlContent);
         InputStream inputStream = new ByteArrayInputStream(xmlContent.toString().getBytes());
         try {
-        GameSettingsReader gameSettingsReader = new GameSettingsReader();
+            GameSettingsReader gameSettingsReader = new GameSettingsReader();
             System.out.println(request.getInputStream());
             GameManager gameManager = gameSettingsReader.extractGameSettings(inputStream);
             roomsManager = servletContextHandler.getRoomsManager(getServletContext());
@@ -66,7 +66,6 @@ public class XmlFileLoaderServlet extends HttpServlet {
                 sessionHandler.setLastUploadedGameManager(request, gameManager);
                 jsonManager.sendJsonOut(response, room);
             }
-
         }
          catch (PlayersInitPositionsOutOfRangeException e) {
             MessageJson messageJson = new MessageJson(false, e.toString());

@@ -76,9 +76,8 @@ public class GameSettingsReader {
         board = createBoardFromGameDetails(gameDescriptor);
         gameMode = getEGameMode(gameDescriptor);
         gameTitle = gameDescriptor.getDynamicPlayers().getGameTitle();
-        GameManager gameManager = new GameManager(gameMode, board, numberOfPlayers, gameTitle);
 
-        return gameManager;
+        return new GameManager(gameMode, board, numberOfPlayers, gameTitle);
     }
 
 //    private List<GameEngine.Player> createPlayersListFromGameDetails(GameDescriptor gameDescriptor) {
