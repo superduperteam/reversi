@@ -50,25 +50,15 @@ public class RoomsResource {
     public ResponseEntity<Room> uploadXMLFile(@RequestParam("xmlFile") MultipartFile xmlFile, HttpSession session) {
         try {
             GameSettingsReader gameSettingsReader = new GameSettingsReader();
-            //  System.out.println(parts.getInputStream());
             GameManager gameManager = gameSettingsReader.extractGameSettings(xmlFile.getInputStream());
-//            gameDescriptor = xmlLoader.getGameDescriptorFromXml(xmlContent);
-//            xmlLoader.validateXml(gameDescriptor, roomsManager);
-//
 
             if (roomsManager.isRoomWithNameExists(gameManager.getGameTitle())) {
-//                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
             } else
                 {
                 Room roomToCreate = new Room(gameManager, gameManager.getGameTitle(), "saar");
                 session.setAttribute("roomToCreate", roomToCreate);
-//                SessionHandler sessionHandler = servletContextHandler.getSessionHandler(getServletContext());
-//                sessionHandler.setLastUploadedGameManager(request, gameManager);
-//                jsonManager.sendJsonOut(response, room);
-
-               // return new ResponseEntity<>(roomToCreate ,HttpStatus.ACCEPTED);
-                    return new ResponseEntity<>(roomToCreate, HttpStatus.ACCEPTED);
+                return new ResponseEntity<>(roomToCreate, HttpStatus.ACCEPTED);
             }
         } catch (PlayersInitPositionsOutOfRangeException e) {
             e.printStackTrace();

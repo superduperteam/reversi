@@ -1,5 +1,7 @@
 package GameEngine;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jaxb.schema.generated.Game;
 import jaxb.schema.generated.Participant;
 
@@ -11,7 +13,8 @@ public class Board implements Serializable
     private int height;
     private int width;
     private GameManager.eGameMode gameMode;
-    private CellBoard gameboard[][];
+    @JsonProperty
+    private CellBoard[][] gameboard;
    // private HashMap<Participant, List<Point>> initialDiscPointsOfPlayers;
 
     public Board(jaxb.schema.generated.Board board, HashMap<Participant, List<Point>> initialDiscPointsOfPlayers, GameManager.eGameMode gameMode)

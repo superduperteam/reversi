@@ -30,15 +30,15 @@ function getRooms() {
                         $("#rooms").append("<div id=\"" + roomID + "\" class=\"list-group\">\n" +
                             "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" style=\"background-color:green; border-radius: 32px\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
                             "                               <i></i>" + json.rooms[i].roomName + "\n" +
-                            "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].totalPlayers + "\n" +
+                            "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].gameManager.totalNumOfPlayers + "\n" +
                             "                           </button>\n" +
                             "                           <div class=\"collapse popup\" onclick='showBoardOnPopup()'  id=\"" + roomID + "Collapse\" style=\"\">\n" +
                                                             "<div class=\"collapse popup\" style=\"display: flex; justify-content: center\" id=\""+ i +"popupboard" + "\">  </div>\n" +
                             "                               <div class=\"card card-body\">\n" +
                             "                                   <h5 class=\"card-title\">Uploader: " + json.rooms[i].uploaderName + "</h5>\n" +
                             "                                   <p class=\"card-text\">" +
-                            "                                       <b class=\"mr-2\">Variant:</b>" + json.rooms[i].variant +
-                            "                                       <b class=\"mr-2 ml-4\">Board:</b>" + json.rooms[i].boardRows + " X " + json.rooms[i].boardCols +
+                            "                                       <b class=\"mr-2\">Variant:</b>" + json.rooms[i].gameManager.gameMode +
+                            "                                       <b class=\"mr-2 ml-4\">Board:</b>" + json.rooms[i].gameManager.board.height + " X " + json.rooms[i].gameManager.board.width +
                             "                                   </p>\n" +
                             "                                   <hr>\n" +
                             "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\" style=\"background-color:green; border-radius: 32px\">Join Room</button>\n" +

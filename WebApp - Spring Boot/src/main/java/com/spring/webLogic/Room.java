@@ -7,6 +7,7 @@ package com.spring.webLogic;
 import GameEngine.GameManager;
 import GameEngine.Player;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.Set;
 public class Room {
 
     private String roomName;
+    @JsonProperty
     private String uploaderName;
     private int turnsPlayed = 0;
     private int totalPlayersNum;

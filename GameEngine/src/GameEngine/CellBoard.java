@@ -1,7 +1,10 @@
 package GameEngine;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CellBoard {
     private int flipPotential = 0;
+    @JsonProperty
     private Disc disc;
     private int countOfFlipsPotential;
 

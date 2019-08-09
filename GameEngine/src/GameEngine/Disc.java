@@ -1,10 +1,13 @@
 package GameEngine;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Disc implements Serializable
 {
+    @JsonProperty
     private eDiscType type;
 
     public Disc(eDiscType type)

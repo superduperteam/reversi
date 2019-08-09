@@ -4,7 +4,7 @@ $(function() {
             data: {"roomName":$("#roomName").val(), "variant":$("#variant").val(), "boardRows":$("#boardRows").val(),
                 "boardCols":$("#boardCols").val(), "target":$("#target").val(), "totalPlayers":$("#totalPlayers").val()},
             type: "POST",
-            url: "../newRoom",
+            url: "../createRoom",
             timeout: 2000,
             error: function() {
                 console.error("Failed to get ajax response");
