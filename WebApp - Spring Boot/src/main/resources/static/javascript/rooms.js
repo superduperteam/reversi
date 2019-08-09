@@ -28,7 +28,7 @@ function getRooms() {
 
                     if(document.getElementById(roomID) == null) {
                         $("#rooms").append("<div id=\"" + roomID + "\" class=\"list-group\">\n" +
-                            "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" style=\"background-color:green; border-radius: 32px\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
+                            "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" style=\"border-radius: 32px\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
                             "                               <i></i>" + json.rooms[i].roomName + "\n" +
                             "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].gameManager.totalNumOfPlayers + "\n" +
                             "                           </button>\n" +
@@ -41,7 +41,7 @@ function getRooms() {
                             "                                       <b class=\"mr-2 ml-4\">Board:</b>" + json.rooms[i].gameManager.board.height + " X " + json.rooms[i].gameManager.board.width +
                             "                                   </p>\n" +
                             "                                   <hr>\n" +
-                            "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\" style=\"background-color:green; border-radius: 32px\">Join Room</button>\n" +
+                            "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\" style=\"border-radius: 32px\">Join Room</button>\n" +
                             "                               </div>\n" +
                             "                           </div>\n" +
                             "                        </div>\n");
