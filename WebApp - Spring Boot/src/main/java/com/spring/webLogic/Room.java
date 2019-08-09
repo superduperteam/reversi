@@ -6,6 +6,7 @@ package com.spring.webLogic;
 
 import GameEngine.GameManager;
 import GameEngine.Player;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,11 +17,8 @@ public class Room {
 
     private String roomName;
     private String uploaderName;
-    private String variant;
-    private int boardRows;
-    private int boardCols;
     private int turnsPlayed = 0;
-    private int totalPlayers;
+    private int totalPlayersNum;
     private int joinedPlayersNum = 0;
     private int numberOfMovesMade = 0;
     private HashMap<Player, Integer> playersUpdatedBoardMap;
@@ -34,20 +32,14 @@ public class Room {
     public Room(String roomName, String uploaderName, String variant, int boardRows, int boardCols, int totalPlayers) {
         this.roomName = roomName;
         this.uploaderName = uploaderName;
-        this.variant = variant;
-        this.boardRows = boardRows;
-        this.boardCols = boardCols;
-        this.totalPlayers = totalPlayers;
+        this.totalPlayersNum = totalPlayers;
     }
 
     public Room(GameManager gameManager, String roomName,  String uploaderName){
         this.roomName = roomName;
         this.uploaderName = uploaderName;
-        this.variant = gameManager.getGameMode().toString();
-        this.boardRows = gameManager.getBoard().getHeight();
-        this.boardCols = gameManager.getBoard().getWidth();
         this.gameManager = gameManager;
-        this.totalPlayers = gameManager.getTotalNumOfPlayers();
+        this.totalPlayersNum = gameManager.getTotalNumOfPlayers();
     }
 
     public String getRoomName() {
@@ -72,6 +64,7 @@ public class Room {
         }
     }
 
+    @JsonIgnore
     public void markActivePlayerMadeHisMove(){
         numberOfMovesMade++;
     }
@@ -168,6 +161,7 @@ public class Room {
         return countOfPlayersWithTrueValue;
     }
 
+    @JsonIgnore
     public boolean isTotalPlayersUpdatedBoard() { // new
         if(getCountOfPlayerForCriteria(playersUpdatedBoardMap, numberOfMovesMade) == joinedPlayersNum) {
             return true;
@@ -176,6 +170,7 @@ public class Room {
         return false;
     }
 
+    @JsonIgnore
     public boolean isTotalPlayersMovedToNextTurn() {
         if( getCountOfPlayerForCriteria(playersMovedToNextTurnMap, numberOfMovesMade) == joinedPlayersNum) { // maybe gamemanager.getPlayerList().size()?
             return true;
@@ -184,6 +179,7 @@ public class Room {
         return false;
     }
 
+    @JsonIgnore
     public boolean isActivePlayerMadeHisMove() {
         return maxBoardUpdateValue() + 1 == numberOfMovesMade;
     }
@@ -201,6 +197,7 @@ public class Room {
         return maxVal;
     }
 
+    @JsonIgnore
     public boolean isEveryOneInSameTurn(){
         List<Player> playersList = new ArrayList<>(playersMovedToNextTurnMap.keySet());
         int turnsPlayedValuePrev = playersMovedToNextTurnMap.get(playersList.get(0));
@@ -228,7 +225,7 @@ public class Room {
     }
 
     public boolean isTotalPlayersJoined() {
-        if(totalPlayers == joinedPlayersNum) {
+        if(totalPlayersNum == joinedPlayersNum) {
             return true;
         }
 
@@ -240,7 +237,7 @@ public class Room {
     }
 
     public int getTotalPlayersNum() {
-        return totalPlayers;
+        return totalPlayersNum;
     }
 
     public GameManager getGameManager() { return gameManager; }

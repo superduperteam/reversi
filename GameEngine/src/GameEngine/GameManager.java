@@ -1,11 +1,11 @@
 package GameEngine;
-
-import javafx.beans.property.BooleanProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import javafx.beans.property.SimpleBooleanProperty;
 
 import java.io.Serializable;
 import java.util.*;
-
+@JsonInclude
 public class GameManager implements Serializable
 {
     private SimpleBooleanProperty canUndoProperty = new SimpleBooleanProperty();
@@ -378,6 +378,7 @@ public class GameManager implements Serializable
         calcFlipPotential();
     }
 
+    @JsonIgnore
     public Player getReturnedRetiredPlayer()
     {
         return currTurn.retiredPlayer;

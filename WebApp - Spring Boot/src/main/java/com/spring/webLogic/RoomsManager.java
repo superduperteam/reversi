@@ -1,12 +1,12 @@
 package com.spring.webLogic;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @Component
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomsManager {
 
     private List<Room> rooms = new ArrayList<>();
