@@ -314,8 +314,10 @@ function updateUI(gameManager){
     for (var i = 0; i < gameManager.board.height; i++) {
         for (var j = 0; j < gameManager.board.width; j++){
             numOfPossibleMoves = "";
+            var currDisc = gameManager.board.gameboard[i][j].disc;
+
             // document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = gameManager.gameboard[i][j].disc.discType1;
-            if (gameManager.board.gameboard[i][j].disc !== undefined) {
+            if (currDisc !== undefined && currDisc !== null) {
                 document.getElementById("CircleboardRow-" + i + "," + "boardCol-" + j).style.fill = gameManager.board.gameboard[i][j].disc.type;
             }
             else {

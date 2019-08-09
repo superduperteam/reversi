@@ -34,7 +34,7 @@ function getRooms() {
                             "                           </button>\n" +
                             "                           <div class=\"collapse popup\" onclick='showBoardOnPopup()'  id=\"" + roomID + "Collapse\" style=\"\">\n" +
                                                             "<div class=\"collapse popup\" style=\"display: flex; justify-content: center\" id=\""+ i +"popupboard" + "\">  </div>\n" +
-                            "                               <div class=\"card card-body\">\n" +
+                            "                               <div class=\"card card-body\" style=\"margin-top: 4px\">\n" +
                             "                                   <h5 class=\"card-title\">Uploader: " + json.rooms[i].uploaderName + "</h5>\n" +
                             "                                   <p class=\"card-text\">" +
                             "                                       <b class=\"mr-2\">Variant:</b>" + json.rooms[i].gameManager.gameMode +
@@ -85,8 +85,9 @@ function showBoardOnPopup(json, num) {
         for (var rowIndex = 0; rowIndex < json.board.height; rowIndex++) {
             var rowID = "boardRow-" + rowIndex;
             var fill1;
+            var currDisc = json.board.gameboard[rowIndex][colIndex].disc;
 
-            if (json.board.gameboard[rowIndex][colIndex].disc !== undefined) {
+            if (currDisc !== undefined && currDisc !== null) {
                 fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
             }
             else {
