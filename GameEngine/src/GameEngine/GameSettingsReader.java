@@ -17,12 +17,12 @@ import java.lang.String;
 
 public class GameSettingsReader {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "jaxb.schema.generated";
-    private final byte MAX_ROWS = 50; // rows in [4, 50]
-    private final byte MIN_ROWS = 4;
-    private final byte MAX_COLS = 30; // cols in [4, 30]
-    private final byte MIN_COLS = 4;
-    private final int MIN_NUMBER_OF_PLAYERS = 2;
-    private final int MAX_NUMBER_OF_PLAYERS = 4;
+    private static final byte MAX_ROWS = 50; // rows in [4, 50]
+    private static final byte MIN_ROWS = 4;
+    private static final byte MAX_COLS = 30; // cols in [4, 30]
+    private static final byte MIN_COLS = 4;
+    private static final int MIN_NUMBER_OF_PLAYERS = 2;
+    private static final int MAX_NUMBER_OF_PLAYERS = 4;
     private int numberOfPlayers;
 
     public GameManager readGameSettings(Path xmlFilePath) throws BoardSizeDoesntMatchNumOfPlayersException,
@@ -78,6 +78,22 @@ public class GameSettingsReader {
         gameTitle = gameDescriptor.getDynamicPlayers().getGameTitle();
 
         return new GameManager(gameMode, board, numberOfPlayers, gameTitle);
+    }
+
+    public static byte getMAX_ROWS() {
+        return MAX_ROWS;
+    }
+
+    public static byte getMIN_ROWS() {
+        return MIN_ROWS;
+    }
+
+    public static byte getMAX_COLS() {
+        return MAX_COLS;
+    }
+
+    public static byte getMIN_COLS() {
+        return MIN_COLS;
     }
 
 //    private List<GameEngine.Player> createPlayersListFromGameDetails(GameDescriptor gameDescriptor) {

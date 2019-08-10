@@ -13,9 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Room {
-
+    private static AtomicInteger nextId = new AtomicInteger(0);
+    @JsonProperty()
+    private int id;
+    @JsonProperty
     private String roomName;
     @JsonProperty
     private String uploaderName;
@@ -31,17 +35,16 @@ public class Room {
     private GameManager gameManager;
     private ChatManager chatManager;
 
-    public Room(String roomName, String uploaderName, String variant, int boardRows, int boardCols, int totalPlayers) {
-        this.roomName = roomName;
-        this.uploaderName = uploaderName;
-        this.totalPlayersNum = totalPlayers;
-    }
-
     public Room(GameManager gameManager, String roomName,  String uploaderName){
         this.roomName = roomName;
         this.uploaderName = uploaderName;
         this.gameManager = gameManager;
         this.totalPlayersNum = gameManager.getTotalNumOfPlayers();
+        id = nextId.getAndUpdate(x-> x+1);
+    }
+
+    public int getId(){
+        return id;
     }
 
     public String getRoomName() {
@@ -53,7 +56,6 @@ public class Room {
 
         if(isGameActive){
             List<Player> playerList = gameManager.getPlayersList();
-
             playersUpdatedBoardMap = new HashMap<>();
             playersMovedToNextTurnMap = new HashMap<>();
 
@@ -64,6 +66,16 @@ public class Room {
 
             chatManager = new ChatManager();
         }
+    }
+
+    public boolean join(String playerName){
+        boolean isSucceeded = (joinedPlayersNum<totalPlayersNum) && (playerName != null);
+
+        if(isSucceeded){
+            gameManager.addToPlayersList(new Player(playerName, false));
+        }
+
+        return isSucceeded;
     }
 
     @JsonIgnore

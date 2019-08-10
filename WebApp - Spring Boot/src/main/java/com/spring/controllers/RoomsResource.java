@@ -3,6 +3,12 @@ package com.spring.controllers;
 import Exceptions.*;
 import GameEngine.GameManager;
 import GameEngine.GameSettingsReader;
+import com.spring.exceptions.GameSettingsInvalidException;
+import com.spring.exceptions.OnlinePlayerNotFoundException;
+import com.spring.exceptions.RoomNotFoundException;
+import com.spring.exceptions.RoomWithTheSameNameAlreadyExistsException;
+import com.spring.webLogic.OnlinePlayer;
+import com.spring.webLogic.OnlinePlayersManager;
 import com.spring.webLogic.Room;
 import com.spring.webLogic.RoomsManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +40,7 @@ public class RoomsResource {
     }
 
     @PostMapping(path = "/createRoom")
-    public ResponseEntity<String> createRoom(HttpSession session){
+    public ResponseEntity createRoom(HttpSession session){
         Room roomToCreate = (Room) session.getAttribute("roomToCreate");
 
         if(roomToCreate != null){
@@ -46,46 +52,47 @@ public class RoomsResource {
         }
     }
 
+    @PostMapping("/rooms/{id}")
+    public ResponseEntity joinRoom(@PathVariable int id, HttpSession session) {
+        Room roomToJoin = roomsManager.getRoom(id);
+        String onlinePlayerName = (String) session.getAttribute("playerName");
+
+        if(roomToJoin==null){
+            throw new RoomNotFoundException();
+        }
+        if(onlinePlayerName == null){
+            throw new OnlinePlayerNotFoundException();
+        }
+
+        roomToJoin.join(onlinePlayerName);
+
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
     @PostMapping(path = "/xmlFileLoader")
-    public ResponseEntity<Room> uploadXMLFile(@RequestParam("xmlFile") MultipartFile xmlFile, HttpSession session) {
+    public ResponseEntity uploadXMLFile(@RequestParam("xmlFile") MultipartFile xmlFile, HttpSession session) {
         try {
             GameSettingsReader gameSettingsReader = new GameSettingsReader();
             GameManager gameManager = gameSettingsReader.extractGameSettings(xmlFile.getInputStream());
 
             if (roomsManager.isRoomWithNameExists(gameManager.getGameTitle())) {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+                throw new RoomWithTheSameNameAlreadyExistsException();
             } else
                 {
-                Room roomToCreate = new Room(gameManager, gameManager.getGameTitle(), "saar");
-                session.setAttribute("roomToCreate", roomToCreate);
-                return new ResponseEntity<>(roomToCreate, HttpStatus.ACCEPTED);
-            }
-        } catch (PlayersInitPositionsOutOfRangeException e) {
-            e.printStackTrace();
-        } catch (RowsNotInRangeException e) {
-            e.printStackTrace();
-        } catch (ColumnsNotInRangeException e) {
-            e.printStackTrace();
-        } catch (ThereAreAtLeastTwoPlayersWithSameID thereAreAtLeastTwoPlayersWithSameID) {
-            thereAreAtLeastTwoPlayersWithSameID.printStackTrace();
-        } catch (OutOfRangeNumberOfPlayersException e) {
-            e.printStackTrace();
-        } catch (TooManyInitialPositionsException e) {
-            e.printStackTrace();
-        } catch (BoardSizeDoesntMatchNumOfPlayersException e) {
-            e.printStackTrace();
-        } catch (IslandsOnRegularModeException e) {
-            e.printStackTrace();
-        } catch (PlayerHasNoInitialPositionsException e) {
-            e.printStackTrace();
-        } catch (InvalidNumberOfPlayersException e) {
-            e.printStackTrace();
-        } catch (PlayersInitPositionsOverrideEachOtherException e) {
-            e.printStackTrace();
+                    String playerName = (String)session.getAttribute("playerName");
+                    if(playerName == null){
+                        playerName = "Unknown";
+                    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                    Room roomToCreate = new Room(gameManager, gameManager.getGameTitle(), playerName);
+                    session.setAttribute("roomToCreate", roomToCreate);
+                    return new ResponseEntity<>(roomToCreate, HttpStatus.ACCEPTED);
+            }
+        } catch (PlayersInitPositionsOutOfRangeException | RowsNotInRangeException | ColumnsNotInRangeException |
+                ThereAreAtLeastTwoPlayersWithSameID | OutOfRangeNumberOfPlayersException | TooManyInitialPositionsException |
+                BoardSizeDoesntMatchNumOfPlayersException | IslandsOnRegularModeException | PlayerHasNoInitialPositionsException |
+                InvalidNumberOfPlayersException | PlayersInitPositionsOverrideEachOtherException | IOException e) {
+            throw new GameSettingsInvalidException(e.getMessage());
         }
-       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // TODO: 8/9/2019 remove this
     }
 }

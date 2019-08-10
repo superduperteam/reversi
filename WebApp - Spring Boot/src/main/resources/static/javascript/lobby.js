@@ -2,7 +2,7 @@ window.onload = function() {
     $.ajax({
         data: "",
         type: "GET",
-        url: "../lobby",
+        url: "../players/playerName",
         timeout: 2000,
         error: function() {
             console.error("Failed to get ajax response");

@@ -3,7 +3,7 @@ $(function() {
         $.ajax({
             data: {"playerName": $("#inputName").val(), "isComputer": $("#checkboxIsComputer").prop("checked")},
             type: "POST",
-            url: "../signup",
+            url: "../players",
             timeout: 2000,
             complete: function (jqXHR, textStatus) {
                 switch (jqXHR.status) {

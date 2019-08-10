@@ -2,8 +2,8 @@ $(function() {
     $("#logoutButton").click(function () {
         $.ajax({
             data: "",
-            type: "GET",
-            url: "../logout",
+            type: "DELETE",
+            url: "../players/playerName",
             timeout: 2000,
             error: function () {
                 console.error("Failed to get ajax response");

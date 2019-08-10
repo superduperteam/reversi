@@ -8,7 +8,6 @@ import java.util.List;
 @Component
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RoomsManager {
-
     private List<Room> rooms = new ArrayList<>();
 
     public void addRoom(Room room) {
@@ -29,9 +28,9 @@ public class RoomsManager {
         return Collections.unmodifiableList(rooms);
     }
 
-    public Room getRoom(String roomName) {
+    public Room getRoom(int roomId) {
         for(Room room : rooms) {
-            if(room.getRoomName().equals(roomName)) {
+            if(room.getId() == roomId) {
                 return room;
             }
         }

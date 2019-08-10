@@ -24,15 +24,16 @@ function getRooms() {
                     $("#norooms").remove();
                 }
                 for(var i = 0; i < json.rooms.length; i++) {
-                    var roomID = json.rooms[i].roomName.replace(/ /g, "_");
+                   //  var roomID = json.rooms[i].roomName.replace(/ /g, "_");
+                    var roomID = json.rooms[i].id;
 
                     if(document.getElementById(roomID) == null) {
                         $("#rooms").append("<div id=\"" + roomID + "\" class=\"list-group\">\n" +
-                            "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" style=\"border-radius: 32px\" type=\"button\" data-toggle=\"collapse\" data-target=\"#" + roomID + "Collapse\" aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
+                            "                           <button id=\"" + roomID + "CollapseButton" + "\" class=\"btn btn-primary mb-1 collapsed\" style=\"border-radius: 32px\" type=\"button\" data-toggle=\"collapse\" data-target=\"" +"#Collapse" + roomID + "\"  aria-expanded=\"false\" aria-controls=\"" + roomID + "Collapse\">\n" +
                             "                               <i></i>" + json.rooms[i].roomName + "\n" +
                             "                               <span id=\"" + roomID + "JoinedPlayers" + "\">" + json.rooms[i].joinedPlayersNum + "</span>" + "/" + json.rooms[i].gameManager.totalNumOfPlayers + "\n" +
                             "                           </button>\n" +
-                            "                           <div class=\"collapse popup\" onclick='showBoardOnPopup()'  id=\"" + roomID + "Collapse\" style=\"\">\n" +
+                            "                           <div class=\"collapse popup\"  id=\"" +"Collapse" + roomID + "\"  style=\"\">\n" +
                                                             "<div class=\"collapse popup\" style=\"display: flex; justify-content: center\" id=\""+ i +"popupboard" + "\">  </div>\n" +
                             "                               <div class=\"card card-body\" style=\"margin-top: 4px\">\n" +
                             "                                   <h5 class=\"card-title\">Uploader: " + json.rooms[i].uploaderName + "</h5>\n" +
@@ -41,11 +42,11 @@ function getRooms() {
                             "                                       <b class=\"mr-2 ml-4\">Board:</b>" + json.rooms[i].gameManager.board.height + " X " + json.rooms[i].gameManager.board.width +
                             "                                   </p>\n" +
                             "                                   <hr>\n" +
-                            "                                   <button id=\"" + roomID + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\" style=\"border-radius: 32px\">Join Room</button>\n" +
+                            "                                   <button id=\"" + json.rooms[i].id + "JoinButton" + "\" type=\"button\" class=\"btn btn-primary\" style=\"border-radius: 32px\">Join Room</button>\n" +
                             "                               </div>\n" +
                             "                           </div>\n" +
                             "                        </div>\n");
-                        showBoardOnPopup(json.rooms[i].gameManager, i);
+                        showBoardOnPopup(json.rooms[i].gameManager, json.rooms[i].id); // was "i"
                     }
                     else {
                         if($("#" + roomID + "JoinedPlayers").html() === json.rooms[i].totalPlayers || json.rooms[i].isGameActive === true) {
@@ -105,7 +106,11 @@ function showBoardOnPopup(json, num) {
                 "                  </div>\n");
         }
     }
+    var popup = document.getElementById(num + "popupboard");
+    popup.classList.toggle("show");
+}
 
+function showRoomDetails(){
     var popup = document.getElementById(num + "popupboard");
     popup.classList.toggle("show");
 }
@@ -114,7 +119,7 @@ function getPlayerName() {
     $.ajax({
         data: "",
         type: "GET",
-        url: "../lobby",
+        url: "../players/playerName",
         timeout: 2000,
         error: function() {
             console.error("Failed to get ajax response");
@@ -132,23 +137,22 @@ $(function() {
     $(document).on("click", "button", function() {
         if(this.id.includes("JoinButton")) {
             var roomNameID = this.id.replace("JoinButton", "");
-            var roomName = roomNameID.replace(/_/g, " ");
+            var roomId = roomNameID;
 
             $.ajax({
-                data: {"roomName":roomName},
+                data: {"roomName":roomId},
                 type: "POST",
-                url: "../joinRoom",
+                url: "../rooms/"+roomNameID,
                 timeout: 2000,
                 error: function () {
                     console.error("Failed to get ajax response");
                 },
                 success: function () {
                     console.log(playerName + " joined the room successfully");
-
-                    var joindPlayersNum = $("#" + roomNameID + "JoinedPlayers").val();
-
-                    $("#" + roomNameID + "JoinedPlayers").val(++joindPlayersNum);
-                    window.location="../pages/preGameStart.html";
+                    var room = $("#" + roomId + "JoinedPlayers");
+                    var joinedPlayersNum = room.val();
+                    room.val(++joinedPlayersNum);
+                    window.location="../rooms/"+roomNameID;
                 }
             });
         }

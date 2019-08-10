@@ -1,8 +1,8 @@
 package Exceptions;
 
 public class OutOfRangeNumberOfPlayersException extends Exception {
-    int numberOfExpectedPlayersMin;
-    int numberOfExpectedPlayersMax;
+    private int numberOfExpectedPlayersMin;
+    private int numberOfExpectedPlayersMax;
 
     public OutOfRangeNumberOfPlayersException(int numberOfExpectedPlayersMin, int numberOfExpectedPlayersMax)
     {

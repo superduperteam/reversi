@@ -29,8 +29,9 @@
 }
 
 .backgroundImageWhosOnline {
-    background-image: url("../images/whos-online-background.png"); /* The image used */
-    background-color: #cccccc; /* Used if the image is unavailable */
+    /*background-image: url("../images/whos-online-background.png"); !* The image used *!*/
+    /*background-color: rgb(84,104,115);*/
+    background-color: rgb(115, 139, 160);
     height: 100%;/* You must set a specified height */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */
