@@ -215,10 +215,10 @@ public class GameManager implements Serializable
     }
 
     public static class TurnHistory implements  Serializable {
-        private Stack<Turn> turnHistoryStack;
+        private Stack<Turn> turnHistoryStack = new Stack<>();
 
         private TurnHistory(){
-            turnHistoryStack = new Stack<>();
+//            turnHistoryStack = new Stack<>();
         }
 
         public static class Turn implements  Serializable {
@@ -333,6 +333,7 @@ public class GameManager implements Serializable
         return boardsList;
     }
 
+    @JsonIgnore
     public List<TurnHistory.Turn> getHistoryOfTurns()
     {
         List<TurnHistory.Turn> turnsList = new ArrayList<>(turnHistory.turnHistoryStack);
@@ -434,14 +435,17 @@ public class GameManager implements Serializable
         playersList.add(player);
     }
 
-    public void removePlayerFromList(String playerName) {
+    public boolean removePlayerFromList(String playerName) {
         List<Player> playersListCopy = new ArrayList<>(playersList);
 
         for(Player player : playersListCopy) {
             if(player.getName().equals(playerName)){
                 playersList.remove(player);
+                return true;
             }
         }
+
+        return false;
     }
 
     public int getNumOfPlayers() { return playersList.size(); }

@@ -1,4 +1,5 @@
 var playerName;
+var getRoomsReapeter;
 
 function getRooms() {
     $.ajax({
@@ -49,21 +50,25 @@ function getRooms() {
                         showBoardOnPopup(json.rooms[i].gameManager, json.rooms[i].id); // was "i"
                     }
                     else {
-                        if($("#" + roomID + "JoinedPlayers").html() === json.rooms[i].totalPlayers || json.rooms[i].isGameActive === true) {
+                        if(json.rooms[i].joinedPlayersNum === json.rooms[i].totalPlayersNum || json.rooms[i].isGameActive === true) {
                             $("#" + roomID + "CollapseButton").removeClass("btn-primary");
                             $("#" + roomID + "CollapseButton").addClass("btn-danger");
+                            $("#" + roomID + "JoinButton").removeClass("btn-primary");
+                            $("#" + roomID + "JoinButton").addClass("btn-danger");
                             $("#" + roomID + "JoinButton").attr("disabled", "");
                         }
-                        else if($("#" + roomID + "JoinedPlayers").html() !== json.rooms[i].joinedPlayersNum) {
+                        else if(json.rooms[i].joinedPlayersNum !== json.rooms[i].totalPlayersNum) {
                             if ($("#" + roomID + "JoinButton").attr("disabled")) {
                                 $("#" + roomID + "JoinButton").removeAttr("disabled");
                                 $("#" + roomID + "CollapseButton").removeClass("btn-danger");
                                 $("#" + roomID + "CollapseButton").addClass("btn-primary");
+                                $("#" + roomID + "JoinButton").removeClass("btn-danger");
+                                $("#" + roomID + "JoinButton").addClass("btn-primary");
                             }
 
-                            $("#" + roomID + "JoinedPlayers").html(json.rooms[i].joinedPlayersNum);
                         }
                     }
+                    $("#" + roomID + "JoinedPlayers").html(json.rooms[i].joinedPlayersNum);
                 }
             }
         }
@@ -152,6 +157,7 @@ $(function() {
                     var room = $("#" + roomId + "JoinedPlayers");
                     var joinedPlayersNum = room.val();
                     room.val(++joinedPlayersNum);
+                    clearInterval(getRoomsReapeter);
                     window.location="../rooms/"+roomNameID;
                 }
             });
@@ -162,5 +168,5 @@ $(function() {
 window.onload = function() {
     getPlayerName();
     getRooms();
-    setInterval(getRooms, 500);
+    getRoomsReapeter = setInterval(getRooms, 500);
 };

@@ -5,17 +5,23 @@ window.onload = function() {
     repeater = setInterval(checkIfGameCanBeActive, 500);
 };
 
+function getCurrentRoomNumber(){
+    var url = document.URL;
+    return url.substring( url.lastIndexOf("/")+1, url.length);
+}
+
 function checkIfGameCanBeActive() {
     $.ajax({
         data: "",
         type: "GET",
-        url: "../roomJoinedPlayers",
+        url: "../rooms/" + getCurrentRoomNumber() + "/status",
         timeout: 2000,
         error: function() {
             console.error("Failed to get ajax response");
         },
         success: function(json) {
-            console.log("Got ajax response - is the game can be started: " + json.isTotalPlayersJoinedTheRoom);
+            var isTotalPlayersJoinTheRoom = json.joinedPlayersNum === json.totalPlayersNum;
+            console.log("Got ajax response - is the game can be started: " + isTotalPlayersJoinTheRoom);
 
             if(json.isTotalPlayersJoinedTheRoom) {
                 clearInterval(repeater);
@@ -47,8 +53,8 @@ $(function() {
     $("#leaveRoomButton").click(function() {
         $.ajax({
             data: "",
-            type: "GET",
-            url: "../leaveRoom",
+            type: "DELETE",
+            url: "../rooms/" + getCurrentRoomNumber(),
             timeout: 2000,
             error: function () {
                 console.error("Failed to get ajax response");

@@ -18,4 +18,10 @@ public class HomeController {
     {
         return "../pages/preGameStart.html";
     }
+
+    @GetMapping("/rooms/{id}/playgame")
+    public String playGame(@PathVariable String id)
+    {
+        return "../pages/gameStart.html";
+    }
 }

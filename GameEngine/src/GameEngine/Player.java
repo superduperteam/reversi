@@ -123,9 +123,12 @@ public class Player implements Serializable {
         return statistics.getAverageOfFlips();
     }
 
-    public String getColor() {
-        return discType.toString();
-    }
+//    public String getColor() {
+//        if(discType != null) {
+//            return discType.toString();
+//        }
+//        else return "";
+//    }
 
     public GameManager.eMoveStatus makeMove(Point targetInsertionPoint, Board board) {
         GameManager.eMoveStatus isAbleToDoTheMove;

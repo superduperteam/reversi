@@ -3,12 +3,7 @@ package com.spring.controllers;
 import Exceptions.*;
 import GameEngine.GameManager;
 import GameEngine.GameSettingsReader;
-import com.spring.exceptions.GameSettingsInvalidException;
-import com.spring.exceptions.OnlinePlayerNotFoundException;
-import com.spring.exceptions.RoomNotFoundException;
-import com.spring.exceptions.RoomWithTheSameNameAlreadyExistsException;
-import com.spring.webLogic.OnlinePlayer;
-import com.spring.webLogic.OnlinePlayersManager;
+import com.spring.exceptions.*;
 import com.spring.webLogic.Room;
 import com.spring.webLogic.RoomsManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Scanner;
+import java.util.HashMap;
 
 @RestController
 public class RoomsResource {
@@ -40,7 +31,7 @@ public class RoomsResource {
     }
 
     @PostMapping(path = "/createRoom")
-    public ResponseEntity createRoom(HttpSession session){
+    public ResponseEntity<Object> createRoom(HttpSession session){
         Room roomToCreate = (Room) session.getAttribute("roomToCreate");
 
         if(roomToCreate != null){
@@ -52,8 +43,44 @@ public class RoomsResource {
         }
     }
 
+    @GetMapping("/rooms/{id}/status")
+    public ResponseEntity<HashMap<String, Integer>> getStatus(@PathVariable int id){
+        Room roomToGetStatusOn = roomsManager.getRoom(id);
+
+        if(roomToGetStatusOn == null){
+            throw new RoomNotFoundException();
+        }
+
+
+        int joinedPlayers = roomToGetStatusOn.getJoinedPlayersNum();
+        int totalPlayers = roomToGetStatusOn.getTotalPlayersNum();
+
+        final HashMap<String, Integer> res = new HashMap<String, Integer>() {{
+            put("joinedPlayersNum",    joinedPlayers);
+            put("totalPlayersNum", totalPlayers);
+        }};
+
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/rooms/{id}")
+    public ResponseEntity<String> leaveRoom(@PathVariable int id, HttpSession session){
+        Room roomToLeave = roomsManager.getRoom(id);
+        String onlinePlayerName = (String) session.getAttribute("playerName");
+
+        if(roomToLeave==null){
+            throw new RoomNotFoundException();
+        }
+        if(onlinePlayerName == null){
+            throw new OnlinePlayerNotFoundException();
+        }
+
+        roomToLeave.leave(onlinePlayerName);
+        return new ResponseEntity<>("Player left successfully",HttpStatus.CREATED);
+    }
+
     @PostMapping("/rooms/{id}")
-    public ResponseEntity joinRoom(@PathVariable int id, HttpSession session) {
+    public ResponseEntity<String> joinRoom(@PathVariable int id, HttpSession session) {
         Room roomToJoin = roomsManager.getRoom(id);
         String onlinePlayerName = (String) session.getAttribute("playerName");
 
@@ -64,13 +91,16 @@ public class RoomsResource {
             throw new OnlinePlayerNotFoundException();
         }
 
-        roomToJoin.join(onlinePlayerName);
-
-        return new ResponseEntity(HttpStatus.CREATED);
+        if(roomToJoin.join(onlinePlayerName)){
+            return new ResponseEntity<>("Player joined room "+ id + " successfully",HttpStatus.CREATED);
+        }
+        else{
+            throw new RoomIsAlreadyFullException();
+        }
     }
 
     @PostMapping(path = "/xmlFileLoader")
-    public ResponseEntity uploadXMLFile(@RequestParam("xmlFile") MultipartFile xmlFile, HttpSession session) {
+    public ResponseEntity<Room> uploadXMLFile(@RequestParam("xmlFile") MultipartFile xmlFile, HttpSession session) {
         try {
             GameSettingsReader gameSettingsReader = new GameSettingsReader();
             GameManager gameManager = gameSettingsReader.extractGameSettings(xmlFile.getInputStream());

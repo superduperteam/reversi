@@ -68,11 +68,22 @@ public class Room {
         }
     }
 
+    public boolean leave(String onlinePlayerName) {
+        boolean isSucceeded = gameManager.removePlayerFromList(onlinePlayerName);
+
+        if(isSucceeded){
+            joinedPlayersNum--;
+        }
+
+        return isSucceeded;
+    }
+
     public boolean join(String playerName){
         boolean isSucceeded = (joinedPlayersNum<totalPlayersNum) && (playerName != null);
 
         if(isSucceeded){
             gameManager.addToPlayersList(new Player(playerName, false));
+            joinedPlayersNum++;
         }
 
         return isSucceeded;
@@ -299,6 +310,8 @@ public class Room {
             playersMovedToNextTurnMap.remove(playerToRemove);
         }
     }
+
+
 
 //    public ChatManager getChatManager(ServletContext servletContext) {
 //        return chatManager;
