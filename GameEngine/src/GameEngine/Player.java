@@ -146,6 +146,7 @@ public class Player implements Serializable {
     public class Statistics implements Serializable {
         private int countOfPlayedTurns;
         private double totalNumOfFlips;
+
         private int score;
 
         public Statistics() {
@@ -172,6 +173,10 @@ public class Player implements Serializable {
 
         public void incScore() {
             ++score;
+        }
+
+        public int getScore() {
+            return score;
         }
 
         public int getCountOfPlayedTurns() {

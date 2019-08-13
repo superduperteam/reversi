@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class HomeController {
-    @GetMapping("/")
-    public String home()
-    {
-        return "/pages/signup.html";
-    }
+//    @GetMapping("/")
+//    public String home()
+//    {
+//        return "/pages/signup.html";
+//    }
 
     @GetMapping("/rooms/{id}")
     public String room(@PathVariable String id)

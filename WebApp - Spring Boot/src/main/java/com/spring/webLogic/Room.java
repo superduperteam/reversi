@@ -82,7 +82,7 @@ public class Room {
         boolean isSucceeded = (joinedPlayersNum<totalPlayersNum) && (playerName != null);
 
         if(isSucceeded){
-            gameManager.addToPlayersList(new Player(playerName, false));
+            gameManager.addToPlayersList(new Player(playerName, true));
             joinedPlayersNum++;
         }
 

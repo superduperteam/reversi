@@ -95,6 +95,20 @@ public class RoomsResource {
         }
     }
 
+    @GetMapping("/rooms/{id}/gameStart")
+    public GameManager getGame(@PathVariable int id){
+        Room room = roomsManager.getRoom(id);
+        GameManager gameManager = room.getGameManager();
+
+        synchronized (this){
+            if(!gameManager.isGameActive()){
+                gameManager.activateGame();
+            }
+        }
+
+        return gameManager;
+    }
+
     @PostMapping(path = "/xmlFileLoader")
     public ResponseEntity<Room> uploadXMLFile(@RequestParam("xmlFile") MultipartFile xmlFile, HttpSession session) {
         try {

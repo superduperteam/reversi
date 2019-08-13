@@ -2,6 +2,7 @@ var passivePlayerRepeater;
 var synchronizeEndTurnRepeater;
 var getCurrentTurnRepeater;
 var gameoverRepeater;
+var stompClient = null;
 
 var boardHeight
 var boardWidth;
@@ -25,11 +26,27 @@ window.onload = function() {
     initializeGame();
 };
 
+
+function connect() {
+    var socket = new SockJS('/gs-guide-websocket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/greetings', function (greeting) {
+            showGreeting(JSON.parse(greeting.body).content);
+        });
+    });
+}
+
+function getRoomID(){
+    return document.URL.substring(document.URL.indexOf("/rooms")+7, document.URL.lastIndexOf("/game"));
+}
+
 function initializeGame() {
     $.ajax({
         data: "",
         type: "GET",
-        url: "../initializeGame",
+        url: "../"+getRoomID()+"/gameStart",
         timeout: 2000,
         error: function () {
             console.error("Failed to get ajax response");
@@ -77,7 +94,7 @@ function initializeGame() {
                     var rowID = "boardRow-" + rowIndex;
                     var fill1;
 
-                    if(json.board.gameboard[rowIndex][colIndex].disc !== undefined){
+                    if(json.board.gameboard[rowIndex][colIndex].disc !== undefined && json.board.gameboard[rowIndex][colIndex].disc !== null){
                         fill1 = json.board.gameboard[rowIndex][colIndex].disc.type;
                     }
                     else{
@@ -120,27 +137,15 @@ function getThisPlayer() {
     $.ajax({
         data: "",
         type: "GET",
-        url: "../thisPlayer",
+        url: "../../players/playerName",
         timeout: 2000,
-        error: function () {
+        error: function() {
             console.error("Failed to get ajax response");
         },
-        success: function (json) {
-            console.log("Got ajax response - this player is: " + json.name);
+        success: function(json) {
+            console.log("Got ajax response - this player name: " + json);
 
-            playerName = json.name;
-            //playerDiscColor = json.discType;
-
-            if(json.isHuman === true) {
-                isPlayerComputer = false;
-            }
-            else {
-                isPlayerComputer = true;
-                $("#quitButton").css("display", "none");
-                // $("#popoutVariant").css("display", "none");
-            }
-
-            getCurrentPlayerTurn();
+            playerName = json;
         }
     });
 }
@@ -488,191 +493,3 @@ $(function() {
         });
     });
 });
-
-// $(function() {
-//     $("#regularMove").click(function() {
-//         if(playerName === lastTurnPlayerName) {
-//             setHighlightClickableBoardCols();
-//         }
-//     });
-// });
-//
-// $(function() {
-//     $("#popoutMove").click(function() {
-//         if(playerName === lastTurnPlayerName) {
-//             setHighlightClickableBoardCols();
-//         }
-//     });
-// });
-//
-// function setHighlightClickableBoardCols() {
-//     var isPopoutMove = false;
-//
-//     if($("#popoutVariant").css("display") === "inline") {
-//         if($("#popoutMove").is(":checked")) {
-//             isPopoutMove = true;
-//         }
-//     }
-//
-//     $.ajax({
-//         data: {"isPopoutMove":isPopoutMove},
-//         type: "POST",
-//         url: "../clickableBoardCols",
-//         timeout: 2000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function (json) {
-//             console.log("Got ajax response - clickable board cols: " + json.clickableBoardColsNum);
-//
-//             for(var i = 0; i < boardCols.length; i++) {
-//                 if(json.clickableBoardColsNum.includes(i)) {
-//                     boardCols.eq(i).addClass("highlight");
-//                 }
-//                 else {
-//                     boardCols.eq(i).removeClass("highlight");
-//                 }
-//             }
-//         }
-//     });
-// }
-//
-// $(function() {
-//     $(document).on("click", "[id^=boardCol-]", function() {
-//         var destinationCol = this.id.replace("boardCol-", "");
-//         var destinationRow = this.id.replace("boardRow-", "");
-//         if(this.classList.contains("highlight")) {
-//             if (isPlayerComputer === false && playerName === lastTurnPlayerName) {
-//                 if (isLastMoveExecuted) {
-//                     isLastMoveExecuted = false;
-//
-//                     var isPopoutMove = false;
-//
-//                     if ($("#popoutVariant").css("display") === "inline") {
-//                         if ($("#popoutMove").is(":checked")) {
-//                             isPopoutMove = true;
-//                         }
-//                     }
-//
-//                     $.ajax({
-//                         data: {"destinationCol": destinationCol, "destinationRow": destinationRow ,"isPopoutMove": isPopoutMove, "discType": currentPlayerDiscType},
-//                         type: "POST",
-//                         url: "../executeMove",
-//                         timeout: 2000,
-//                         error: function () {
-//                             console.error("Failed to get ajax response");
-//                         },
-//                         success: function () {
-//                             console.log("Got ajax response - " + playerName + "'s move executed");
-//
-//                             updateBoard();
-//                         }
-//                     });
-//                 }
-//             }
-//         }
-//     });
-// });
-//
-
-//
-// function computerMove() {
-//     $.ajax({
-//         data: "",
-//         type: "GET",
-//         url: "../executeMove",
-//         timeout: 4000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function () {
-//             console.log("Got ajax response - " + playerName + "'s move executed");
-//
-//             updateBoard();
-//         }
-//     });
-// }
-//
-// function updateBoard() {
-//     $.ajax({
-//         data: "",
-//         type: "GET",
-//         url: "../boardUpdater",
-//         timeout: 2000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function (json) {
-//             console.log("Got ajax response - last move changes: " + json.lastMoveChanges + " ; " + "is player quit: " + json.isCurrentPlayerQuit);
-//
-//             if(passivePlayerRepeater != null) {
-//                 if(json.gameboard.length > 0) {
-//                     clearInterval(passivePlayerRepeater);
-//                     passivePlayerRepeater = null;
-//
-//                     if(json.isCurrentPlayerQuit === true) {
-//                         $("#" + lastTurnPlayerName + "Card").css("opacity", "0.3");
-//                     }
-//                     else {
-//                         $("#" + lastTurnPlayerName + "TurnsPlayed").html(++lastTurnPlayerTurnsPlayed);
-//                     }
-//
-//                     for(var i = 0; i < json.height; i++) {
-//                         for(var j = 0; j < json.width; j++)
-//                             document.getElementById("boardCol-" + j).querySelector("#boardRow-" + i).style.fill = json.gameboard[i][j].disc.discType1;
-//                     }
-//
-//                     checkGameOver();
-//                 }
-//             }
-//             else {
-//                 for(var i = 0; i < json.lastMoveChanges.length; i++) {
-//                     document.getElementById("boardCol-" + json.lastMoveChanges[i].col).querySelector("#boardRow-" + json.lastMoveChanges[i].row).style.fill = json.lastMoveChanges[i].discType;
-//                 }
-//
-//                 $("#" + lastTurnPlayerName + "TurnsPlayed").html(++lastTurnPlayerTurnsPlayed);
-//
-//                 checkGameOver();
-//             }
-//         }
-//     });
-// }
-//
-//
-// function changeTurn() {
-//     $.ajax({
-//         data: {"lastTurnPlayerName":lastTurnPlayerName},
-//         type: "POST",
-//         url: "../changeTurn",
-//         timeout: 2000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function () {
-//             console.log("Turn changed successfully");
-//
-//             synchronizeEndTurnRepeater = setInterval(synchronizeEndTurn, 200);
-//         }
-//     });
-// }
-//
-// function synchronizeEndTurn() {
-//     $.ajax({
-//         data: "",
-//         type: "GET",
-//         url: "../synchronizeEndTurn",
-//         timeout: 2000,
-//         error: function () {
-//             console.error("Failed to get ajax response");
-//         },
-//         success: function (json) {
-//             console.log("Got ajax response - are all players synchronized after complete turn of the game: " + json.isActionSucceeded);
-//
-//             if(json.isActionSucceeded === true) {
-//                 clearInterval(synchronizeEndTurnRepeater);
-//                 synchronizeEndTurnRepeater = null;
-//                 getCurrentPlayerTurn();
-//             }
-//         }
-//     });
-// }

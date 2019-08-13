@@ -22,7 +22,6 @@ function checkIfGameCanBeActive() {
             var isTotalPlayersJoinedTheRoom = json.joinedPlayersNum === json.totalPlayersNum;
             console.log("Got ajax response - is the game can be started: " + isTotalPlayersJoinedTheRoom);
             var roomID = getCurrentRoomNumber();
-            var dest = "../rooms/"+roomID+"/game";
 
             if(isTotalPlayersJoinedTheRoom) {
                 clearInterval(repeater);
@@ -33,7 +32,7 @@ function checkIfGameCanBeActive() {
 
                 }
 
-                window.location=dest;
+                window.location="../rooms/"+roomID+"/game";
             }
             else {
                 if($("#roomJoinedPlayersModal").hasClass("show")) {

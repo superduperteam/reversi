@@ -9,6 +9,7 @@ import com.spring.webLogic.Move;
 import com.spring.webLogic.OnlinePlayersManager;
 import com.spring.webLogic.RoomsManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -25,27 +26,27 @@ public class GameController {
         this.onlinePlayersManager = onlinePlayersManager;
     }
 
-    @MessageMapping("/{id}/getInitialGameDetails")
-    @SendTo("/{id}/game")
-    public GameManager getInitialGameDetails(@PathVariable int id){
+    @MessageMapping("/{id}/game/getInitialGameDetails")
+    @SendTo("/topic/rooms/{id}/game")
+    public GameManager getInitialGameDetails(@DestinationVariable int id){
         return roomsManager.getRoom(id).getGameManager();
     }
 
-    @MessageMapping("/{id}/getWhoseTurn")
-    @SendTo("/{id}/game")
-    public String getWhoseTurn(@PathVariable int id){
+    @MessageMapping("/{id}/game/getWhoseTurn")
+    @SendTo("/topic/rooms/{id}/game")
+    public String getWhoseTurn(@DestinationVariable int id){
         return roomsManager.getRoom(id).getGameManager().getActivePlayer().getName();
     }
 
-    @MessageMapping("/{id}/getUpdatedBoard")
-    @SendTo("/{id}/game")
-    public GameManager getUpdatedBoard(@PathVariable int id){
+    @MessageMapping("/{id}/game/getUpdatedBoard")
+    @SendTo("/topic/rooms/{id}/game")
+    public GameManager getUpdatedBoard(@DestinationVariable int id){
         return roomsManager.getRoom(id).getGameManager();
     }
 
-    @MessageMapping("/{id}/executeMove")
-    @SendTo("/{id}/game")
-    public eMoveStatus executeMove(@PathVariable int id, Move move){
+    @MessageMapping("/{id}/game/executeMove")
+    @SendTo("/topic/rooms/{id}/game")
+    public eMoveStatus executeMove(@DestinationVariable int id, Move move){
         GameManager gameManager= roomsManager.getRoom(id).getGameManager();
         Player activePlayer = gameManager.getActivePlayer();
         String onlinePlayerName = move.getPlayerName();

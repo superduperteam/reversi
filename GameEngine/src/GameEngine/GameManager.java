@@ -23,7 +23,7 @@ public class GameManager implements Serializable
     private int totalNumOfPlayers;
     private String gameTitle;
 
-    public Object mtx;
+//    public Object mtx;
 
     public GameManager(eGameMode gameMode, Board board, int totalNumOfPlayers, String gameTitle)
     {
@@ -423,7 +423,6 @@ public class GameManager implements Serializable
     // call this only after all info about players is gathered.
     public void activateGame()
     {
-        mtx = new Object();
         updateCanUndo(); // ##
         isGameActive = new SimpleBooleanProperty(false);
         isGameActive.set(true);
