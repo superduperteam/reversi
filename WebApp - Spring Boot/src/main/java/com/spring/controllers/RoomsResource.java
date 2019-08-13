@@ -26,12 +26,12 @@ public class RoomsResource {
     }
 
     @GetMapping(path = "/rooms")
-    public RoomsManager getRooms() {
+    public synchronized RoomsManager getRooms() {
         return roomsManager;
     }
 
     @PostMapping(path = "/createRoom")
-    public ResponseEntity<Object> createRoom(HttpSession session){
+    public synchronized ResponseEntity<Object>  createRoom(HttpSession session){
         Room roomToCreate = (Room) session.getAttribute("roomToCreate");
 
         if(roomToCreate != null){
@@ -44,23 +44,19 @@ public class RoomsResource {
     }
 
     @GetMapping("/rooms/{id}/status")
-    public ResponseEntity<HashMap<String, Integer>> getStatus(@PathVariable int id){
+    public HashMap<String, Integer> getStatus(@PathVariable int id){
         Room roomToGetStatusOn = roomsManager.getRoom(id);
 
         if(roomToGetStatusOn == null){
             throw new RoomNotFoundException();
         }
 
-
-        int joinedPlayers = roomToGetStatusOn.getJoinedPlayersNum();
-        int totalPlayers = roomToGetStatusOn.getTotalPlayersNum();
-
         final HashMap<String, Integer> res = new HashMap<String, Integer>() {{
-            put("joinedPlayersNum",    joinedPlayers);
-            put("totalPlayersNum", totalPlayers);
+            put("joinedPlayersNum", roomToGetStatusOn.getJoinedPlayersNum());
+            put("totalPlayersNum", roomToGetStatusOn.getTotalPlayersNum());
         }};
 
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        return res;
     }
 
     @DeleteMapping("/rooms/{id}")

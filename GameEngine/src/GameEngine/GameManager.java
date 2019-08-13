@@ -412,6 +412,11 @@ public class GameManager implements Serializable
             public String toString() {
                 return "The coordinates are not in the board's range!";
             }
+        },
+        NOT_YOUR_TURN{
+            public String toString() {
+                return "This is not your turn!";
+            }
         }
     }
 

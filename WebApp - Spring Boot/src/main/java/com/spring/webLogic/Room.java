@@ -43,15 +43,15 @@ public class Room {
         id = nextId.getAndUpdate(x-> x+1);
     }
 
-    public int getId(){
+    public synchronized int getId(){
         return id;
     }
 
-    public String getRoomName() {
+    public synchronized String getRoomName() {
         return roomName;
     }
 
-    public void setIsGameActive(boolean isGameActive) {
+    public synchronized void setIsGameActive(boolean isGameActive) {
         this.isGameActive = isGameActive;
 
         if(isGameActive){
@@ -68,7 +68,7 @@ public class Room {
         }
     }
 
-    public boolean leave(String onlinePlayerName) {
+    public synchronized boolean leave(String onlinePlayerName) {
         boolean isSucceeded = gameManager.removePlayerFromList(onlinePlayerName);
 
         if(isSucceeded){
@@ -78,7 +78,7 @@ public class Room {
         return isSucceeded;
     }
 
-    public boolean join(String playerName){
+    public synchronized boolean join(String playerName){
         boolean isSucceeded = (joinedPlayersNum<totalPlayersNum) && (playerName != null);
 
         if(isSucceeded){

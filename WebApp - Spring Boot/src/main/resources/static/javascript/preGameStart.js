@@ -1,7 +1,6 @@
 var repeater;
 
 window.onload = function() {
-    checkIfGameCanBeActive();
     repeater = setInterval(checkIfGameCanBeActive, 500);
 };
 
@@ -20,21 +19,21 @@ function checkIfGameCanBeActive() {
             console.error("Failed to get ajax response");
         },
         success: function(json) {
-            var isTotalPlayersJoinTheRoom = json.joinedPlayersNum === json.totalPlayersNum;
-            console.log("Got ajax response - is the game can be started: " + isTotalPlayersJoinTheRoom);
+            var isTotalPlayersJoinedTheRoom = json.joinedPlayersNum === json.totalPlayersNum;
+            console.log("Got ajax response - is the game can be started: " + isTotalPlayersJoinedTheRoom);
+            var roomID = getCurrentRoomNumber();
+            var dest = "../rooms/"+roomID+"/game";
 
-            if(json.isTotalPlayersJoinedTheRoom) {
+            if(isTotalPlayersJoinedTheRoom) {
                 clearInterval(repeater);
 
                 if($("#roomJoinedPlayersModal").hasClass("show")) {
                     $("#modalMessage").html("Waiting for all players to join the room - " + json.joinedPlayersNum + "/" + json.totalPlayersNum);
                     $("#leaveRoomButton").attr("disabled", "");
 
-                    setTimeout("window.location='../pages/gameStart.html'", 500);
                 }
-                else {
-                    window.location="../pages/gameStart.html";
-                }
+
+                window.location=dest;
             }
             else {
                 if($("#roomJoinedPlayersModal").hasClass("show")) {
