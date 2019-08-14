@@ -28,7 +28,7 @@ Features:
 #### - Sign-up
 ![alt text](https://i.imgur.com/Jymq35c.jpg)
 #### - Lobby
-![alt text](https://i.ibb.co/dG8yFS6/5alt.png)
+![alt text](https://i.ibb.co/4PhxzcM/5alt.png)
 #### - Online Players
 ![alt text](https://i.ibb.co/HKFpc8K/6alt.png)
 #### - Available Rooms
