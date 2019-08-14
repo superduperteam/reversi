@@ -28,11 +28,13 @@ Features:
 #### - Sign-up
 ![alt text](https://i.imgur.com/Jymq35c.jpg)
 #### - Lobby
-![alt text](https://i.imgur.com/awNqiH6.jpg)
+![alt text](https://i.ibb.co/dG8yFS6/5alt.png)
+#### - Online Players
+![alt text](https://i.ibb.co/HKFpc8K/6alt.png)
 #### - Available Rooms
-![alt text](https://i.imgur.com/5ScgFQp.png)
+![alt text](https://i.ibb.co/SsZwsNV/8altalt.png)
 #### - Creating A room popup
-![alt text](https://i.imgur.com/XulsoG1.png)
+![alt text](https://i.ibb.co/N9z8QPY/7alt.png)
 #### - Waiting window
 ![alt text](https://i.imgur.com/OY3bLWk.png)
 #### - Actual Room page
