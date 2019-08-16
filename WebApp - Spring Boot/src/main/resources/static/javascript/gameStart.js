@@ -23,6 +23,7 @@ var currentPlayerDiscType;
 })(jQuery);
 
 window.onload = function() {
+    connect();
     initializeGame();
 };
 
@@ -32,8 +33,8 @@ function connect() {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/greetings', function (greeting) {
-            showGreeting(JSON.parse(greeting.body).content);
+        stompClient.subscribe("/topic/rooms/" + getRoomID() +"/game/getWhoseTurn", function (json) {
+            onGetCurrentPlayerTurn(JSON.parse(json.body).content)
         });
     });
 }
@@ -148,6 +149,24 @@ function getThisPlayer() {
             playerName = json;
         }
     });
+}
+
+function onGetCurrentPlayerTurn() {
+    console.log("Got ajax response - current player name is: " + json.name);
+    if (playerName === json.name) {
+        isItMyTurn = true;
+        $("#turn").html(playerName + ", It's your turn");
+        $("#quitButton").removeAttr("disabled");
+
+        if (isPlayerComputer === true) {
+            computerMove();
+        }
+    } else {
+        isItMyTurn = false;
+
+        $("#turn").html("It's " + json.name + "'s turn. Stand by...");
+        $("#quitButton").attr("disabled", "");
+    }
 }
 
 function getCurrentPlayerTurn() {

@@ -34,8 +34,8 @@ public class GameController {
 
     @MessageMapping("/{id}/game/getWhoseTurn")
     @SendTo("/topic/rooms/{id}/game")
-    public String getWhoseTurn(@DestinationVariable int id){
-        return roomsManager.getRoom(id).getGameManager().getActivePlayer().getName();
+    public Player getWhoseTurn(@DestinationVariable int id){
+        return roomsManager.getRoom(id).getGameManager().getActivePlayer();
     }
 
     @MessageMapping("/{id}/game/getUpdatedBoard")

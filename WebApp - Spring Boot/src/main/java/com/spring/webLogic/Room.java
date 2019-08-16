@@ -25,6 +25,7 @@ public class Room {
     private String uploaderName;
     private int turnsPlayed = 0;
     private int totalPlayersNum;
+    private int numberOfPlayersConnected = 0;
     private int joinedPlayersNum = 0;
     private int numberOfMovesMade = 0;
     private HashMap<Player, Integer> playersUpdatedBoardMap;
@@ -279,6 +280,7 @@ public class Room {
         playersUpdatedBoardMap.clear();;
         playersMovedToNextTurnMap.clear();
         turnsPlayed = 0;
+        numberOfPlayersConnected = 0;
         numberOfMovesMade = 0;
         isActivePlayerQuit = false;
     }
@@ -309,6 +311,10 @@ public class Room {
         if(playersMovedToNextTurnMap.containsKey(playerToRemove)){
             playersMovedToNextTurnMap.remove(playerToRemove);
         }
+    }
+
+    public int increaseNumberOfPlayersConnected(){
+        return ++numberOfPlayersConnected;
     }
 
 

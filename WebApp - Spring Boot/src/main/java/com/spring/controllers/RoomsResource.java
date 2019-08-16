@@ -26,12 +26,12 @@ public class RoomsResource {
     }
 
     @GetMapping(path = "/rooms")
-    public synchronized RoomsManager getRooms() {
+    public RoomsManager getRooms() {
         return roomsManager;
     }
 
     @PostMapping(path = "/createRoom")
-    public synchronized ResponseEntity<Object>  createRoom(HttpSession session){
+    public ResponseEntity<Object>  createRoom(HttpSession session){
         Room roomToCreate = (Room) session.getAttribute("roomToCreate");
 
         if(roomToCreate != null){
@@ -103,6 +103,10 @@ public class RoomsResource {
         synchronized (this){
             if(!gameManager.isGameActive()){
                 gameManager.activateGame();
+            }
+
+            if(room.increaseNumberOfPlayersConnected() == room.getJoinedPlayersNum()){ // TODO: 8/14/2019 new lines
+                // TODO: 8/14/2019 send push notification message of whose turn.
             }
         }
 
